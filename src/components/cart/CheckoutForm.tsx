@@ -109,8 +109,11 @@ export default function CheckoutForm() {
     }
   };
 
+  // bg-white rounded-3xl" 
   return (
-    <div className="bg-white rounded-3xl border border-border-subtle p-5 md:p-6 shadow-xs" dir="rtl">
+    <div  id="order-summary"
+        className="bg-white rounded-  border border-border-subtle p-5 md:p-6 shadow-xs sm:p-6 sticky top-24 flex flex-col gap-5 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto custom-scrollbar"
+        dir="rtl">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-primary" />

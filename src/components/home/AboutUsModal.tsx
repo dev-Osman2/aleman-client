@@ -27,25 +27,24 @@ export default function AboutUsModal({ isOpen, onClose }: AboutUsModalProps) {
 
         <div className="border-b border-border-subtle pb-4 mb-5">
           <h2 className="text-xl md:text-2xl font-black text-primary mb-2 flex items-center gap-2">
-            <span>🍽️</span> عن مطعم السرايا
+            <span>📚</span> عن مكتبة الإيمان
           </h2>
           <p className="text-sm text-sub leading-relaxed">
-            وجهتكم الأولى لأشهى المأكولات والمشويات الطازجة المحضرة بأجود أنواع
-            اللحوم والمكونات البلدية 100%. صُممت هذه المنصة لتسهيل تجربة الطلب
-            السريع والدفع المباشر، وتوصيل وجباتكم ساخنة وطازجة بأعلى معايير
-            الجودة والنظافة.
+            وجهتكم المعرفية الأولى لاقتناء أمهات الكتب الإسلامية، العلمية،
+            والثقافية بأفضل الطبعات المعتمدة. صُممت هذه المنصة لتسهيل تجربة تصفح
+            الكتب وطلبها إلكترونياً، مع تغليفها بعناية وتوصيلها لباب منزلك بأعلى
+            معايير الجودة والسرعة.
           </p>
         </div>
 
         <div className="flex flex-col gap-5 text-sm">
           <div>
             <h3 className="font-extrabold text-heading flex items-center gap-2 mb-1.5 text-base">
-              <span>✨</span> رؤيتنا وشغفنا
+              <span>✨</span> رؤيتنا ورسالتنا
             </h3>
             <p className="text-sub leading-relaxed">
-              تقديم المذاق الشرقي الأصيل بلمسة عصرية، والجمع بين الطعم الغني
-              وسرعة الخدمة والأسعار التنافسية لضمان تجربة طعام لا تُنسى لكل
-              أفراد العائلة.
+              نشر العلم الشرعي والمعرفة الأصيلة وتيسير وصول الكتاب لكل قارئ وباحث
+              بأسعار تنافسية وخدمة شحن موثوقة وسريعة لجميع المحافظات.
             </p>
           </div>
 
@@ -55,83 +54,83 @@ export default function AboutUsModal({ isOpen, onClose }: AboutUsModalProps) {
             </h3>
             <ul className="flex flex-col gap-1.5 text-xs md:text-sm text-sub">
               <li>
-                • <strong>مواعيد العمل:</strong> يومياً من الساعة 6:00 صباحا
-                وحتى 2:00 ظهراً.
+                • <strong>استقبال الطلبات عبر الموقع:</strong> متاح على مدار 24
+                ساعة طوال أيام الأسبوع.
               </li>
               <li>
-                • <strong>العنوان:</strong> الأقصر/العوامية (ميدان الصنايع)
-                بجوار القرعاني .
+                • <strong>مواعيد تجهيز وشحن الطلبات:</strong> يومياً من الساعة
+                9:00 صباحاً وحتى 9:00 مساءً.
               </li>
               <li>
-                • <strong>خدمة التوصيل:</strong> تغطية سريعة لجميع المناطق
-                المحيطة طوال ساعات العمل.
+                • <strong>خدمة التوصيل:</strong> شحن سريع وآمن مع تغليف محكم
+                لحماية الكتب أثناء النقل.
               </li>
             </ul>
           </div>
 
           <div className="bg-primary-light/60 border border-primary/20 p-4 rounded-2xl">
             <h3 className="font-extrabold text-primary-hover flex items-center gap-2 mb-2 text-base">
-              <span>🛒</span> كيف تطلب عبر المنصة؟
+              <span>🛒</span> كيف تطلب كتبك عبر المنصة؟
             </h3>
             <ol className="flex flex-col gap-2 text-xs md:text-sm text-body list-decimal list-inside">
               <li>
-                <strong>اختر وجبتك:</strong> تصفح قائمة المشويات والمشروبات وحدد
-                الحجم والكمية، ثم أضف ملاحظاتك الخاصة.
+                <strong>اختر كتبك:</strong> تصفح الأقسام أو ابحث بعنوان الكتاب أو
+                كوده، وحدد الكمية المطلوبة وأضفها للسلة.
               </li>
               <li>
-                <strong>أكّد الدفع:</strong> حوّل القيمة عبر إنستاباي (InstaPay)
-                أو فودافون كاش، واكتب رقمك المحول منه لتأكيد الطلب فوراً.
+                <strong>أكّد الدفع والشحن:</strong> سجّل دخولك، أدخل عنوان
+                التوصيل، وحوّل القيمة عبر إنستاباي (InstaPay) أو فودافون كاش مع
+                كتابة الرقم المحول منه.
               </li>
               <li>
-                <strong>احفظ رقم الطلب:</strong> بعد الإرسال، احتفظ برقم الطلب
-                لتتمكن من معرفة حالته عبر قسم «تتبع طلبك».
+                <strong>احفظ رقم الطلب:</strong> بعد إرسال الطلب، احتفظ برقم
+                الطلب لتتمكن من الاستعلام عن حالته عبر قسم «تتبع طلبك».
               </li>
             </ol>
           </div>
 
           <div className="bg-primary-light border border-primary/20 p-4 rounded-2xl">
             <h3 className="font-extrabold text-primary-hover flex items-center gap-2 mb-2 text-base">
-              <span>📲</span> كيفية تثبيت التطبيق؟
+              <span>📲</span> كيفية تثبيت تطبيق المكتبة؟
             </h3>
             <ol className="flex flex-col gap-2 text-xs md:text-sm text-body list-decimal list-inside">
-              <li>الضغط على الثلاث نقاط التي في أعلى المتصفح.</li>
+              <li>الضغط على الثلاث نقاط في أعلى المتصفح.</li>
               <li>
-                النزول والضغط على <strong>«التثبيت وإنشاء اختصار»</strong> (أو
-                «إضافة إلى الشاشة الرئيسية»).
+                الضغط على <strong>«التثبيت وإنشاء اختصار»</strong> (أو «إضافة إلى
+                الشاشة الرئيسية»).
               </li>
               <li>
-                الضغط على <strong>«تثبيت»</strong>.
+                الضغط على <strong>«تثبيت»</strong> للوصول السريع للمكتبة.
               </li>
             </ol>
           </div>
 
           <div>
             <h3 className="font-extrabold text-heading flex items-center gap-2 mb-2 text-base">
-              <span>⚠️</span> ضوابط وسياسة الطلب والتجهيز
+              <span>⚠️</span> ضوابط وسياسة الطلب والشحن
             </h3>
             <ul className="flex flex-col gap-2.5 text-xs md:text-sm text-sub">
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">•</span>
                 <span>
-                  <strong>طزاجة التحضير:</strong> نبدأ في تجهيز وجبتك فور إتمام
-                  عملية التحويل وتأكيدها لضمان وصول المشويات ساخنة وطازجة من
-                  الشواية مباشرة.
+                  <strong>مراجعة وتأكيد الطلب:</strong> يتم مراجعة التحويل وحجز
+                  النسخ من المخزون فور إتمام الطلب وتغليفها للشحن.
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">•</span>
                 <span>
-                  <strong>تعديل أو إلغاء الطلب:</strong> نظراً لسرعة تجهيز
-                  الطعام، يُرجى التواصل الفوري مع الإدارة هاتفياً أو عبر واتساب
-                  في حال الرغبة بالتعديل قبل بدء طهي الوجبة.
+                  <strong>الاستفسار أو الإلغاء:</strong> في حال الرغبة بأي تعديل
+                  أو إلغاء للطلب، يُرجى التواصل المباشر مع إدارة المكتبة عبر
+                  واتساب أو الهاتف.
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-primary font-bold">•</span>
                 <span>
-                  <strong>متابعة الطلب:</strong> رقم هاتفك ورقم الطلب هما وسيلتك
-                  الأساسية لتتبع حالة استلام وتجهيز الوجبة خطوة بخطوة حتى وصول
-                  مندوب التوصيل.
+                  <strong>متابعة الطلب:</strong> يمكنك إدخال رقم الطلب في قسم
+                  «تتبع طلبك» بالصفحة الرئيسية لمعرفة حالة طلبك وتفاصيل الكتب
+                  المطلوبة.
                 </span>
               </li>
             </ul>

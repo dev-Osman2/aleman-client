@@ -8,6 +8,39 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CART_STORAGE_KEY = "aleman_cart";
 const DEFAULT_DELIVERY_FEE = 20;
 
+function toFiniteNumber(value: unknown, fallback = 0) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function normalizeCartItem(item: unknown): CartItem | null {
+  if (!item || typeof item !== "object") return null;
+
+  const candidate = item as Partial<CartItem>;
+  const quantity = Math.max(0, toFiniteNumber(candidate.quantity));
+  const price = Math.max(0, toFiniteNumber(candidate.price));
+  const cartQuantity = Math.min(
+    quantity,
+    Math.max(1, toFiniteNumber(candidate.cartQuantity, 1))
+  );
+
+  if (
+    typeof candidate.id !== "string" ||
+    !candidate.id ||
+    !quantity ||
+    !cartQuantity
+  ) {
+    return null;
+  }
+
+  return {
+    ...candidate,
+    price,
+    quantity,
+    cartQuantity,
+  } as CartItem;
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -19,7 +52,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
           // eslint-disable-next-line react-hooks/set-state-in-effect
-          setCart(parsed);
+          setCart(
+            parsed
+              .map(normalizeCartItem)
+              .filter((item): item is CartItem => item !== null)
+          );
         }
       }
     } catch (err) {
@@ -40,21 +77,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [cart, isInitialized]);
 
   const addToCart = (product: Product, quantity = 1) => {
-    if (product.quantity <= 0) return;
+    const availableQuantity = Math.max(0, toFiniteNumber(product.quantity));
+    const price = Math.max(0, toFiniteNumber(product.price));
+    const requestedQuantity = Math.max(1, toFiniteNumber(quantity, 1));
+
+    if (!availableQuantity) return;
 
     setCart((prev) => {
       const existingIndex = prev.findIndex((item) => item.id === product.id);
 
       if (existingIndex > -1) {
         const updated = [...prev];
-        const currentQty = updated[existingIndex].cartQuantity;
+        const currentQty = Math.max(
+          0,
+          toFiniteNumber(updated[existingIndex].cartQuantity)
+        );
         // ضمان عدم تجاوز الكمية المتوفرة في مخزون المكتبة
-        const nextQty = Math.min(product.quantity, currentQty + quantity);
+        const nextQty = Math.min(
+          availableQuantity,
+          currentQty + requestedQuantity
+        );
 
         updated[existingIndex] = {
           ...updated[existingIndex],
           cartQuantity: nextQty,
-          price: product.price,
+          price,
+          quantity: availableQuantity,
         };
         return updated;
       }
@@ -63,7 +111,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         {
           ...product,
-          cartQuantity: Math.min(product.quantity, quantity),
+          price,
+          quantity: availableQuantity,
+          cartQuantity: Math.min(availableQuantity, requestedQuantity),
         },
       ];
     });
@@ -74,7 +124,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (bookId: string, quantity: number) => {
-    if (quantity <= 0) {
+    const nextQuantity = toFiniteNumber(quantity);
+
+    if (nextQuantity <= 0) {
       removeFromCart(bookId);
       return;
     }
@@ -84,7 +136,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (item.id === bookId) {
           return {
             ...item,
-            cartQuantity: Math.min(item.quantity, quantity),
+            cartQuantity: Math.min(
+              Math.max(0, toFiniteNumber(item.quantity)),
+              nextQuantity
+            ),
           };
         }
         return item;
@@ -104,7 +159,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalItems = cart.reduce((sum, item) => sum + item.cartQuantity, 0);
 
   const subtotalPrice = cart.reduce(
-    (sum, item) => sum + Number(item.price || 0) * item.cartQuantity,
+    (sum, item) =>
+      sum +
+      toFiniteNumber(item.price) *
+        Math.max(0, toFiniteNumber(item.cartQuantity)),
     0
   );
 

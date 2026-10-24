@@ -7,31 +7,31 @@ import {
   CheckCircle2,
   ChevronDown,
   Compass,
+  Search,
 } from "lucide-react";
 import AboutUsModal from "./AboutUsModal";
-import OrderQuickViewModal from "./OrderQuickViewModal";
+import OrderQuickViewModal, { TrackedOrder } from "./OrderQuickViewModal";
 import ContactUsModal from "./ContactUsModal";
+import { useAuth } from "@/src/context/AuthContext";
 
 export default function QuickServicesBar() {
   const [activeAccordion, setActiveAccordion] = useState<"none" | "track">(
-    "none",
+    "none"
   );
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
 
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const [viewingOrder, setViewingOrder] = useState<unknown | null>(null);
+  const [viewingOrder, setViewingOrder] = useState<TrackedOrder | null>(null);
+  const { token, isLoading: isAuthLoading } = useAuth();
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   const toggleTrackAccordion = () => {
     setErrorMsg("");
-    setPhoneNumber("");
     setOrderNumber("");
     setActiveAccordion((prev) => (prev === "track" ? "none" : "track"));
   };
@@ -40,43 +40,56 @@ export default function QuickServicesBar() {
     e.preventDefault();
     setErrorMsg("");
 
-    const cleanPhone = phoneNumber.trim();
     const cleanOrder = orderNumber.trim();
-
-    if (!cleanPhone || !cleanOrder) {
-      setErrorMsg("يرجى إدخال رقم الهاتف ورقم الطلب معاً.");
+    if (!cleanOrder) {
+      setErrorMsg("يرجى إدخال رقم الطلب.");
       return;
     }
 
-    const phoneRegex = /^01(0|1|2|5)[0-9]{8}$/;
-    if (!phoneRegex.test(cleanPhone)) {
-      setErrorMsg("يرجى إدخال رقم هاتف صحيح مكون من 11 رقماً.");
+    if (isAuthLoading) {
+      setErrorMsg("جار التحقق من تسجيل الدخول، يرجى المحاولة بعد لحظات.");
+      return;
+    }
+
+    if (!token) {
+      setErrorMsg("يرجى تسجيل الدخول أولاً للاستعلام عن طلباتك.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await fetch(`${apiUrl}/orders/track`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: cleanPhone,
-          phoneNumber: cleanPhone,
-          orderNumber: cleanOrder,
-        }),
+      const res = await fetch(`${apiUrl}/orders/my-orders`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
-      const data = await res.json();
 
-      if (!res.ok) {
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
         setErrorMsg(
-          data.message ||
-            "بيانات الطلب غير صحيحة، يرجى التأكد والمحاولة مجدداً.",
+          result.message || "تعذر جلب بيانات الطلب، يرجى المحاولة مجدداً."
         );
         return;
       }
 
-      setViewingOrder(data.order || data);
+      const ordersList: TrackedOrder[] = Array.isArray(result.data)
+        ? result.data
+        : [];
+
+      const matchedOrder = ordersList.find(
+        (o) => Number(o.id) === Number(cleanOrder)
+      );
+
+      if (!matchedOrder) {
+        setErrorMsg(`لا يوجد طلب مسجل في حسابك برقم (#${cleanOrder}).`);
+        return;
+      }
+
+      setViewingOrder(matchedOrder);
       setActiveAccordion("none");
     } catch {
       setErrorMsg("تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً.");
@@ -94,51 +107,51 @@ export default function QuickServicesBar() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
-  <button
-    type="button"
-    onClick={() => setIsAboutOpen(true)}
-    className="md:flex-1 w-full h-14 bg-primary-light hover:bg-primary-subtle border border-primary/20 text-primary-hover rounded-2xl px-5 flex items-center justify-start gap-2.5 font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
-  >
-    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-      <Info className="w-4 h-4" />
-    </div>
-    <span>عن مطعم السرايا</span>
-  </button>
+          <button
+            type="button"
+            onClick={() => setIsAboutOpen(true)}
+            className="md:flex-1 w-full h-14 bg-primary-light hover:bg-primary-subtle border border-primary/20 text-primary-hover rounded-2xl px-5 flex items-center justify-start gap-2.5 font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
+          >
+            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <Info className="w-4 h-4" />
+            </div>
+            <span>عن مكتبة الإيمان</span>
+          </button>
 
-  <button
-    type="button"
-    onClick={toggleTrackAccordion}
-    className="md:flex-1 w-full h-14 bg-success-light hover:bg-success-light border border-success-border/60 text-success rounded-2xl px-5 flex items-center justify-between font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
-  >
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-xl bg-success/10 flex items-center justify-center text-success">
-        <CheckCircle2 className="w-4 h-4" />
-      </div>
-      <span>تتبع طلبك</span>
-    </div>
-    <ChevronDown
-      className={`w-4 h-4 text-success transition-transform duration-300 ${
-        activeAccordion === "track" ? "rotate-180" : ""
-      }`}
-    />
-  </button>
+          <button
+            type="button"
+            onClick={toggleTrackAccordion}
+            className="md:flex-1 w-full h-14 bg-success-light hover:bg-success-light border border-success-border/60 text-success rounded-2xl px-5 flex items-center justify-between font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-success/10 flex items-center justify-center text-success">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <span>تتبع طلبك</span>
+            </div>
+            <ChevronDown
+              className={`w-4 h-4 text-success transition-transform duration-300 ${
+                activeAccordion === "track" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
 
-  <button
-    type="button"
-    onClick={() => setIsContactOpen(true)}
-    className="md:flex-1 w-full h-14 bg-info-light hover:bg-info-light border border-info-border/70 text-info rounded-2xl px-5 flex items-center justify-between font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
-  >
-    <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-xl bg-info/10 flex items-center justify-center text-info">
-        <Headset className="w-4 h-4" />
-      </div>
-      <span>تواصل معنا وشاركنا رأيك</span>
-    </div>
-    <span className="text-[11px] bg-info/10 text-info px-2.5 py-0.5 rounded-full font-bold">
-      دعم وآراء
-    </span>
-  </button>
-</div>
+          <button
+            type="button"
+            onClick={() => setIsContactOpen(true)}
+            className="md:flex-1 w-full h-14 bg-info-light hover:bg-info-light border border-info-border/70 text-info rounded-2xl px-5 flex items-center justify-between font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-info/10 flex items-center justify-center text-info">
+                <Headset className="w-4 h-4" />
+              </div>
+              <span>تواصل معنا وشاركنا رأيك</span>
+            </div>
+            <span className="text-[11px] bg-info/10 text-info px-2.5 py-0.5 rounded-full font-bold">
+              دعم وآراء
+            </span>
+          </button>
+        </div>
 
         {activeAccordion === "track" && (
           <div className="mt-5 pt-4 border-t border-border-subtle animate-in fade-in slide-in-from-top-3 duration-200">
@@ -146,7 +159,7 @@ export default function QuickServicesBar() {
               <div className="flex items-center justify-between text-success font-extrabold text-sm mb-4">
                 <span>تفاصيل طلبك</span>
                 <span className="text-xs text-success font-bold">
-                  استعلام مباشر عن حالة ووجبات الطلب
+                  استعلام مباشر عن حالة الطلب
                 </span>
               </div>
 
@@ -159,29 +172,13 @@ export default function QuickServicesBar() {
               <form onSubmit={handleTrackSubmit} className="flex flex-col gap-4">
                 <div>
                   <label className="block text-xs font-bold text-sub mb-1.5 text-right">
-                    رقم الهاتف <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    minLength={11}
-                    maxLength={11}
-                    inputMode="numeric"
-                    placeholder="01xxxxxxxxx"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="w-full px-4 py-3 text-sm bg-white border border-success-border/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-success/40 text-right text-body placeholder:text-muted-light transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-sub mb-1.5 text-right">
                     رقم الطلب <span className="text-danger">*</span>
                   </label>
                   <input
                     type="number"
                     required
-                    placeholder="مثال: 1001"
+                    min={1}
+                    placeholder="أدخل رقم الطلب (مثال: 2)"
                     value={orderNumber}
                     onChange={(e) => setOrderNumber(e.target.value)}
                     className="w-full px-4 py-3 text-sm bg-white border border-success-border/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-success/40 text-right text-body placeholder:text-muted-light transition"
@@ -191,9 +188,10 @@ export default function QuickServicesBar() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-success hover:bg-success text-white py-3.5 rounded-2xl font-extrabold text-sm transition-all shadow-xs disabled:opacity-60 cursor-pointer mt-2"
+                  className="w-full bg-success hover:bg-success/90 text-white py-3.5 rounded-2xl font-extrabold text-sm transition-all shadow-xs disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  {loading ? "جاري البحث..." : "عرض طلبي"}
+                  <Search className="w-4 h-4" />
+                  <span>{loading ? "جاري البحث..." : "عرض تفاصيل الطلب"}</span>
                 </button>
               </form>
             </div>

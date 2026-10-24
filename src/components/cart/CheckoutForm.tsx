@@ -30,7 +30,6 @@ export default function CheckoutForm() {
   const {
     cart,
     updateQuantity,
-    removeFromCart,
     clearCart,
     subtotalPrice,
     deliveryFee,
@@ -101,7 +100,7 @@ export default function CheckoutForm() {
       setAddress("");
       setNotes("");
       setTransferNumber("");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setErrorMsg(err.message || "حدث خطأ أثناء إرسال الطلب");
     } finally {
@@ -109,11 +108,13 @@ export default function CheckoutForm() {
     }
   };
 
-  // bg-white rounded-3xl" 
+  // bg-white rounded-3xl"
   return (
-    <div  id="order-summary"
-        className="bg-white rounded-  border border-border-subtle p-5 md:p-6 shadow-xs sm:p-6 sticky top-24 flex flex-col gap-5 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto custom-scrollbar"
-        dir="rtl">
+    <div
+      id="order-summary"
+      className="bg-white rounded-3xl border border-border-subtle p-5 sm:p-6 md:p-6 shadow-xs sticky top-24 flex flex-col gap-5 h-fit"
+      dir="rtl"
+    >
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-primary" />
@@ -144,48 +145,48 @@ export default function CheckoutForm() {
         </div>
       ) : (
         <div className="space-y-3 max-h-60 overflow-y-auto pl-1 mb-5">
-          {cart.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between gap-3 bg-gray-50 p-3 rounded-2xl border border-gray-100"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-xs md:text-sm font-extrabold text-heading truncate">
-                  {item.title}
-                </p>
-                <p className="text-xs text-primary font-bold">
-                  {item.price * item.cartQuantity} ج.م ({item.price} ج.م للنسخة)
-                </p>
-              </div>
+          {cart.map((item) => {
+            return (
+              <div
+                key={item.id}
+                className="flex items-center justify-between gap-3 bg-gray-50 p-3 rounded-2xl border border-gray-100"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs md:text-sm font-extrabold text-heading truncate">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-primary font-bold">
+                    {item.price * item.cartQuantity} ج.م ({item.price} ج.م
+                    للنسخة)
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(item.id, item.cartQuantity + 1)}
-                  className="p-1 rounded-lg bg-white border border-gray-200 hover:border-primary"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-                <span className="w-6 text-center text-xs font-extrabold">
-                  {item.cartQuantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(item.id, item.cartQuantity - 1)}
-                  className="p-1 rounded-lg bg-white border border-gray-200 hover:border-primary"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeFromCart(item.id)}
-                  className="p-1 text-red-500 hover:bg-red-50 rounded-lg mr-1"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateQuantity(item.id, item.cartQuantity + 1)
+                    }
+                    className="p-1 rounded-lg bg-white border border-gray-200 hover:border-primary"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="w-6 text-center text-xs font-extrabold">
+                    {item.cartQuantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateQuantity(item.id, item.cartQuantity - 1)
+                    }
+                    className="p-1 rounded-lg bg-white border border-gray-200 hover:border-primary"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -223,7 +224,9 @@ export default function CheckoutForm() {
         </div>
       ) : (
         <div className="mb-5 rounded-2xl bg-primary-light/60 border border-primary/20 p-3 text-xs font-bold text-heading flex items-center justify-between">
-          <span>الطلب باسم: <strong className="text-primary">{user.name}</strong></span>
+          <span>
+            الطلب باسم: <strong className="text-primary">{user.name}</strong>
+          </span>
           <span className="text-muted">{user.phone}</span>
         </div>
       )}
@@ -287,7 +290,9 @@ export default function CheckoutForm() {
             >
               <span
                 className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
-                  paymentMethod === "INSTAPAY" ? "border-primary" : "border-gray-300"
+                  paymentMethod === "INSTAPAY"
+                    ? "border-primary"
+                    : "border-gray-300"
                 }`}
               >
                 {paymentMethod === "INSTAPAY" && (
@@ -331,7 +336,9 @@ export default function CheckoutForm() {
           </p>
           <div className="inline-flex items-center gap-2 text-base md:text-lg font-black text-primary tracking-wider">
             <span>
-              {paymentMethod === "INSTAPAY" ? INSTAPAY_NUMBER : VODAFONE_CASH_NUMBER}
+              {paymentMethod === "INSTAPAY"
+                ? INSTAPAY_NUMBER
+                : VODAFONE_CASH_NUMBER}
             </span>
             <ExternalLink className="w-4 h-4" />
           </div>
@@ -369,8 +376,8 @@ export default function CheckoutForm() {
             {isSubmitting
               ? "جاري تسجيل الطلب..."
               : !user
-              ? "سجل حسابك لإتمام الطلب"
-              : "تأكيد وإرسال الطلب"}
+                ? "سجل حسابك لإتمام الطلب"
+                : "تأكيد وإرسال الطلب"}
           </span>
         </button>
       </form>

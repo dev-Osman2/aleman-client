@@ -72,7 +72,14 @@ export default function SearchBar({
         const res = await fetch(`${apiUrl}/products`);
         if (res.ok) {
           const data = await res.json();
-          setProducts(Array.isArray(data) ? data : data.products || []);
+          const products = Array.isArray(data)
+            ? data
+            : Array.isArray(data.data)
+            ? data.data
+            : Array.isArray(data.products)
+            ? data.products
+            : [];
+          setProducts(products);
         }
       } catch (err) {
         console.error("Failed to load products in SearchBar:", err);
@@ -127,53 +134,24 @@ export default function SearchBar({
   const filteredProducts = query.trim()
     ? products
         .filter((item) =>
-          normalizeSearchText(item.name).includes(normalizeSearchText(query)),
+          normalizeSearchText(item.title).includes(normalizeSearchText(query)),
         )
         .slice(0, 6)
     : [];
 
-  const scrollToProduct = (productId: string) => {
-    let attempts = 0;
-    const maxAttempts = 30; // محاولات متتالية لضمان ظهور العنصر في الصفحة بعد تحديث التصنيف
-
-    const tryScroll = () => {
-      const targetElement = document.getElementById(`product-${productId}`);
-
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
-
-        targetElement.classList.add(
-          "ring-4",
-          "ring-primary",
-          "ring-offset-2",
-        );
-        setTimeout(() => {
-          targetElement.classList.remove(
-            "ring-4",
-            "ring-primary",
-            "ring-offset-2",
-          );
-        }, 2000);
-        return;
-      }
-
-      attempts++;
-      if (attempts < maxAttempts) {
-        setTimeout(tryScroll, 100);
-      }
-    };
-
-    tryScroll();
-  };
-
   const handleSelectProduct = (product: Product) => {
-    clearCategoryFilter();
     handleClose();
-    scrollToProduct(product._id);
+    router.push(`/products/${product.code}`);
   };
 
   const searchDropdown = isOpen && (
-    <div className="absolute top-14 left-0 z-50 w-72 sm:w-84 bg-white rounded-2xl shadow-2xl border border-border-subtle p-3 text-body animate-in fade-in zoom-in duration-150">
+    <div
+      className={`z-50 w-full rounded-2xl bg-white p-3 text-body shadow-2xl border border-border-subtle animate-in fade-in zoom-in duration-150 ${
+        isControlled
+          ? "relative"
+          : "absolute top-14 left-0 w-72 sm:w-84"
+      }`}
+    >
       <div className="relative flex items-center border-2 border-primary/80 rounded-2xl px-3 py-2 bg-white">
         <Search size={18} className="text-primary shrink-0 ml-2" />
         <input
@@ -206,14 +184,14 @@ export default function SearchBar({
         <div className="mt-3 flex flex-col gap-1 divide-y divide-border-subtle max-h-64 overflow-y-auto">
           {filteredProducts.map((product) => (
             <button
-              key={product._id}
+              key={product.id}
               type="button"
               onClick={() => handleSelectProduct(product)}
               className="w-full text-right flex items-center gap-3 p-2 rounded-xl hover:bg-primary-light/70 transition-colors group"
             >
               <img
                 src={product.image}
-                alt={product.name}
+                alt={product.title}
                 className="w-10 h-10 rounded-lg object-cover bg-surface-subtle shrink-0 border border-border/60"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src =
@@ -222,7 +200,7 @@ export default function SearchBar({
               />
               <div className="flex-1 min-w-0">
                 <p className="text-xs sm:text-sm font-medium text-body group-hover:text-primary truncate transition-colors">
-                  {product.name}
+                  {product.title}
                 </p>
                 <span className="text-[10px] text-muted-light block">
                   {product.price.toFixed(2)} ج
@@ -245,18 +223,8 @@ export default function SearchBar({
     if (!isOpen) return null;
 
     return (
-      <div
-        className="fixed top-0 inset-x-0 z-50 pointer-events-none print:hidden"
-        dir="rtl"
-      >
-        <div className="container mx-auto px-4 h-16 flex items-center justify-end">
-          <div
-            ref={wrapperRef}
-            className="relative ml-12 w-10 h-10 pointer-events-auto"
-          >
-            {searchDropdown}
-          </div>
-        </div>
+      <div ref={wrapperRef} className="relative z-50 mx-auto w-full max-w-xl" dir="rtl">
+        {searchDropdown}
       </div>
     );
   }

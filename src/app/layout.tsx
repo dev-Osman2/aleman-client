@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { CartProvider } from "@/src/context/CartContext";
 import Footer from "../components/layout/Footer";
+import { AuthProvider } from "../context/AuthContext";
 
 const tajawal = localFont({
   src: [
@@ -107,10 +108,12 @@ export default function RootLayout({
       <body
         className={`${tajawal.className} bg-lightBg text-gray-800 min-h-screen flex flex-col`}
       >
-        <CartProvider>
-          {children}
-          <Footer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

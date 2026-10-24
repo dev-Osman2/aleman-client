@@ -1,97 +1,96 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import MenuBar from "./MenuBar";
+import { Search, Menu, UserPlus, LogOut, UserCheck } from "lucide-react";
+import { useAuth } from "@/src/context/AuthContext";
 import SearchBar from "./SearchBar";
+import MenuBar from "./MenuBar";
 
 export default function Header() {
+  const { user, logout } = useAuth();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const currentScroll =
-        window.scrollY || document.documentElement.scrollTop;
-
-      if (totalScroll > 0) {
-        const progress = (currentScroll / totalScroll) * 100;
-        setScrollProgress(Math.min(progress, 100));
-      }
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
     <header
-      className="bg-primary text-white sticky top-0 z-40 shadow-md"
+      className="sticky top-0 z-40 bg-primary text-white shadow-md"
       dir="rtl"
     >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3 select-none group">
-          <div
-            className="relative w-10 h-10 shrink-0 active:scale-95 
-            transition-transform duration-150 cursor-pointer"
-            onClick={handleLogoClick}
-          >
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        {/* الشعار واسم المكتبة (يمين الهيدر) */}
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative h-12 w-12 rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden">
             <Image
               src="/logo.png"
-              alt="شعار مطعم السرايا"
+              alt="مكتبة الإيمان"
               width={40}
               height={40}
-              priority
-              className="w-10 h-10 rounded-xl object-contain bg-primary-light p-0.5"
+              className="object-contain"
             />
           </div>
-
-          <div className="text-right">
-            <h1 className="text-lg md:text-xl font-bold leading-tight">
-              مطعم السرايا
+          <div>
+            <h1 className="text-lg md:text-xl font-black tracking-tight leading-none">
+              مكتبة الإيمان
             </h1>
-            <p className="text-xs text-white/80 font-normal">
-              أشهى المأكولات والمشويات
+            <p className="text-[11px] md:text-xs text-white/85 font-medium mt-1">
+              خير جليس في الزمان كتاب
             </p>
           </div>
-        </div>
+        </Link>
 
+        {/* أزرار البحث والحساب والقائمة (يسار الهيدر) */}
         <div className="flex items-center gap-2">
-          <SearchBar />
+          {/* زر إنشاء حساب / تسجيل دخول (أو اسم المستخدم إذا كان مسجلاً) */}
+          {!user && (
+            <div className="flex items-center gap-1.5">
+              <Link
+                href="/register"
+                className="flex items-center gap-1.5 bg-white text-primary hover:bg-white/90 font-extrabold text-xs px-3 py-2.5 rounded-xl shadow-xs transition-all"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>إنشاء حساب</span>
+              </Link>
+              <Link
+                href="/login"
+                className="hidden sm:flex items-center gap-1 bg-white/15 hover:bg-white/25 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition-all"
+              >
+                <span>دخول</span>
+              </Link>
+            </div>
+          )}
 
+          {/* زر البحث */}
           <button
             type="button"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`p-2.5 rounded-xl transition ${
-              isMenuOpen ? "bg-white/20 " : "bg-white/20 hover:bg-white/30"
-            }`}
-            aria-label="Toggle Menu"
+            onClick={() => setIsSearchOpen((prev) => !prev)}
+            aria-label="بحث"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 transition-colors"
           >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Search className="h-5 w-5" />
+          </button>
+
+          {/* زر القائمة الجانبية */}
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(true)}
+            aria-label="القائمة"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 transition-colors"
+          >
+            <Menu className="h-5 w-5" />
           </button>
         </div>
       </div>
 
-      <div
-        className="absolute bottom-0 right-0 h-0.75 bg-[#3effa8] transition-[width] duration-100 ease-out z-50"
-        style={{ width: `${scrollProgress}%` }}
-      />
+      {/* شريط البحث المنسدل */}
+      {isSearchOpen && (
+        <div className="border-t border-white/15 bg-primary-dark/95 px-4 py-3">
+          <SearchBar onClose={() => setIsSearchOpen(false)} />
+        </div>
+      )}
 
+      {/* القائمة الجانبية */}
       <MenuBar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </header>
   );

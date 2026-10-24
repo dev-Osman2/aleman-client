@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart, getCartItemKey } from "@/src/context/CartContext";
+import { useCart} from "@/src/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import CartItemRow from "./components/CartItemRow";
 

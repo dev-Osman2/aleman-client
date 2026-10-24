@@ -1,34 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { CartItem, Product } from "@/src/types";
-
-interface CartContextType {
-  cart: CartItem[];
-  addToCart: (
-    product: Product,
-    quantity?: number,
-    selectedSize?: string,
-    customPrice?: number,
-  ) => void;
-  removeFromCart: (productId: string, selectedSize?: string) => void;
-  updateQuantity: (
-    productId: string,
-    quantity: number,
-    selectedSize?: string,
-  ) => void;
-  clearCart: () => void;
-  totalItems: number;
-  subtotalPrice: number;
-  totalPrice: number;
-}
+import { CartItem, CartContextType, Product } from "@/src/types";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = "saraya_cart";
-
-export const getCartItemKey = (productId: string, selectedSize?: string) =>
-  selectedSize ? `${productId}__${selectedSize}` : productId;
+const CART_STORAGE_KEY = "aleman_cart";
+const DEFAULT_DELIVERY_FEE = 20;
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -61,29 +39,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isInitialized]);
 
-  const addToCart = (
-    product: Product,
-    quantity = 1,
-    selectedSize = "",
-    customPrice?: number,
-  ) => {
-    const key = getCartItemKey(product._id, selectedSize);
-    const unitPrice = customPrice !== undefined ? customPrice : product.price;
+  const addToCart = (product: Product, quantity = 1) => {
+    if (product.quantity <= 0) return;
 
     setCart((prev) => {
-      const existingIndex = prev.findIndex(
-        (item) =>
-          (item.cartItemId || getCartItemKey(item._id, item.selectedSize)) ===
-          key,
-      );
+      const existingIndex = prev.findIndex((item) => item.id === product.id);
 
       if (existingIndex > -1) {
         const updated = [...prev];
+        const currentQty = updated[existingIndex].cartQuantity;
+        // ضمان عدم تجاوز الكمية المتوفرة في مخزون المكتبة
+        const nextQty = Math.min(product.quantity, currentQty + quantity);
+
         updated[existingIndex] = {
           ...updated[existingIndex],
-          cartQuantity: updated[existingIndex].cartQuantity + quantity,
-          price: unitPrice,
-          effectivePrice: unitPrice,
+          cartQuantity: nextQty,
+          price: product.price,
         };
         return updated;
       }
@@ -92,48 +63,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         {
           ...product,
-          cartItemId: key,
-          price: unitPrice,
-          effectivePrice: unitPrice,
-          selectedSize,
-          cartQuantity: quantity,
+          cartQuantity: Math.min(product.quantity, quantity),
         },
       ];
     });
   };
 
-  const removeFromCart = (productId: string, selectedSize = "") => {
-    const key = getCartItemKey(productId, selectedSize);
-    setCart((prev) =>
-      prev.filter(
-        (item) =>
-          (item.cartItemId || getCartItemKey(item._id, item.selectedSize)) !==
-            key && item._id !== key,
-      ),
-    );
+  const removeFromCart = (bookId: string) => {
+    setCart((prev) => prev.filter((item) => item.id !== bookId));
   };
 
-  const updateQuantity = (
-    productId: string,
-    quantity: number,
-    selectedSize = "",
-  ) => {
-    const key = getCartItemKey(productId, selectedSize);
-
+  const updateQuantity = (bookId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId, selectedSize);
+      removeFromCart(bookId);
       return;
     }
 
     setCart((prev) =>
       prev.map((item) => {
-        const currentKey =
-          item.cartItemId || getCartItemKey(item._id, item.selectedSize);
-        if (currentKey === key || (!selectedSize && item._id === productId)) {
-          return { ...item, cartQuantity: quantity };
+        if (item.id === bookId) {
+          return {
+            ...item,
+            cartQuantity: Math.min(item.quantity, quantity),
+          };
         }
         return item;
-      }),
+      })
     );
   };
 
@@ -147,10 +102,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const totalItems = cart.reduce((sum, item) => sum + item.cartQuantity, 0);
+
   const subtotalPrice = cart.reduce(
     (sum, item) => sum + Number(item.price || 0) * item.cartQuantity,
-    0,
+    0
   );
+
+  const deliveryFee = cart.length > 0 ? DEFAULT_DELIVERY_FEE : 0;
+  const totalPrice = subtotalPrice + deliveryFee;
 
   return (
     <CartContext.Provider
@@ -162,7 +121,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         totalItems,
         subtotalPrice,
-        totalPrice: subtotalPrice,
+        deliveryFee,
+        totalPrice,
       }}
     >
       {children}

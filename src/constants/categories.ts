@@ -17,19 +17,26 @@ import {
 
 
 export const CATEGORIES: string[] = [
-  "المشويات على الفحم",
-  "البيتزا",
-  "الأكل الإيطالي",
-  "الطواجن والأطباق الشرقية",
-  "الوجبات والصواني",
-  "السندوتشات والبرجر",
-  "المأكولات البحرية (سي فود)",
-  "الشوربة",
-  "السلطات والمقبلات الباردة",
-  "المقبلات الساخنة والأطباق الجانبية",
-  "الحلويات",
-  "المشروبات",
+  "aqeedah",
+  "quran-sciences",
+  "seerat-al-rasool",
+  "islamic-fiqh",
+  "thaqafa-amma",
+  "novels",
 ];
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  "aqeedah": "العقيدة الإسلامية",
+  "quran-sciences": "علوم القرآن والتفسير",
+  "seerat-al-rasool": "السيرة النبوية والشمائل",
+  "islamic-fiqh": "الفقه وأصوله",
+  "thaqafa-amma": "ثقافة عامة",
+  "novels": "الأدب والروايات",
+};
+
+export function getCategoryLabel(slug: string): string {
+  return CATEGORY_LABELS[slug] || slug;
+}
 
 export interface CategoryTabItem {
   id: string;

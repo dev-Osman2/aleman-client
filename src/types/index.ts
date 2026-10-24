@@ -1,56 +1,157 @@
-export interface MealSize {
+// ==========================================
+// 1. الثوابت والأنواع الأساسية (Enums) من Prisma Schema
+// ==========================================
+export type Role = "CUSTOMER" | "ADMIN";
+
+export type PaymentMethod = "INSTAPAY" | "VODAFONE_CASH";
+
+export type OrderStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+
+// ==========================================
+// 2. أنواع المستخدم والمصادقة (User & Better Auth)
+// ==========================================
+export interface User {
+  id: string;
   name: string;
-  price: number;
+  phone: string;
+  email: string;
+  emailVerified: boolean;
+  image: string | null;
+  role: Role;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface Product {
-  _id: string;
-  category: string;
+export interface Session {
+  id: string;
+  expiresAt: string;
+  token: string;
+  userId: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// البيانات الراجعة عند تسجيل الدخول أو إنشاء حساب (/api/auth/login & /api/auth/register)
+export interface AuthData {
+  token: string;
+  user: User;
+  redirect?: boolean;
+}
+
+// البيانات المرسلة عند إنشاء حساب جديد
+export interface RegisterPayload {
   name: string;
+  phone: string;
+  email: string;
+  password: string;
+}
+
+// البيانات المرسلة عند تسجيل الدخول
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+// البيانات المرسلة عند تحديث الملف الشخصي (/api/auth/profile)
+export interface UpdateProfilePayload {
+  name?: string;
+  phone?: string;
+}
+
+// ==========================================
+// 3. أنواع الكتب (Book / Product)
+// ==========================================
+export interface Product {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  fullDescription: string | null;
   price: number;
   oldPrice: number | null;
-  image: string;
-  description?: string;
-  sizes?: MealSize[];
-  isActive: boolean;
-}
-
-export interface CartItem extends Product {
-  cartItemId: string;
-  cartQuantity: number;
-  selectedSize?: string;
-  effectivePrice: number;
-}
-
-export interface OrderItem {
-  productId: string;
-  name: string;
-  size?: string;
   quantity: number;
-  price: number;
-  image?: string;
+  category: string;
+  image: string;
+  author: string | null;
+  publisher: string | null;
+  pagesCount: number | null;
+  createdAt: string;
+}
+
+// اسم بديل (Alias) حتى تتمكن من استخدام Book أو Product في أي مكون بحرية
+export type Book = Product;
+
+// ==========================================
+// 4. أنواع الطلبات وعناصر الطلب (Order & OrderItem)
+// ==========================================
+export interface OrderItem {
+  id: string;
+  quantity: number;
+  priceAtBuy: number;
+  orderId: number;
+  bookId: string;
+  // تفاصيل الكتاب المضمنة عند جلب الطلب من الـ API
+  book?: {
+    code: string;
+    title: string;
+    image: string;
+    price?: number;
+  };
 }
 
 export interface Order {
-  adminNote: string;
-  _id: string;
-  orderNumber: number;
-  orderType: "delivery" | "dine_in" | "cashier" | "pickup";
-  tableNumber?: string;
-  customerName?: string;
-  phone?: string;
-  address?: string;
-  notes?: string;
-  items: OrderItem[];
+  id: number;
+  address: string;
+  notes: string | null;
+  paymentMethod: PaymentMethod;
+  transferNumber: string;
   subtotal: number;
   deliveryFee: number;
-  totalPrice: number;
-  paymentMethod: "cash" | "instapay" | "vodafone_cash";
-  paymentReceipt?: string;
-  isPaid: boolean;
-  status: "pending" | "confirmed" | "cancelled";
+  total: number;
+  status: OrderStatus;
   createdAt: string;
-  updatedAt: string;
+  userId: string;
+  // بيانات صاحب الطلب (تظهر في مسارات الأدمن)
+  user?: {
+    name: string;
+    phone: string;
+    email?: string;
+  };
+  items: OrderItem[];
+}
+
+// البيانات المرسلة من الفرونت إند عند إتمام الطلب (POST /api/orders)
+export interface CreateOrderItemInput {
+  bookId: string;
+  quantity: number;
+}
+
+export interface CreateOrderPayload {
+  address: string;
+  notes?: string;
+  paymentMethod: PaymentMethod;
+  transferNumber: string;
+  items: CreateOrderItemInput[];
+}
+
+// ==========================================
+// 5. غلاف استجابة السيرفر الموحد (API Response Envelope)
+// ==========================================
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  count?: number;
+  data: T;
+  pagination?: PaginationMeta;
 }
 
 export * from "./cart";

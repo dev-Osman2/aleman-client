@@ -1,34 +1,17 @@
-export type CartPaymentMethod = "instapay" | "vodafone_cash";
+import { Product } from "./index";
 
-export interface CustomerFormData {
-  name: string;
-  phone: string;
-  address: string;
-  notes: string;
-  isPickup: boolean;
-  paymentMethod: CartPaymentMethod;
-  transferNumber: string;
+export interface CartItem extends Product {
+  cartQuantity: number;
 }
 
-export interface CustomerInfoFormProps {
-  name: string;
-  setName: (val: string) => void;
-  phone: string;
-  setPhone: (val: string) => void;
-  address: string;
-  setAddress: (val: string) => void;
-  notes: string;
-  setNotes: (val: string) => void;
-  isPickup: boolean;
-  setIsPickup: (val: boolean) => void;
-  tableNumber?: string | null;
-  paymentMethod: CartPaymentMethod;
-  setPaymentMethod: (val: CartPaymentMethod) => void;
-  transferNumber: string;
-  setTransferNumber: (val: string) => void;
-  loading: boolean;
-  error: string | null;
-  isCartEmpty: boolean;
-  onSubmit: (e: React.FormEvent) => void;
-  finalTotal: number;
+export interface CartContextType {
+  cart: CartItem[];
+  addToCart: (product: Product, quantity?: number) => void;
+  removeFromCart: (bookId: string) => void;
+  updateQuantity: (bookId: string, quantity: number) => void;
+  clearCart: () => void;
+  totalItems: number;
+  subtotalPrice: number;
+  deliveryFee: number;
+  totalPrice: number;
 }

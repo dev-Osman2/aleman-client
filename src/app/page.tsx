@@ -4,22 +4,25 @@ import CheckoutForm from "@/src/components/cart/CheckoutForm";
 import { Product } from "@/src/types";
 import Link from "next/link";
 import QuickServicesBar from "@/src/components/home/QuickServicesBar";
-import { Flame, UtensilsCrossed } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import HomeCategoryBar from "@/src/components/home/HomeCategoryBar";
-import { CATEGORIES } from "@/src/constants/categories";
+import { CATEGORIES, getCategoryLabel } from "@/src/constants/categories";
 import MobileCheckoutFloatingButton from "../components/cart/MobileCheckoutFloatingButton";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
 async function getProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${apiUrl}/products`, {
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
-    if (!res.ok) throw new Error("فشل في جلب قائمة الطعام");
-    return res.json();
+
+    if (!res.ok) throw new Error("فشل في جلب قائمة الكتب");
+
+    const json = await res.json();
+    return Array.isArray(json.data) ? json.data : [];
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching books:", error);
     return [];
   }
 }
@@ -27,13 +30,12 @@ async function getProducts(): Promise<Product[]> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; table?: string }>;
+  searchParams: Promise<{ category?: string }>;
 }) {
   const params = await searchParams;
   const allProducts = await getProducts();
 
   const currentCategory = params.category?.trim() || null;
-  const currentTable = params.table?.trim() || undefined;
 
   const displayedProducts = currentCategory
     ? allProducts.filter((p) => (p.category ?? "").trim() === currentCategory)
@@ -42,73 +44,47 @@ export default async function HomePage({
   const categoriesWithProducts = Array.from(
     new Set([
       ...CATEGORIES,
-      ...displayedProducts.map((product) => product.category?.trim()),
-    ]),
+      ...displayedProducts.map((p) => p.category?.trim()),
+    ])
   )
     .filter((category): category is string => Boolean(category))
     .map((category) => ({
-      name: category,
-      products: displayedProducts.filter(
-        (product) => product.category?.trim() === category,
-      ),
+      slug: category,
+      name: getCategoryLabel(category),
+      products: displayedProducts.filter((p) => p.category?.trim() === category),
     }))
     .filter((group) => group.products.length > 0);
-
-  const clearFilterHref = currentTable ? `/?table=${currentTable}` : "/";
 
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-4">
-        <HomeCategoryBar
-          currentCategory={currentCategory}
-          currentTable={currentTable}
-        />
-
-        {currentTable && (
-          <div className="mb-5 flex items-center justify-between rounded-2xl bg-primary-light border border-primary/30 px-4 py-3 text-primary shadow-xs">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-xs">
-                <UtensilsCrossed className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-extrabold text-heading">
-                  ترابيزة رقم ({currentTable})
-                </p>
-                <p className="text-xs text-sub">
-                  اختر وجباتك وسيتم تحضيرها <br /> وتقديمها لترابيزتك مباشرة
-                </p>
-              </div>
-            </div>
-            <span className="rounded-full bg-primary px-3.5 py-1 text-xs font-extrabold text-white">
-              ترابيزة #{currentTable}
-            </span>
-          </div>
-        )}
+      <main className="container mx-auto px-4 py-6" dir="rtl">
+        <HomeCategoryBar currentCategory={currentCategory} />
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* قسم استعراض الكتب */}
           <div className="w-full lg:w-7/12">
-            <div className="mb-4 flex justify-between items-start">
+            <div className="mb-5 flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2">
-                  <Flame className="w-6 h-6 text-primary fill-primary/15" />
-                  <h2 className="text-lg md:text-xl font-extrabold text-heading">
+                  <BookOpen className="w-6 h-6 text-primary fill-primary/15" />
+                  <h1 className="text-xl md:text-2xl font-black text-heading">
                     {currentCategory
-                      ? `وجبات وسندوتشات - ${currentCategory}`
-                      : "وجبات وسندوتشات - المشويات"}
-                  </h2>
+                      ? `قسم: ${getCategoryLabel(currentCategory)}`
+                      : "إصدارات ومؤلفات مكتبة الإيمان"}
+                  </h1>
                 </div>
-                <span className="text-xs md:text-sm text-muted font-medium block mt-0.5">
-                  اختر وجبتك المفضلة وأضفها لطلبك
+                <span className="text-xs md:text-sm text-muted font-medium block mt-1">
+                  تصفح مجموعتنا الكاملة واطلب نسختك لتصلك حتى باب المنزل
                 </span>
               </div>
 
               {currentCategory && (
                 <Link
-                  href={clearFilterHref}
+                  href="/"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-primary bg-primary-light hover:bg-primary-subtle border border-primary/25 rounded-full transition-all duration-150 active:scale-95 shadow-xs"
                 >
-                  <span>إلغاء التصفية</span>
+                  <span>عرض الكل</span>
                   <span className="w-4 h-4 flex items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] leading-none">
                     ✕
                   </span>
@@ -118,25 +94,20 @@ export default async function HomePage({
 
             {displayedProducts.length === 0 ? (
               <div className="text-center text-muted-light py-16 bg-white rounded-2xl border border-border-subtle">
-                لا توجد وجبات متاحة في هذا القسم حالياً.
+                لا توجد كتب متاحة في هذا القسم حالياً.
               </div>
             ) : (
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-10">
                 {categoriesWithProducts.map((group) => (
-                  <section key={group.name}>
+                  <section key={group.slug}>
                     {categoriesWithProducts.length > 1 && (
-                      <h3 className="mb-3 border-r-4 border-primary pr-3 text-base font-extrabold text-body">
-                        {group.name}
-                      </h3>
+                      <h2 className="mb-4 border-r-4 border-primary pr-3 text-lg font-black text-heading">
+                        {group.name} ({group.products.length})
+                      </h2>
                     )}
-                    <div className="flex flex-wrap gap-5 sm:gap-6 w-full">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-5">
                       {group.products.map((product) => (
-                        <div
-                          key={product._id}
-                          className="w-full sm:w-[calc(50%-0.75rem)] flex flex-col"
-                        >
-                          <ProductCard product={product} />
-                        </div>
+                        <ProductCard key={product.id} product={product} />
                       ))}
                     </div>
                   </section>
@@ -145,6 +116,7 @@ export default async function HomePage({
             )}
           </div>
 
+          {/* لوحة إتمام الشراء السريع */}
           <div className="sticky top-20 w-full lg:w-5/12">
             <CheckoutForm />
           </div>

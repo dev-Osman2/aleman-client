@@ -16,17 +16,19 @@ export default function CartItemRow({
 }: CartItemRowProps) {
   const price = Number(item.price || 0);
   const qty = Number(item.cartQuantity || 0);
+  const itemName = item.title || item.name || "كتاب";
+  const itemId = item.id || item._id || "";
 
   return (
     <div className="py-3 flex justify-between items-center gap-3 text-xs sm:text-sm">
       <div className="flex items-center gap-2.5 flex-1 min-w-0">
         <div
           className="relative w-12 h-12 rounded-xl overflow-hidden bg-primary-light/50 border border-border/80 shrink-0 cursor-pointer group"
-          onClick={() => onZoomImage({ src: item.image, name: item.name })}
+          onClick={() => onZoomImage({ src: item.image, name: itemName })}
         >
           <img
             src={item.image}
-            alt={item.name}
+            alt={itemName}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
@@ -37,7 +39,7 @@ export default function CartItemRow({
 
         <div className="flex-1 min-w-0 text-right">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <p className="font-bold text-body truncate">{item.name}</p>
+            <p className="font-bold text-body truncate">{itemName}</p>
             {item.selectedSize && (
               <span className="inline-block text-[10px] font-extrabold bg-primary-light text-primary border border-primary/25 px-1.5 py-0.5 rounded-md">
                 {item.selectedSize}
@@ -54,7 +56,7 @@ export default function CartItemRow({
         <div className="flex items-center gap-1 bg-surface-soft border border-border rounded-lg px-1.5 py-0.5">
           <button
             type="button"
-            onClick={() => onUpdateQuantity(item._id, item.cartQuantity + 1, item.selectedSize)}
+            onClick={() => onUpdateQuantity(itemId, item.cartQuantity + 1, item.selectedSize)}
             className="w-5 h-5 rounded bg-primary text-white text-xs font-bold flex items-center justify-center cursor-pointer"
           >
             +
@@ -64,7 +66,7 @@ export default function CartItemRow({
           </span>
           <button
             type="button"
-            onClick={() => onUpdateQuantity(item._id, item.cartQuantity - 1, item.selectedSize)}
+            onClick={() => onUpdateQuantity(itemId, item.cartQuantity - 1, item.selectedSize)}
             className="w-5 h-5 rounded bg-white border border-border text-sub text-xs font-bold flex items-center justify-center cursor-pointer"
           >
             -

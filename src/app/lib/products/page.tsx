@@ -4,12 +4,12 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { Product } from "@/src/types";
 import { getAdminToken } from "@/src/lib/cookies";
-import { CATEGORY_TABS } from "@/src/constants/categories";
+import { CATEGORY_TABS, getCategoryLabel } from "@/src/constants/categories";
 import ProductsHeader from "@/src/components/admin/products/ProductsHeader";
 import ProductsTable from "@/src/components/admin/products/ProductsTable";
 import ProductFormModal from "@/src/components/admin/products/ProductFormModal";
 import ConfirmModal from "@/src/components/ui/ConfirmModal";
-import { Search, Loader2, BookOpen, Boxes, AlertTriangle } from "lucide-react";
+import { Search, Loader2, BookOpen, Boxes, AlertTriangle, RefreshCw } from "lucide-react";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -123,25 +123,46 @@ export default function AdminProductsPage() {
     }
   };
 
+  // دالة لتوحيد الحروف العربية والهمزات للبحث والتصفية الدقيقة
+  const normalizeText = (text: string) => {
+    return (text || "")
+      .toLowerCase()
+      .replace(/[إأآا]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/ى/g, "ي")
+      .replace(/[\u064B-\u065F]/g, "") // إزالة التشكيل
+      .trim();
+  };
+
   // تصفية الكتب حسب القسم وبحث النص
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
+      const prodCat = (product.category || "").trim();
+      const resolvedProdCat = getCategoryLabel(prodCat) || prodCat;
+      const resolvedActiveCat = getCategoryLabel(activeCategory) || activeCategory;
+
+      const normProdCat = normalizeText(resolvedProdCat);
+      const normActiveCat = normalizeText(resolvedActiveCat);
+
       const matchesCategory =
         activeCategory === "all"
           ? true
-          : (product.category || "").trim() === activeCategory;
+          : normProdCat === normActiveCat ||
+            normProdCat.includes(normActiveCat) ||
+            normActiveCat.includes(normProdCat);
 
       if (!matchesCategory) return false;
 
       if (!searchQuery.trim()) return true;
-      const q = searchQuery.trim().toLowerCase();
+      const q = normalizeText(searchQuery);
+
       return (
-        (product.title || "").toLowerCase().includes(q) ||
-        (product.code || "").toLowerCase().includes(q) ||
-        (product.author || "").toLowerCase().includes(q) ||
-        (product.publisher || "").toLowerCase().includes(q) ||
-        (product.description || "").toLowerCase().includes(q) ||
-        (product.category || "").toLowerCase().includes(q)
+        normalizeText(product.title || "").includes(q) ||
+        normalizeText(product.code || "").includes(q) ||
+        normalizeText(product.author || "").includes(q) ||
+        normalizeText(product.publisher || "").includes(q) ||
+        normalizeText(product.description || "").includes(q) ||
+        normProdCat.includes(q)
       );
     });
   }, [products, activeCategory, searchQuery]);
@@ -170,9 +191,9 @@ export default function AdminProductsPage() {
         }}
       />
 
-      {/* بطاقات الإحصائيات السريعة */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
+      {/* بطاقات الإحصائيات السريعة (flex-box بدلاً من grid) */}
+      <div className="flex flex-wrap gap-4">
+        <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0">
             <BookOpen className="w-6 h-6" />
           </div>
@@ -185,7 +206,7 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
+        <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-success-light text-success flex items-center justify-center shrink-0">
             <Boxes className="w-6 h-6" />
           </div>
@@ -198,7 +219,7 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
+        <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-warning-light text-warning flex items-center justify-center shrink-0">
             <AlertTriangle className="w-6 h-6" />
           </div>
@@ -212,7 +233,7 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* شريط الأقسام وحقل البحث */}
+      {/* شريط الأقسام وحقل البحث وزر التحديث */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         {/* تبويبات الأقسام */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
@@ -237,18 +258,34 @@ export default function AdminProductsPage() {
           })}
         </div>
 
-        {/* حقل البحث */}
-        <div className="relative w-full lg:w-80 shrink-0">
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
-            <Search className="w-4 h-4" />
-          </span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="ابحث بالعنوان، الكود، أو المؤلف..."
-            className="w-full bg-white border border-border/90 rounded-2xl py-2.5 pr-10 pl-4 text-xs sm:text-sm text-body focus:outline-none focus:border-primary transition"
-          />
+        {/* حقل البحث وزر تحديث قائمة المخزون */}
+        <div className="flex items-center gap-2.5 w-full lg:w-auto shrink-0">
+          <div className="relative w-full lg:w-72 shrink-0">
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
+              <Search className="w-4 h-4" />
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="ابحث بالعنوان، الكود، أو المؤلف..."
+              className="w-full bg-white border border-border/90 rounded-2xl py-2.5 pr-10 pl-4 text-xs sm:text-sm text-body focus:outline-none focus:border-primary transition"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={async () => {
+              setLoading(true);
+              await fetchProducts();
+              toast.success("تم تحديث قائمة المخزون والكتب بنجاح");
+            }}
+            title="تحديث قائمة المخزون الآن"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-border/90 hover:border-primary hover:text-primary rounded-2xl text-xs sm:text-sm font-extrabold text-sub transition cursor-pointer shadow-2xs shrink-0"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-primary" : ""}`} />
+            <span className="hidden sm:inline">تحديث المخزون</span>
+          </button>
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import {
   BarChart3,
   ShieldCheck,
   Store,
+  Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -39,6 +40,11 @@ const ADMIN_NAV_ITEMS = [
     name: "نقطة البيع (الكاشير)",
     href: "/lib/cashier",
     icon: Calculator,
+  },
+  {
+    name: "سجل العملاء",
+    href: "/lib/users",
+    icon: Users,
   },
   {
     name: "التقارير والمبيعات",

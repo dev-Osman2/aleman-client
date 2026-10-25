@@ -16,7 +16,7 @@ export default function OrderCardItemsList({ items }: OrderCardItemsListProps) {
         <span className="w-1/4 text-left">السعر</span>
       </div>
 
-      <div className="divide-y divide-border-subtle px-4 max-h-[140px] overflow-y-auto custom-scrollbar">
+      <div className="divide-y divide-border-subtle px-4 h-[148px] overflow-y-auto custom-scrollbar">
         {items.map((item, idx) => {
           const unitPrice = Number(item.priceAtBuy || 0);
           const qty = Number(item.quantity || 1);
@@ -26,7 +26,7 @@ export default function OrderCardItemsList({ items }: OrderCardItemsListProps) {
           return (
             <div
               key={idx}
-              className="flex items-center py-2.5 text-xs sm:text-sm gap-2"
+              className="flex items-center py-2 text-xs sm:text-sm gap-2 min-h-[48px]"
             >
               <div className="w-1/2 font-extrabold text-body flex items-center gap-2 truncate">
                 {bookImage && (

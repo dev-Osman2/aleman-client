@@ -82,8 +82,8 @@ export default function AdminOrdersPage() {
       if (res.ok && data.success) {
         toast.success(
           newStatus === "CONFIRMED"
-            ? `تم تأكيد الطلب #${orderId} وتحديث المخزون`
-            : `تم إلغاء الطلب #${orderId}`
+            ? `تم تأكيد الطلب #${orderId} وإرساله للتجهيز عبر التلجرام`
+            : `تم إلغاء الطلب #${orderId} وإرجاع المخزون بنجاح`
         );
         setOrders((prev) =>
           prev.map((o) => (o.id === orderId ? data.data : o))
@@ -178,7 +178,7 @@ export default function AdminOrdersPage() {
           لا توجد طلبات مطابقة للعرض في هذا التبويب حالياً.
         </div>
       ) : (
-        <div className="flex flex-wrap gap-6 items-start">
+        <div className="flex flex-wrap gap-6 items-stretch">
           {filteredOrders.map((order) => (
             <div
               key={order.id}

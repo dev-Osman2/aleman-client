@@ -3,9 +3,39 @@
 // ==========================================
 export type Role = "CUSTOMER" | "ADMIN";
 
-export type PaymentMethod = "INSTAPAY" | "VODAFONE_CASH";
+export type PaymentMethod = "INSTAPAY" | "VODAFONE_CASH" | "instapay" | "vodafone_cash";
+export type CartPaymentMethod = PaymentMethod;
 
 export type OrderStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+
+export interface MealSize {
+  name: string;
+  price: number;
+}
+
+export interface CustomerInfoFormProps {
+  name: string;
+  setName: (val: string) => void;
+  phone: string;
+  setPhone: (val: string) => void;
+  address: string;
+  setAddress: (val: string) => void;
+  notes: string;
+  setNotes: (val: string) => void;
+  isPickup: boolean;
+  setIsPickup: (val: boolean) => void;
+  tableNumber?: string | null;
+  paymentMethod: any;
+  setPaymentMethod: (val: any) => void;
+  transferNumber: string;
+  setTransferNumber: (val: string) => void;
+  loading: boolean;
+  error: string | null;
+  isCartEmpty: boolean;
+  finalTotal: number;
+  onSubmit: (e: React.FormEvent) => void;
+  errors?: Record<string, string>;
+}
 
 // ==========================================
 // 2. أنواع المستخدم والمصادقة (User & Better Auth)

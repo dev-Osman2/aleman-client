@@ -99,8 +99,10 @@ export function useCheckout(tableNumber: string | null) {
           paymentReceipt: transferNumber.trim(),
           transferNumber: transferNumber.trim(),
           items: cart.map((i) => ({
-            productId: i._id,
-            name: i.name,
+            bookId: i.id || i._id,
+            productId: i.id || i._id,
+            title: i.title || i.name,
+            name: i.title || i.name,
             size: i.selectedSize || "",
             quantity: i.cartQuantity,
             price: i.price,

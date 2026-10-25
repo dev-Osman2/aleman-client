@@ -38,11 +38,11 @@ export default function ProductsTable({
         <table className="w-full min-w-[880px] text-right border-collapse">
           <thead>
             <tr className="bg-surface-soft border-b border-border/80 text-sub text-xs font-extrabold">
-              <th className="py-4 px-6 w-[34%]">الكتاب والمؤلف</th>
-              <th className="py-4 px-4 w-[16%]">القسم</th>
-              <th className="py-4 px-4 text-center w-[16%]">السعر والخصم</th>
-              <th className="py-4 px-4 text-center w-[14%]">المخزون المتوفر</th>
-              <th className="py-4 px-4 text-center w-[10%]">بيانات النشر</th>
+              <th className="py-4 px-6 w-[32%]">الكتاب</th>
+              <th className="py-4 px-4 w-[18%]">المؤلف</th>
+              <th className="py-4 px-4 w-[15%]">القسم</th>
+              <th className="py-4 px-4 text-center w-[13%]">السعر والخصم</th>
+              <th className="py-4 px-4 text-center w-[12%]">المخزون المتوفر</th>
               <th className="py-4 px-6 text-left w-[10%]">الإجراءات</th>
             </tr>
           </thead>
@@ -70,7 +70,7 @@ export default function ProductsTable({
                     isOutOfStock ? "bg-surface-soft/40" : ""
                   }`}
                 >
-                  {/* الغلاف + العنوان + الكود + المؤلف */}
+                  {/* الغلاف + العنوان + الكود */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3.5">
                       <div className="relative shrink-0">
@@ -101,15 +101,27 @@ export default function ProductsTable({
                           </span>
                         </div>
 
-                        <h3 className="font-black text-heading text-sm sm:text-base truncate leading-snug">
+                        <h3 className="font-black text-heading text-sm sm:text-base truncate leading-snug" title={product.title}>
                           {product.title}
                         </h3>
 
-                        <p className="text-xs text-muted font-medium truncate">
-                          {product.author ? `المؤلف: ${product.author}` : "المؤلف: غير محدد"}
-                        </p>
+                        {product.publisher && (
+                          <span className="text-[11px] text-muted-light font-medium truncate">
+                            دار النشر: {product.publisher}
+                          </span>
+                        )}
                       </div>
                     </div>
+                  </td>
+
+                  {/* المؤلف (إسم المؤلف أو -) */}
+                  <td className="py-4 px-4">
+                    <span
+                      className="text-xs sm:text-sm font-extrabold text-heading truncate block"
+                      title={product.author || "—"}
+                    >
+                      {product.author && product.author.trim() ? product.author : "—"}
+                    </span>
                   </td>
 
                   {/* القسم */}
@@ -151,20 +163,6 @@ export default function ProductsTable({
                         <span className="inline-flex items-center gap-1 text-xs font-black text-success bg-success-light px-3 py-1 rounded-full border border-success-border">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>متوفر ({qty})</span>
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* بيانات النشر */}
-                  <td className="py-4 px-4 text-center">
-                    <div className="text-xs text-muted flex flex-col items-center gap-0.5">
-                      <span className="font-semibold truncate max-w-[110px]" title={product.publisher || ""}>
-                        {product.publisher || "—"}
-                      </span>
-                      {product.pagesCount && (
-                        <span className="text-[11px] text-muted-light font-mono">
-                          {product.pagesCount} ص
                         </span>
                       )}
                     </div>

@@ -92,7 +92,7 @@ export default function OrderCardFooter({
         >
           <Check className="w-4 h-4 stroke-[2.5]" />
           <span>
-            {order.status === "CONFIRMED" ? "تم تأكيد الطلب" : "تأكيد الطلب وخصم المخزون"}
+            {order.status === "CONFIRMED" ? "تم تأكيد الطلب" : "تأكيد الطلب"}
           </span>
         </button>
 
@@ -108,7 +108,7 @@ export default function OrderCardFooter({
         >
           <X className="w-4 h-4 stroke-[2.5]" />
           <span>
-            {order.status === "CANCELLED" ? "الطلب ملغي" : "إلغاء الطلب"}
+            {order.status === "CANCELLED" ? "الطلب ملغي (أُرجع المخزون)" : "إلغاء الطلب"}
           </span>
         </button>
       </div>

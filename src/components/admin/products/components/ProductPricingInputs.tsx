@@ -21,9 +21,9 @@ export default function ProductPricingInputs({
   setQuantity,
 }: ProductPricingInputsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" dir="rtl">
+    <div className="flex flex-wrap gap-4" dir="rtl">
       {/* السعر الحالي */}
-      <div>
+      <div className="w-full sm:w-[calc(33.333%-0.75rem)]">
         <label className="block text-xs font-extrabold text-heading mb-1.5">
           سعر البيع الحالي (ج) <span className="text-danger">*</span>
         </label>
@@ -48,7 +48,7 @@ export default function ProductPricingInputs({
       </div>
 
       {/* السعر القديم */}
-      <div>
+      <div className="w-full sm:w-[calc(33.333%-0.75rem)]">
         <label className="block text-xs font-extrabold text-heading mb-1.5">
           السعر السابق قبل الخصم
         </label>
@@ -72,7 +72,7 @@ export default function ProductPricingInputs({
       </div>
 
       {/* كمية المخزون */}
-      <div>
+      <div className="w-full sm:w-[calc(33.333%-0.75rem)]">
         <label className="block text-xs font-extrabold text-heading mb-1.5">
           الكمية المتوفرة في المخزن <span className="text-danger">*</span>
         </label>

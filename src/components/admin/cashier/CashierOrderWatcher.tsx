@@ -42,14 +42,23 @@ export default function CashierOrderWatcher() {
           if (!seenOrderIds.current.has(order.id)) {
             seenOrderIds.current.add(order.id);
 
-            toast.info(`طلب شراء جديد #${order.id}`, {
-              description: `العميل: ${order.user?.name || "عميل"} — إجمالي: ${order.total} ج.م`,
-              duration: 8000,
-              action: {
-                label: "عرض الطلبات",
-                onClick: () => router.push("/lib/orders"),
-              },
-            });
+            // استبعاد الطلبات المسجلة من الأدمن أو الكاشير المباشر
+            const isCashierOrAdmin =
+              (order.user as any)?.role === "ADMIN" ||
+              (order.address || "").includes("كاشير") ||
+              (order.notes || "").includes("كاشير");
+
+            // يظهر التنبيه فقط إذا كان الطلب مسجلاً بواسطة عميل عادي عبر المتجر
+            if (!isCashierOrAdmin) {
+              toast.info(`طلب شراء أونلاين جديد #${order.id}`, {
+                description: `العميل: ${order.user?.name || "عميل"} — إجمالي: ${order.total} ج.م`,
+                duration: 8000,
+                action: {
+                  label: "عرض الطلبات",
+                  onClick: () => router.push("/lib/orders"),
+                },
+              });
+            }
           }
         }
       } catch (err) {

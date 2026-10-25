@@ -27,9 +27,9 @@ export default function ProductBasicInfo({
 }: ProductBasicInfoProps) {
   return (
     <div className="flex flex-col gap-4" dir="rtl">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="flex flex-wrap gap-4">
         {/* كود الكتاب */}
-        <div className="sm:col-span-1">
+        <div className="w-full sm:w-[calc(33.333%-0.75rem)]">
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             كود الكتاب <span className="text-danger">*</span>
           </label>
@@ -49,7 +49,7 @@ export default function ProductBasicInfo({
         </div>
 
         {/* عنوان الكتاب */}
-        <div className="sm:col-span-2">
+        <div className="w-full sm:w-[calc(66.666%-0.75rem)]">
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             عنوان الكتاب <span className="text-danger">*</span>
           </label>
@@ -69,9 +69,9 @@ export default function ProductBasicInfo({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="flex flex-wrap gap-4">
         {/* اسم المؤلف */}
-        <div>
+        <div className="w-full sm:w-[calc(50%-0.5rem)]">
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             المؤلف / الكاتب
           </label>
@@ -90,7 +90,7 @@ export default function ProductBasicInfo({
         </div>
 
         {/* القسم */}
-        <div>
+        <div className="w-full sm:w-[calc(50%-0.5rem)]">
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             القسم والتصنيف <span className="text-danger">*</span>
           </label>

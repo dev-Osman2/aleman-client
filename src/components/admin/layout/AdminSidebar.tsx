@@ -11,6 +11,7 @@ import {
   Store,
   ShieldCheck,
   User as UserIcon,
+  Users,
 } from "lucide-react";
 import { User } from "@/src/types";
 
@@ -29,6 +30,11 @@ export const ADMIN_NAV_LINKS = [
     href: "/lib/cashier",
     label: "نقطة بيع الكاشير (POS)",
     icon: Calculator,
+  },
+  {
+    href: "/lib/users",
+    label: "سجل العملاء والمستخدمين",
+    icon: Users,
   },
   {
     href: "/lib/orders-summary",

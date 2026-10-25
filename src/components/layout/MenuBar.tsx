@@ -89,9 +89,6 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
               )}
               <span>{user ? `حسابي (${user.name})` : "تسجيل الدخول / حسابي"}</span>
             </div>
-            <span className="text-[11px] text-muted font-bold">
-              {user ? "الطلبات والإعدادات" : "دخول"}
-            </span>
           </Link>
 
           <button

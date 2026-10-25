@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/src/context/CartContext";
 import Footer from "../components/layout/Footer";
 import { AuthProvider } from "../context/AuthContext";
+import { Toaster } from "sonner";
 
 const tajawal = localFont({
   src: [
@@ -112,6 +113,7 @@ export default function RootLayout({
           <CartProvider>
             {children}
             <Footer />
+            <Toaster position="top-center" richColors dir="rtl" />
           </CartProvider>
         </AuthProvider>
       </body>

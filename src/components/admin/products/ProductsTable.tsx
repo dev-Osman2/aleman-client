@@ -39,10 +39,10 @@ export default function ProductsTable({
           <thead>
             <tr className="bg-surface-soft border-b border-border/80 text-sub text-xs font-extrabold">
               <th className="py-4 px-6 w-[32%]">الكتاب</th>
-              <th className="py-4 px-4 w-[18%]">المؤلف</th>
               <th className="py-4 px-4 w-[15%]">القسم</th>
               <th className="py-4 px-4 text-center w-[13%]">السعر والخصم</th>
               <th className="py-4 px-4 text-center w-[12%]">المخزون المتوفر</th>
+              {/* <th className="py-4 px-4 w-[18%]">المؤلف</th> */}
               <th className="py-4 px-6 text-left w-[10%]">الإجراءات</th>
             </tr>
           </thead>
@@ -114,16 +114,6 @@ export default function ProductsTable({
                     </div>
                   </td>
 
-                  {/* المؤلف (إسم المؤلف أو -) */}
-                  <td className="py-4 px-4">
-                    <span
-                      className="text-xs sm:text-sm font-extrabold text-heading truncate block"
-                      title={product.author || "—"}
-                    >
-                      {product.author && product.author.trim() ? product.author : "—"}
-                    </span>
-                  </td>
-
                   {/* القسم */}
                   <td className="py-4 px-4">
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-surface-subtle text-sub border border-border">
@@ -167,6 +157,9 @@ export default function ProductsTable({
                       )}
                     </div>
                   </td>
+
+                  {/* المؤلف (إسم المؤلف أو -) */}
+                 
 
                   {/* الإجراءات */}
                   <td className="py-4 px-6">

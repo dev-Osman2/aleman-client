@@ -3,7 +3,7 @@
 import { FileText, ClipboardEdit, ChevronDown, Loader2 } from "lucide-react";
 
 interface OrderCardNotesProps {
-  notes?: string;
+  notes?: string | null;
   hasCustomerNote: boolean;
   showCustomerNote: boolean;
   setShowCustomerNote: React.Dispatch<React.SetStateAction<boolean>>;

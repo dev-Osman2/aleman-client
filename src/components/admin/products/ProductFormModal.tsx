@@ -2,7 +2,7 @@
 
 import { Product } from "@/src/types";
 import ProductForm from "./ProductForm";
-import { X } from "lucide-react";
+import { X, BookOpen } from "lucide-react";
 
 interface ProductFormModalProps {
   isOpen: boolean;
@@ -30,21 +30,27 @@ export default function ProductFormModal({
         className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto custom-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between mb-5">
-          <div className="text-right">
-            <h2 className="text-xl sm:text-2xl font-black text-heading">
-              {editingProduct ? "تعديل بيانات الوجبة" : "إضافة وجبة جديدة"}
-            </h2>
-            <p className="text-xs sm:text-sm text-muted font-medium mt-0.5">
-              {editingProduct
-                ? "تعديل تفاصيل وأحجام وأسعار الوجبة في المنيو"
-                : "إضافة صنف جديد لقائمة طعام مطعم السرايا"}
-            </p>
+        <div className="flex items-start justify-between mb-5 border-b border-border pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-primary-light text-primary flex items-center justify-center">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div className="text-right">
+              <h2 className="text-xl sm:text-2xl font-black text-heading">
+                {editingProduct ? "تعديل بيانات الكتاب" : "إضافة كتاب جديد للمكتبة"}
+              </h2>
+              <p className="text-xs sm:text-sm text-muted font-medium mt-0.5">
+                {editingProduct
+                  ? `تعديل أسعار وبيانات: ${editingProduct.title}`
+                  : "إدراج كتاب جديد في كتالوج مكتبة الإيمان وتحديد كمية المخزون"}
+              </p>
+            </div>
           </div>
 
           <button
             type="button"
             onClick={onClose}
+            aria-label="إغلاق النافذة"
             className="w-9 h-9 rounded-full bg-surface-subtle hover:bg-surface-hover text-sub flex items-center justify-center transition cursor-pointer"
           >
             <X className="w-4 h-4" />

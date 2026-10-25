@@ -23,13 +23,13 @@ function CashierContent() {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [notes, setNotes] = useState("");
   const [paymentMode, setPaymentMode] = useState<"cash" | "card" | "instapay">(
-    "cash"
+    "cash",
   );
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [lastReceipt, setLastReceipt] = useState<PrintedOrderSnapshot | null>(
-    null
+    null,
   );
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
@@ -59,7 +59,7 @@ function CashierContent() {
     new Set([
       ...CATEGORIES,
       ...displayedProducts.map((p) => p.category?.trim()),
-    ])
+    ]),
   )
     .filter((cat): cat is string => Boolean(cat))
     .map((cat) => ({
@@ -72,9 +72,9 @@ function CashierContent() {
 
   const handleCategoryTabClick = (category: string | null) => {
     if (category) {
-      router.push(`/resto/cashier?category=${encodeURIComponent(category)}`);
+      router.push(`/lib/cashier?category=${encodeURIComponent(category)}`);
     } else {
-      router.push("/resto/cashier");
+      router.push("/lib/cashier");
     }
   };
 
@@ -137,7 +137,7 @@ function CashierContent() {
 
       setLastReceipt(receiptData);
       setSuccessMsg(
-        `تم تسجيل الطلب #${receiptData.orderNumber} وإرساله للمطبخ`
+        `تم تسجيل الطلب #${receiptData.orderNumber} وإرساله للمطبخ`,
       );
       clearCart();
       setNotes("");
@@ -147,14 +147,14 @@ function CashierContent() {
       }, 150);
     } catch (err: unknown) {
       setErrorMsg(
-        err instanceof Error ? err.message : "حدث خطأ أثناء الاتصال بالسيرفر"
+        err instanceof Error ? err.message : "حدث خطأ أثناء الاتصال بالسيرفر",
       );
     } finally {
       setSubmitting(false);
     }
   };
 
- return (
+  return (
     <>
       <CashierOrderWatcher />
 

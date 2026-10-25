@@ -2,51 +2,115 @@
 
 import React from "react";
 import { CATEGORIES } from "@/src/constants/categories";
+import { BookOpen, Hash, User, Bookmark } from "lucide-react";
 
 interface ProductBasicInfoProps {
-  name: string;
-  setName: (val: string) => void;
+  code: string;
+  setCode: (val: string) => void;
+  title: string;
+  setTitle: (val: string) => void;
+  author: string;
+  setAuthor: (val: string) => void;
   category: string;
   setCategory: (val: string) => void;
 }
 
 export default function ProductBasicInfo({
-  name,
-  setName,
+  code,
+  setCode,
+  title,
+  setTitle,
+  author,
+  setAuthor,
   category,
   setCategory,
 }: ProductBasicInfoProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
-      <div className="flex-1 w-full">
-        <label className="block text-xs font-extrabold text-body mb-1.5">
-          اسم الوجبة <span className="text-primary">*</span>
-        </label>
-        <input
-          type="text"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="سندوتش كفتة مشوية"
-          className="w-full px-4 py-3 bg-white border border-border rounded-xl text-sm text-body focus:outline-none focus:border-primary transition"
-        />
+    <div className="flex flex-col gap-4" dir="rtl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* كود الكتاب */}
+        <div className="sm:col-span-1">
+          <label className="block text-xs font-extrabold text-heading mb-1.5">
+            كود الكتاب <span className="text-danger">*</span>
+          </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
+              <Hash className="w-4 h-4" />
+            </span>
+            <input
+              type="text"
+              required
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="مثال: 1005"
+              className="w-full pr-10 pl-4 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition"
+            />
+          </div>
+        </div>
+
+        {/* عنوان الكتاب */}
+        <div className="sm:col-span-2">
+          <label className="block text-xs font-extrabold text-heading mb-1.5">
+            عنوان الكتاب <span className="text-danger">*</span>
+          </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
+              <BookOpen className="w-4 h-4" />
+            </span>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="مثال: كتاب التوحيد وإثبات صفات الرب"
+              className="w-full pr-10 pl-4 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition"
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 w-full">
-        <label className="block text-xs font-extrabold text-body mb-1.5">
-          القسم <span className="text-primary">*</span>
-        </label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-4 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition cursor-pointer"
-        >
-          {CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* اسم المؤلف */}
+        <div>
+          <label className="block text-xs font-extrabold text-heading mb-1.5">
+            المؤلف / الكاتب
+          </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
+              <User className="w-4 h-4" />
+            </span>
+            <input
+              type="text"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="مثال: الإمام ابن خزيمة"
+              className="w-full pr-10 pl-4 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition"
+            />
+          </div>
+        </div>
+
+        {/* القسم */}
+        <div>
+          <label className="block text-xs font-extrabold text-heading mb-1.5">
+            القسم والتصنيف <span className="text-danger">*</span>
+          </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
+              <Bookmark className="w-4 h-4" />
+            </span>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full pr-10 pl-4 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition cursor-pointer appearance-none"
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
     </div>
   );

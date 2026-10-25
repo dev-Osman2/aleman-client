@@ -18,9 +18,9 @@ export default function CashierCartItemList({
 }: CashierCartItemListProps) {
   if (cart.length === 0) {
     return (
-      <div className="py-8 text-center text-muted-light flex flex-col gap-2">
+      <div className="py-8 text-center text-muted-light flex flex-col items-center justify-center gap-2">
         <ShoppingCart className="w-7 h-7 mx-auto text-muted-light" />
-        <p className="text-xs font-medium">لم يتم تحديد أي وجبة بعد.</p>
+        <p className="text-xs font-medium">سلة الكاشير فارغة، اختر الكتب من القائمة للإضافة.</p>
       </div>
     );
   }
@@ -28,8 +28,7 @@ export default function CashierCartItemList({
   return (
     <div className="max-h-64 overflow-y-auto divide-y divide-border-subtle pr-1 custom-scrollbar">
       {cart.map((item) => {
-        const itemKey =
-          item.cartItemId || getCartItemKey(item._id, item.selectedSize);
+        const itemKey = getCartItemKey(item.id || (item as any)._id, (item as any).selectedSize);
         return (
           <CashierCartItemRow
             key={itemKey}

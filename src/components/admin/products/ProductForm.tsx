@@ -2,12 +2,12 @@
 
 import React from "react";
 import { Product } from "@/src/types";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, Save, X } from "lucide-react";
 import { useProductForm } from "./hooks/useProductForm";
 import ProductImageUpload from "./components/ProductImageUpload";
 import ProductBasicInfo from "./components/ProductBasicInfo";
+import ProductPublishingInfo from "./components/ProductPublishingInfo";
 import ProductPricingInputs from "./components/ProductPricingInputs";
-import ProductSizesSelector from "./components/ProductSizesSelector";
 import ProductDescriptionInput from "./components/ProductDescriptionInput";
 
 interface ProductFormProps {
@@ -20,66 +20,97 @@ interface ProductFormProps {
 export default function ProductForm({
   initialData,
   onSubmit,
+  onCancel,
 }: ProductFormProps) {
   const form = useProductForm({ initialData, onSubmit });
 
   return (
     <form onSubmit={form.handleSubmit} className="flex flex-col gap-5" dir="rtl">
       {form.error && (
-        <div className="p-3.5 bg-danger-light border border-danger-border text-danger rounded-2xl text-xs font-bold flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
+        <div className="p-3.5 bg-danger-light border border-danger-border text-danger rounded-2xl text-xs font-bold flex items-center gap-2 animate-in fade-in">
+          <AlertCircle className="w-4 h-4 shrink-0 text-danger" />
           <span>{form.error}</span>
         </div>
       )}
 
+      {/* 1. غلاف الكتاب */}
       <ProductImageUpload
         fileInputRef={form.fileInputRef}
-        imagePreview={form.imagePreview}
-        setImagePreview={form.setImagePreview}
+        imagePreview={form.image}
+        setImagePreview={form.setImage}
         onFileSelect={form.handleFileSelect}
       />
 
+      {/* 2. المعلومات الأساسية: كود، عنوان، مؤلف، قسم */}
       <ProductBasicInfo
-        name={form.name}
-        setName={form.setName}
+        code={form.code}
+        setCode={form.setCode}
+        title={form.title}
+        setTitle={form.setTitle}
+        author={form.author}
+        setAuthor={form.setAuthor}
         category={form.category}
         setCategory={form.setCategory}
       />
 
+      {/* 3. الأسعار وكمية المخزون */}
       <ProductPricingInputs
         price={form.price}
         setPrice={form.setPrice}
         oldPrice={form.oldPrice}
         setOldPrice={form.setOldPrice}
+        quantity={form.quantity}
+        setQuantity={form.setQuantity}
       />
 
-      <ProductSizesSelector
-        sizesState={form.sizesState}
-        onToggleSize={form.toggleSize}
-        onUpdateSizePrice={form.updateSizePrice}
+      {/* 4. بيانات النشر: دار النشر وعدد الصفحات */}
+      <ProductPublishingInfo
+        publisher={form.publisher}
+        setPublisher={form.setPublisher}
+        pagesCount={form.pagesCount}
+        setPagesCount={form.setPagesCount}
       />
 
+      {/* 5. النبذة المختصرة والوصف الكامل */}
       <ProductDescriptionInput
         description={form.description}
         setDescription={form.setDescription}
+        fullDescription={form.fullDescription}
+        setFullDescription={form.setFullDescription}
       />
 
-      <button
-        type="submit"
-        disabled={form.loading}
-        className="w-full bg-primary hover:bg-primary-hover disabled:opacity-60 text-white font-black py-3.5 rounded-xl shadow-md shadow-primary/25 flex items-center justify-center gap-2 text-sm sm:text-base transition-all cursor-pointer"
-      >
-        {form.loading ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span>جاري رفع الصورة وحفظ الوجبة...</span>
-          </>
-        ) : (
-          <span>
-            {initialData ? "حفظ تعديلات الوجبة" : "إضافة الوجبة لقائمة الطعام"}
-          </span>
-        )}
-      </button>
+      {/* أزرار الإجراءات */}
+      <div className="flex items-center gap-3 pt-3 border-t border-border">
+        <button
+          type="submit"
+          disabled={form.loading}
+          className="flex-1 bg-primary hover:bg-primary-hover disabled:opacity-60 text-white font-black py-3.5 rounded-xl shadow-md shadow-primary/25 flex items-center justify-center gap-2 text-sm sm:text-base transition-all cursor-pointer"
+        >
+          {form.loading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>جاري حفظ بيانات الكتاب في المتجر...</span>
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              <span>
+                {initialData ? "حفظ تعديلات الكتاب" : "إضافة الكتاب للمكتبة والمخزون"}
+              </span>
+            </>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={form.loading}
+          className="px-5 py-3.5 bg-surface-soft hover:bg-surface-hover text-sub font-bold rounded-xl text-sm transition cursor-pointer flex items-center gap-1.5"
+        >
+          <X className="w-4 h-4" />
+          <span>إلغاء</span>
+        </button>
+      </div>
     </form>
   );
 }

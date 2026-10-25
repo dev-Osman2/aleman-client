@@ -5,54 +5,38 @@ import { Order } from "@/src/types";
 
 interface UseOrderCardProps {
   order: Order;
-  onUpdateAdminNote: (orderId: string, adminNote: string) => Promise<void>;
-  updatingId?: string | null;
+  updatingId?: number | string | null;
 }
 
 export function useOrderCard({
   order,
-  onUpdateAdminNote,
   updatingId,
 }: UseOrderCardProps) {
-  const isBusy = updatingId === order._id;
-  const adminNote = (order as Order & { adminNote?: string }).adminNote || "";
+  const isBusy = updatingId === order.id;
 
   const [showCustomerNote, setShowCustomerNote] = useState(false);
   const [showAdminNote, setShowAdminNote] = useState(false);
-  const [adminNoteText, setAdminNoteText] = useState(adminNote);
+  const [adminNoteText, setAdminNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
 
   const hasCustomerNote = Boolean(order.notes && order.notes.trim() !== "");
-  const hasSavedAdminNote = Boolean(adminNote.trim() !== "");
+  const hasSavedAdminNote = false;
 
   const formattedDate = order.createdAt
     ? new Date(order.createdAt).toLocaleString("ar-EG", {
         year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+        month: "short",
+        day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
       })
     : "";
 
-  const getPaymentLabel = () => {
-    if (order.paymentMethod === "instapay") return "InstaPay";
-    if (order.paymentMethod === "vodafone_cash") return "فودافون كاش";
-    return "كاش";
-  };
-
   const handleSaveNote = async () => {
-    setSavingNote(true);
-    try {
-      await onUpdateAdminNote(order._id, adminNoteText.trim());
-      setShowAdminNote(false);
-    } finally {
-      setSavingNote(false);
-    }
+    setShowAdminNote(false);
   };
 
   const handleCancelNote = () => {
-    setAdminNoteText(order.adminNote || "");
     setShowAdminNote(false);
   };
 
@@ -68,7 +52,6 @@ export function useOrderCard({
     hasCustomerNote,
     hasSavedAdminNote,
     formattedDate,
-    getPaymentLabel,
     handleSaveNote,
     handleCancelNote,
   };

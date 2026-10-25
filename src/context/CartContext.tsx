@@ -13,6 +13,11 @@ function toFiniteNumber(value: unknown, fallback = 0) {
   return Number.isFinite(number) ? number : fallback;
 }
 
+export function getCartItemKey(id?: string, size?: string): string {
+  if (!id) return String(Math.random());
+  return size ? `${id}-${size}` : id;
+}
+
 function normalizeCartItem(item: unknown): CartItem | null {
   if (!item || typeof item !== "object") return null;
 

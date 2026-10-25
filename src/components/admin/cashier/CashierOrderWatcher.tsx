@@ -50,7 +50,7 @@ export default function CashierOrderWatcher() {
                 duration: 9000,
                 action: {
                   label: "عرض الطلب",
-                  onClick: () => router.push("/resto/orders"),
+                  onClick: () => router.push("/lib/orders"),
                 },
               });
             }

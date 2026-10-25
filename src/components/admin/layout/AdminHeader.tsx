@@ -1,58 +1,61 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, LogOut, Search } from "lucide-react";
+import {
+  Menu,
+  LogOut,
+  Search,
+  BookOpen,
+  ClipboardList,
+  Calculator,
+  BarChart3,
+  ShieldCheck,
+  Store,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { User } from "@/src/types";
 
 interface AdminHeaderProps {
-  isCashierPage: boolean;
-  isStoreOpen: boolean;
+  isCashierPage?: boolean;
+  currentUser?: User | null;
   onOpenMenu: () => void;
   onLogout: () => void;
   onOpenSearch?: () => void;
 }
 
-import { usePathname } from "next/navigation";
-import {
-  Calculator,
-  ClipboardList,
-  UtensilsCrossed,
-  BarChart3,
-} from "lucide-react";
-
 const ADMIN_NAV_ITEMS = [
   {
-    name: "الكاشير",
-    href: "/resto/cashier",
-    icon: Calculator,
+    name: "الكتب والمخزون",
+    href: "/lib/products",
+    icon: BookOpen,
   },
   {
-    name: "الطلبات",
-    href: "/resto/orders",
+    name: "الطلبات الحية",
+    href: "/lib/orders",
     icon: ClipboardList,
   },
   {
-    name: "المنيو",
-    href: "/resto/products",
-    icon: UtensilsCrossed,
+    name: "نقطة البيع (الكاشير)",
+    href: "/lib/cashier",
+    icon: Calculator,
   },
   {
-    name: "الملخص",
-    href: "/resto/orders-summary",
+    name: "التقارير والمبيعات",
+    href: "/lib/orders-summary",
     icon: BarChart3,
   },
 ];
 
-
 export default function AdminHeader({
-  isCashierPage,
-  isStoreOpen,
+  isCashierPage = false,
+  currentUser,
   onOpenMenu,
   onLogout,
   onOpenSearch,
 }: AdminHeaderProps) {
-
   const [scrollProgress, setScrollProgress] = useState(0);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,64 +71,63 @@ export default function AdminHeader({
     };
 
     handleScroll();
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []); 
+  }, []);
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const pathname = usePathname();
   return (
     <header
-      className="sticky top-0 z-40 bg-primary text-white shadow-md print:hidden"
+      className="sticky top-0 z-40 bg-primary text-white shadow-md print:hidden transition-colors"
       dir="rtl"
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* الشعار وبيانات الهوية */}
         <div className="flex items-center gap-3">
           <div
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-2.5 cursor-pointer group"
             onClick={handleLogoClick}
           >
-            <img
-              src="/logo.png"
-              alt="مطعم السرايا"
-              className="w-10 h-10 rounded-xl bg-white p-0.5 object-contain shadow-xs"
-            />
+            <div className="w-10 h-10 rounded-xl bg-white text-primary flex items-center justify-center p-2 shadow-sm transition-transform group-hover:scale-105">
+              <BookOpen className="w-6 h-6" />
+            </div>
             <div className="leading-tight text-right">
-              <h1 className="font-black text-base sm:text-lg">مطعم السرايا</h1>
+              <div className="flex items-center gap-1.5">
+                <h1 className="font-black text-base sm:text-lg tracking-tight">
+                  مكتبة الإيمان
+                </h1>
+                <span className="bg-white/20 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full hidden sm:inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>لوحة الإدارة</span>
+                </span>
+              </div>
               <p className="text-[11px] text-primary-subtle font-medium hidden sm:block">
-                {isCashierPage
-                  ? "أشهى المأكولات والمشروبات"
-                  : "لوحة تحكم المشرف وإدارة المطبخ"}
+                إدارة الكتب، الطلبات، الكاشير والمبيعات
               </p>
             </div>
           </div>
-
-          {!isStoreOpen && (
-            <span className="bg-danger text-white text-[11px] font-extrabold px-3 py-1 rounded-full animate-pulse hidden md:inline">
-              المطعم مغلق للعملاء
-            </span>
-          )}
         </div>
-        <nav className="md:flex items-center gap-1 hidden sm:gap-2 ">
+
+        {/* شريط الروابط الرئيسية */}
+        <nav className="hidden lg:flex items-center gap-1.5">
           {ADMIN_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive =
-              item.href === "/resto/orders"
-                ? pathname === "/resto/orders"
-                : pathname.startsWith(item.href);
+              item.href === "/lib/products"
+                ? pathname.startsWith("/lib/products")
+                : pathname === item.href;
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "bg-white text-primary shadow-xs"
                     : "text-white/90 hover:bg-white/15 hover:text-white"
@@ -137,44 +139,74 @@ export default function AdminHeader({
             );
           })}
         </nav>
+
+        {/* الأزرار الجانبية ومعلومات الأدمن */}
         <div className="flex items-center gap-2">
-          {isCashierPage && (
+          {/* اسم الأدمن إن وجد */}
+          {currentUser && (
+            <div className="hidden md:flex items-center gap-2 pl-2 border-l border-white/20 text-right">
+              <div className="leading-tight">
+                <span className="block text-xs font-black truncate max-w-[130px]">
+                  {currentUser.name}
+                </span>
+                <span className="block text-[10px] text-primary-subtle font-semibold">
+                  مشرف النظام
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* زر التوجه للمتجر الرئيسي */}
+          <Link
+            href="/"
+            title="المتجر الرئيسي"
+            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer text-white"
+          >
+            <Store className="w-4 h-4" />
+          </Link>
+
+          {/* زر البحث إن كان في صفحة الكاشير */}
+          {isCashierPage && onOpenSearch && (
             <button
               type="button"
               onMouseDown={(e) => e.stopPropagation()}
-              onClick={() => onOpenSearch?.()}
-              title="بحث عن وجبة"
-              aria-label="بحث عن وجبة"
+              onClick={onOpenSearch}
+              title="بحث عن كتاب"
+              aria-label="بحث عن كتاب"
               className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer"
             >
               <Search className="w-4 h-4" />
             </button>
           )}
 
+          {/* زر تسجيل الخروج */}
           <button
             type="button"
             onClick={onLogout}
             title="تسجيل الخروج"
             aria-label="تسجيل الخروج"
-            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer"
+            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-danger hover:text-white flex items-center justify-center transition cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
           </button>
 
+          {/* زر فتح القائمة الجانبية للشاشات المتوسطة والصغيرة */}
           <button
             type="button"
             onMouseDown={(e) => e.stopPropagation()}
             onClick={onOpenMenu}
             title="القائمة"
             aria-label="القائمة الجانبية"
-            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer"
+            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer lg:hidden"
           >
             <Menu className="w-5 h-5" />
           </button>
         </div>
       </div>
+
+      {/* مؤشر التمرير السفلي */}
       <div
-        className="absolute bottom-0 right-0 h-0.75 bg-secondary transition-[width] duration-100 ease-out z-50"
+        className="absolute bottom-0 right-0 h-0.5 bg-secondary transition-[width] duration-100 ease-out z-50"
         style={{ width: `${scrollProgress}%` }}
       />
     </header>

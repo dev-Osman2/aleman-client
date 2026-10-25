@@ -1,37 +1,38 @@
 import {
-  Flame,
-  Pizza,
-  Utensils,
-  CookingPot,
-  UtensilsCrossed,
-  Sandwich,
-  Fish,
-  Soup,
-  Salad,
-  Croissant,
-  IceCream,
-  CupSoda,
+  BookOpen,
+  BookMarked,
+  Scroll,
+  Compass,
+  Heart,
+  Library,
+  Feather,
+  Baby,
+  Globe,
   LucideIcon,
 } from "lucide-react";
 
-
-
 export const CATEGORIES: string[] = [
-  "aqeedah",
-  "quran-sciences",
-  "seerat-al-rasool",
-  "islamic-fiqh",
-  "thaqafa-amma",
-  "novels",
+  "العقيدة",
+  "علوم القرآن والتفسير",
+  "السيرة والحديث النبوي",
+  "الفقه وأصوله",
+  "التاريخ والتراجم",
+  "الرقائق والتربية الإيمانية",
+  "الأدب والروايات الهادفة",
+  "كتب الأطفال والناشئة",
+  "ثقافة وفكر إسلامي",
 ];
 
 export const CATEGORY_LABELS: Record<string, string> = {
-  "aqeedah": "العقيدة الإسلامية",
-  "quran-sciences": "علوم القرآن والتفسير",
-  "seerat-al-rasool": "السيرة النبوية والشمائل",
-  "islamic-fiqh": "الفقه وأصوله",
-  "thaqafa-amma": "ثقافة عامة",
-  "novels": "الأدب والروايات",
+  "العقيدة": "العقيدة والتوحيد",
+  "علوم القرآن والتفسير": "علوم القرآن والتفسير",
+  "السيرة والحديث النبوي": "السيرة والحديث النبوي",
+  "الفقه وأصوله": "الفقه الإسلامي وأصوله",
+  "التاريخ والتراجم": "التاريخ الإسلامي والتراجم",
+  "الرقائق والتربية الإيمانية": "الرقائق والتربية الإيمانية",
+  "الأدب والروايات الهادفة": "الأدب والروايات الهادفة",
+  "كتب الأطفال والناشئة": "كتب الأطفال والناشئة",
+  "ثقافة وفكر إسلامي": "ثقافة وفكر إسلامي",
 };
 
 export function getCategoryLabel(slug: string): string {
@@ -45,17 +46,14 @@ export interface CategoryTabItem {
 }
 
 export const CATEGORY_TABS: CategoryTabItem[] = [
-  { id: "all", label: "الكل", icon: null },
-  { id: "المشويات على الفحم", label: "المشويات على الفحم", icon: Flame },
-  { id: "البيتزا", label: "البيتزا", icon: Pizza },
-  { id: "الأكل الإيطالي", label: "الأكل الإيطالي", icon: Utensils },
-  { id: "الطواجن والأطباق الشرقية", label: "الطواجن والأطباق الشرقية", icon: CookingPot },
-  { id: "الوجبات والصواني", label: "الوجبات والصواني", icon: UtensilsCrossed },
-  { id: "السندوتشات والبرجر", label: "السندوتشات والبرجر", icon: Sandwich },
-  { id: "المأكولات البحرية (سي فود)", label: "المأكولات البحرية (سي فود)", icon: Fish },
-  { id: "الشوربة", label: "الشوربة", icon: Soup },
-  { id: "السلطات والمقبلات الباردة", label: "السلطات والمقبلات الباردة", icon: Salad },
-  { id: "المقبلات الساخنة والأطباق الجانبية", label: "المقبلات الساخنة والأطباق الجانبية", icon: Croissant },
-  { id: "الحلويات", label: "الحلويات", icon: IceCream },
-  { id: "المشروبات", label: "المشروبات", icon: CupSoda },
+  { id: "all", label: "جميع الكتب", icon: BookOpen },
+  { id: "العقيدة", label: "العقيدة", icon: Compass },
+  { id: "علوم القرآن والتفسير", label: "علوم القرآن", icon: BookMarked },
+  { id: "السيرة والحديث النبوي", label: "السيرة والحديث", icon: Scroll },
+  { id: "الفقه وأصوله", label: "الفقه وأصوله", icon: Library },
+  { id: "التاريخ والتراجم", label: "التاريخ والتراجم", icon: Globe },
+  { id: "الرقائق والتربية الإيمانية", label: "الرقائق والتربية", icon: Heart },
+  { id: "الأدب والروايات الهادفة", label: "الأدب والروايات", icon: Feather },
+  { id: "كتب الأطفال والناشئة", label: "الأطفال والناشئة", icon: Baby },
+  { id: "ثقافة وفكر إسلامي", label: "ثقافة وفكر", icon: BookOpen },
 ];

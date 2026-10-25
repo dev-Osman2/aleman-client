@@ -21,7 +21,7 @@ export default function AdminSearchBar({
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="ابحث باسم العميل أو رقم الهاتف أو رقم الطلب أو رقم الطاولة..."
+        placeholder="ابحث برقم الطلب، اسم العميل، الهاتف، أو رقم التحويل..."
         className="w-full bg-white border border-border/90 rounded-full py-3 pr-11 pl-10 text-xs sm:text-sm text-body placeholder:text-muted-light focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 shadow-2xs transition-all"
       />
 

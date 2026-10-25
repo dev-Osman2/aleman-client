@@ -3,14 +3,7 @@
 import { useState, useRef } from "react";
 import { Product } from "@/src/types";
 import { resizeImageFile } from "@/src/lib/imageUtils";
-
-export const AVAILABLE_SIZES = ["صغير", "وسط", "كبير"] as const;
-export type SizeName = (typeof AVAILABLE_SIZES)[number];
-
-export interface SizeConfig {
-  enabled: boolean;
-  price: string;
-}
+import { CATEGORIES } from "@/src/constants/categories";
 
 export interface UseProductFormProps {
   initialData?: Product | null;
@@ -21,32 +14,26 @@ export interface UseProductFormProps {
 export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [name, setName] = useState(initialData?.name || "");
-  const [category, setCategory] = useState(initialData?.category || "المشويات على الفحم");
+  const [code, setCode] = useState(initialData?.code ? String(initialData.code) : "");
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [author, setAuthor] = useState(initialData?.author || "");
+  const [publisher, setPublisher] = useState(initialData?.publisher || "");
+  const [category, setCategory] = useState(initialData?.category || CATEGORIES[0]);
   const [price, setPrice] = useState<string>(
-    initialData?.price !== undefined ? String(initialData.price) : "",
+    initialData?.price !== undefined ? String(initialData.price) : ""
   );
   const [oldPrice, setOldPrice] = useState<string>(
-    initialData?.oldPrice ? String(initialData.oldPrice) : "",
+    initialData?.oldPrice ? String(initialData.oldPrice) : ""
+  );
+  const [quantity, setQuantity] = useState<string>(
+    initialData?.quantity !== undefined ? String(initialData.quantity) : "1"
+  );
+  const [pagesCount, setPagesCount] = useState<string>(
+    initialData?.pagesCount ? String(initialData.pagesCount) : ""
   );
   const [description, setDescription] = useState(initialData?.description || "");
-  const [imagePreview, setImagePreview] = useState<string>(initialData?.image || "");
-
-  const [sizesState, setSizesState] = useState<Record<SizeName, SizeConfig>>(() => {
-    const map: Record<SizeName, SizeConfig> = {
-      صغير: { enabled: false, price: "" },
-      وسط: { enabled: false, price: "" },
-      كبير: { enabled: false, price: "" },
-    };
-    if (initialData?.sizes && Array.isArray(initialData.sizes)) {
-      for (const s of initialData.sizes) {
-        if (map[s.name as SizeName]) {
-          map[s.name as SizeName] = { enabled: true, price: String(s.price) };
-        }
-      }
-    }
-    return map;
-  });
+  const [fullDescription, setFullDescription] = useState(initialData?.fullDescription || "");
+  const [image, setImage] = useState<string>(initialData?.image || "");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,68 +41,73 @@ export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
   const handleFileSelect = async (file: File) => {
     try {
       const base64 = await resizeImageFile(file);
-      setImagePreview(base64);
+      setImage(base64);
       setError(null);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "فشل في معالجة الصورة");
+      setError(err instanceof Error ? err.message : "فشل في معالجة صورة الغلاف");
     }
-  };
-
-  const toggleSize = (sizeName: SizeName) => {
-    setSizesState((prev) => ({
-      ...prev,
-      [sizeName]: { ...prev[sizeName], enabled: !prev[sizeName].enabled },
-    }));
-  };
-
-  const updateSizePrice = (sizeName: SizeName, val: string) => {
-    setSizesState((prev) => ({
-      ...prev,
-      [sizeName]: { ...prev[sizeName], enabled: true, price: val },
-    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!name.trim()) {
-      setError("يرجى إدخال اسم الوجبة");
+    // التحقق من الحقول الأساسية
+    if (!code.trim()) {
+      setError("يرجى إدخال كود الكتاب المميز");
       return;
     }
 
-    const activeSizes = AVAILABLE_SIZES.filter(
-      (sz) => sizesState[sz].enabled && sizesState[sz].price.trim() !== "",
-    ).map((sz) => ({
-      name: sz,
-      price: Number(sizesState[sz].price),
-    }));
+    if (!title.trim()) {
+      setError("يرجى إدخال عنوان الكتاب");
+      return;
+    }
 
-    const basePrice =
-      price.trim() !== ""
-        ? Number(price)
-        : activeSizes.length > 0
-          ? activeSizes[0].price
-          : NaN;
+    if (!category.trim()) {
+      setError("يرجى اختيار قسم الكتاب");
+      return;
+    }
 
-    if (isNaN(basePrice) || basePrice < 0) {
-      setError("يرجى إدخال السعر الحالي للوجبة");
+    const parsedPrice = Number(price);
+    if (isNaN(parsedPrice) || parsedPrice <= 0) {
+      setError("يرجى إدخال سعر بيع صحيح للكتاب");
+      return;
+    }
+
+    const parsedQuantity = Number(quantity);
+    if (isNaN(parsedQuantity) || parsedQuantity < 0) {
+      setError("يرجى إدخال كمية مخزون صحيحة (0 أو أكثر)");
+      return;
+    }
+
+    if (!description.trim()) {
+      setError("يرجى كتابة نبذة مختصرة عن الكتاب");
+      return;
+    }
+
+    if (!image.trim()) {
+      setError("يرجى إدخال رابط صورة غلاف الكتاب أو رفعها");
       return;
     }
 
     setLoading(true);
     try {
       await onSubmit({
-        name: name.trim(),
-        category,
-        price: basePrice,
-        oldPrice: oldPrice.trim() !== "" ? Number(oldPrice) : null,
+        code: code.trim(),
+        title: title.trim(),
+        author: author.trim() || null,
+        publisher: publisher.trim() || null,
+        category: category.trim(),
+        price: Math.round(parsedPrice),
+        oldPrice: oldPrice.trim() !== "" ? Math.round(Number(oldPrice)) : null,
+        quantity: Math.round(parsedQuantity),
+        pagesCount: pagesCount.trim() !== "" ? Math.round(Number(pagesCount)) : null,
         description: description.trim(),
-        image: imagePreview,
-        sizes: activeSizes,
+        fullDescription: fullDescription.trim() || null,
+        image: image.trim(),
       });
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "حدث خطأ أثناء حفظ الوجبة");
+      setError(err instanceof Error ? err.message : "حدث خطأ أثناء حفظ بيانات الكتاب");
     } finally {
       setLoading(false);
     }
@@ -123,24 +115,33 @@ export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
 
   return {
     fileInputRef,
-    name,
-    setName,
+    code,
+    setCode,
+    title,
+    setTitle,
+    author,
+    setAuthor,
+    publisher,
+    setPublisher,
     category,
     setCategory,
     price,
     setPrice,
     oldPrice,
     setOldPrice,
+    quantity,
+    setQuantity,
+    pagesCount,
+    setPagesCount,
     description,
     setDescription,
-    imagePreview,
-    setImagePreview,
-    sizesState,
+    fullDescription,
+    setFullDescription,
+    image,
+    setImage,
     loading,
     error,
     handleFileSelect,
-    toggleSize,
-    updateSizePrice,
     handleSubmit,
   };
 }

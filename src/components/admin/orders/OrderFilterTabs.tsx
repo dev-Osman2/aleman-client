@@ -1,15 +1,17 @@
 "use client";
 
-export type OrderFilterStatus = "all" | "confirmed" | "pending" | "cancelled";
+import { OrderStatus } from "@/src/types";
+
+export type OrderFilterStatus = "all" | OrderStatus;
 
 interface OrderFilterTabsProps {
   activeFilter: OrderFilterStatus;
   setActiveFilter: (filter: OrderFilterStatus) => void;
   counts: {
     all: number;
-    confirmed: number;
-    pending: number;
-    cancelled: number;
+    PENDING: number;
+    CONFIRMED: number;
+    CANCELLED: number;
   };
 }
 
@@ -19,15 +21,15 @@ export default function OrderFilterTabs({
   counts,
 }: OrderFilterTabsProps) {
   const tabs: { id: OrderFilterStatus; label: string; count: number }[] = [
-    { id: "all", label: "الكل", count: counts.all },
-    { id: "confirmed", label: "مكتمل", count: counts.confirmed },
-    { id: "pending", label: "قيد الإنتظار", count: counts.pending },
-    { id: "cancelled", label: "ملغي", count: counts.cancelled },
+    { id: "all", label: "جميع الطلبات", count: counts.all },
+    { id: "PENDING", label: "قيد المراجعة", count: counts.PENDING },
+    { id: "CONFIRMED", label: "تم التأكيد", count: counts.CONFIRMED },
+    { id: "CANCELLED", label: "ملغاة", count: counts.CANCELLED },
   ];
 
   return (
     <div
-      className="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar"
+      className="flex items-center gap-2.5 overflow-x-auto pb-1 custom-scrollbar"
       dir="rtl"
     >
       {tabs.map((tab) => {
@@ -37,9 +39,9 @@ export default function OrderFilterTabs({
             key={tab.id}
             type="button"
             onClick={() => setActiveFilter(tab.id)}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all shrink-0 cursor-pointer border ${
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-all shrink-0 cursor-pointer border ${
               isActive
-                ? "bg-primary text-white border-primary shadow-sm"
+                ? "bg-primary text-white border-primary shadow-xs"
                 : "bg-white text-sub border-border hover:border-primary/40 hover:bg-primary-light/40"
             }`}
           >

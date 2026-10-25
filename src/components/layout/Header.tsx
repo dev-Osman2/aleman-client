@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Menu, UserPlus, UserCheck } from "lucide-react";
+import { Search, Menu, UserPlus, User, UserCheck } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
 import SearchBar from "./SearchBar";
 import MenuBar from "./MenuBar";
@@ -42,36 +42,37 @@ export default function Header() {
 
         {/* أزرار البحث والحساب والقائمة (يسار الهيدر) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* زر إنشاء حساب / تسجيل دخول (أو اسم المستخدم إذا كان مسجلاً) */}
-          {!user && (
+          {/* زر أيقونة المستخدم (الملف الشخصي والطلبات) */}
+          {!user ? (
             <div className="flex items-center gap-1.5">
               <Link
-                href="/register"
-                className="flex items-center gap-1.5 bg-white text-primary hover:bg-white/90 font-extrabold text-xs px-2 sm:px-3 py-2.5 rounded-xl shadow-xs transition-all"
+                href="/login"
+                title="تسجيل الدخول / حسابي"
+                className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-white/15 hover:bg-white/25 px-2.5 sm:px-3 text-white transition-all cursor-pointer shadow-xs active:scale-95"
               >
-                <UserPlus className="w-4 h-4" />
-                <span className="hidden sm:inline">إنشاء حساب</span>
+                <User className="h-5 w-5 shrink-0" />
+                <span className="hidden sm:inline text-xs font-extrabold">حسابي</span>
               </Link>
               <Link
-                href="/login"
-                className="hidden sm:flex items-center gap-1 bg-white/15 hover:bg-white/25 text-white font-bold text-xs px-3 py-2.5 rounded-xl transition-all"
+                href="/register"
+                className="hidden sm:flex items-center gap-1.5 bg-white text-primary hover:bg-white/90 font-extrabold text-xs px-3 py-2.5 rounded-xl shadow-xs transition-all"
               >
-                <span>دخول</span>
+                <UserPlus className="w-4 h-4" />
+                <span>حساب جديد</span>
               </Link>
             </div>
-          )}
-
-          {user && (
-            <div
-              title={user.name}
-              aria-label={`حساب ${user.name}`}
-              className="flex h-10 max-w-32 items-center gap-1.5 rounded-xl bg-white/15 px-2 sm:px-2.5"
+          ) : (
+            <Link
+              href="/profile"
+              title={`الملف الشخصي: ${user.name}`}
+              aria-label={`الملف الشخصي: ${user.name}`}
+              className="flex h-10 max-w-40 items-center gap-1.5 rounded-xl bg-white/15 hover:bg-white/25 px-2.5 sm:px-3 text-white transition-all cursor-pointer shadow-xs active:scale-95"
             >
-              <UserCheck className="h-5 w-5 shrink-0" />
-              <span className="hidden max-w-20 truncate text-xs font-extrabold sm:inline">
+              <User className="h-5 w-5 shrink-0" />
+              <span className="hidden max-w-24 truncate text-xs font-extrabold sm:inline">
                 {user.name}
               </span>
-            </div>
+            </Link>
           )}
 
           {/* زر البحث */}

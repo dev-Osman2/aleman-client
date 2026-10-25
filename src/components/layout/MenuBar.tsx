@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { X, UtensilsCrossed, Flame, Receipt } from "lucide-react";
+import Link from "next/link";
+import { X, BookOpen, Layers, Receipt, User, LogIn } from "lucide-react";
 import { CATEGORIES } from "@/src/constants/categories";
 import { useCart } from "@/src/context/CartContext";
+import { useAuth } from "@/src/context/AuthContext";
 
 interface MenuBarProps {
   isOpen: boolean;
@@ -14,6 +16,7 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { totalItems } = useCart();
+  const { user } = useAuth();
   const currentCategory = searchParams.get("category")?.trim() || null;
 
   if (!isOpen) return null;
@@ -55,10 +58,10 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
         <div className="flex items-center justify-between border-b border-border-subtle pb-4 mb-3 shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
-              <UtensilsCrossed className="w-4 h-4" />
+              <BookOpen className="w-4 h-4" />
             </div>
             <span className="font-extrabold text-heading text-base">
-              أقسام المنيو
+              أقسام المكتبة
             </span>
           </div>
           <button
@@ -71,9 +74,26 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
           </button>
         </div>
 
+        {/* زر الوصول للملف الشخصي والطلبات */}
+        <div className="mb-3 flex flex-col gap-2 shrink-0">
+          <Link
+            href={user ? "/profile" : "/login"}
+            onClick={onClose}
+            className="w-full px-4 py-3 rounded-xl bg-surface-soft hover:bg-primary-light border border-border text-heading hover:text-primary font-extrabold text-xs sm:text-sm flex items-center justify-between transition cursor-pointer shadow-2xs"
+          >
+            <div className="flex items-center gap-2">
+              {user ? (
+                <User className="w-4 h-4 text-primary shrink-0" />
+              ) : (
+                <LogIn className="w-4 h-4 text-primary shrink-0" />
+              )}
+              <span>{user ? `حسابي (${user.name})` : "تسجيل الدخول / حسابي"}</span>
+            </div>
+            <span className="text-[11px] text-muted font-bold">
+              {user ? "الطلبات والإعدادات" : "دخول"}
+            </span>
+          </Link>
 
-
-        <div className="mb-3 shrink-0">
           <button
             type="button"
             onClick={handleScrollToOrderSummary}
@@ -81,7 +101,7 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
           >
             <div className="flex items-center gap-2">
               <Receipt className="w-4 h-4 shrink-0" />
-              <span>ملخص الطلب والحساب</span>
+              <span>سلة الشراء والفاتورة</span>
             </div>
             {totalItems > 0 && (
               <span className="bg-primary text-white text-[11px] font-black px-2 py-0.5 rounded-full">
@@ -91,7 +111,7 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 gap-2">
+        <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 flex flex-col gap-2">
           <button
             type="button"
             onClick={() => handleCategorySelect(null)}
@@ -101,8 +121,8 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
                 : "bg-surface-soft hover:bg-primary-light text-sub"
             }`}
           >
-            <span>كل الوجبات (المنيو الكامل)</span>
-            <Flame className="w-4 h-4 shrink-0" />
+            <span>جميع الكتب (المكتبة الكاملة)</span>
+            <Layers className="w-4 h-4 shrink-0" />
           </button>
 
           {CATEGORIES.map((category) => {
@@ -130,7 +150,7 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
         </div>
 
         <div className="border-t border-border-subtle pt-3 mt-3 text-center text-xs text-muted-light font-medium shrink-0">
-          مطعم السرايا — أشهى المأكولات
+          مكتبة الإيمان — خير جليس في الزمان كتاب
         </div>
       </aside>
     </div>

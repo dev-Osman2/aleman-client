@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   User as UserIcon,
   Users,
+  MessageCircle
 } from "lucide-react";
 import { User } from "@/src/types";
 
@@ -155,6 +156,14 @@ export default function AdminSidebar({
               >
                 <Store className="w-4 h-4 shrink-0 text-primary" />
                 <span>الذهاب لمتجر الكتب الرئيسي</span>
+              </Link>
+              <Link
+                href="https://web.telegram.org/a/#8820366769"
+                onClick={onClose}
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm text-sub hover:bg-surface-subtle transition"
+              >
+                <MessageCircle className="w-4 h-4 shrink-0 text-primary" />
+                <span>الذهاب لجروب التلجرام</span>
               </Link>
             </div>
           </nav>

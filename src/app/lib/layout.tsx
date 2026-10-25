@@ -129,7 +129,7 @@ export default function AdminLayout({
     setCurrentUser(null);
     setAuthorized(false);
     toast.success("تم تسجيل الخروج بنجاح");
-    router.replace("/lib");
+    router.replace("/");
   };
 
   // شاشة فحص الصلاحيات

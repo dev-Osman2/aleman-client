@@ -14,17 +14,23 @@ interface OrderCardProps {
     orderId: number,
     newStatus: OrderStatus,
   ) => Promise<void>;
+  onUpdateAdminNote?: (
+    orderId: number,
+    adminNote: string,
+  ) => Promise<boolean>;
   updatingId?: number | string | null;
 }
 
 export default function OrderCard({
   order,
   onUpdateStatus,
+  onUpdateAdminNote,
   updatingId,
 }: OrderCardProps) {
   const card = useOrderCard({
     order,
     updatingId,
+    onUpdateAdminNote,
   });
 
   return (
@@ -40,22 +46,20 @@ export default function OrderCard({
           formattedDate={card.formattedDate}
         />
 
-        {order.notes && (
-          <OrderCardNotes
-            notes={order.notes}
-            hasCustomerNote={card.hasCustomerNote}
-            showCustomerNote={card.showCustomerNote}
-            setShowCustomerNote={card.setShowCustomerNote}
-            hasSavedAdminNote={card.hasSavedAdminNote}
-            showAdminNote={card.showAdminNote}
-            setShowAdminNote={card.setShowAdminNote}
-            adminNoteText={card.adminNoteText}
-            setAdminNoteText={card.setAdminNoteText}
-            savingNote={card.savingNote}
-            onSaveNote={card.handleSaveNote}
-            onCancelNote={card.handleCancelNote}
-          />
-        )}
+        <OrderCardNotes
+          notes={order.notes}
+          hasCustomerNote={card.hasCustomerNote}
+          showCustomerNote={card.showCustomerNote}
+          setShowCustomerNote={card.setShowCustomerNote}
+          hasSavedAdminNote={card.hasSavedAdminNote}
+          showAdminNote={card.showAdminNote}
+          setShowAdminNote={card.setShowAdminNote}
+          adminNote={card.adminNote}
+          setadminNote={card.setadminNote}
+          savingNote={card.savingNote}
+          onSaveNote={card.handleSaveNote}
+          onCancelNote={card.handleCancelNote}
+        />
 
         <OrderCardItemsList items={order.items || []} />
       </div>

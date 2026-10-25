@@ -135,6 +135,7 @@ export interface Order {
   id: number;
   address: string;
   notes: string | null;
+  adminNote?: string | null;
   paymentMethod: PaymentMethod;
   transferNumber: string;
   subtotal: number;

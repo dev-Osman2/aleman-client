@@ -99,6 +99,44 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleUpdateAdminNote = async (
+    orderId: number,
+    adminNote: string
+  ): Promise<boolean> => {
+    try {
+      const token = getAdminToken();
+      const res = await fetch(`${apiUrl}/admin/orders/${orderId}/note`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ adminNote }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        toast.success("تم حفظ ملاحظة الأدمن بنجاح");
+        setOrders((prev) =>
+          prev.map((o) =>
+            o.id === orderId
+              ? { ...o, adminNote: data.data?.adminNote ?? adminNote }
+              : o
+          )
+        );
+        return true;
+      } else {
+        toast.error(data.message || "تعذر حفظ ملاحظة الأدمن");
+        return false;
+      }
+    } catch (err) {
+      console.error("Failed to update admin note:", err);
+      toast.error("حدث خطأ أثناء الاتصال بالخادم لحفظ الملاحظة");
+      return false;
+    }
+  };
+
   const counts = useMemo(() => {
     return {
       all: orders.length,
@@ -187,6 +225,7 @@ export default function AdminOrdersPage() {
               <OrderCard
                 order={order}
                 onUpdateStatus={handleUpdateStatus}
+                onUpdateAdminNote={handleUpdateAdminNote}
                 updatingId={updatingId}
               />
             </div>

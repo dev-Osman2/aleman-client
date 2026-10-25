@@ -181,7 +181,7 @@ export default function CheckoutForm() {
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
-                        "https://placehold.co/100x140/f1f5f9/0f172a?text=كتاب";
+                        "https://placehold.co/100x140/f1f5f9/0f172a?text=?";
                     }}
                   />
                 ) : (
@@ -231,7 +231,7 @@ export default function CheckoutForm() {
 
       {/* حساب الإجمالي = إجمالي المنتجات + التوصيل */}
       {cart.length > 0 && (
-        <div className="bg-gray-50 rounded-2xl p-4 space-y-2 text-xs md:text-sm border border-gray-100 shrink-0">
+        <div className=" bg-gray-50 rounded-2xl p-4 space-y-2 text-xs md:text-sm border border-gray-100 shrink-0">
           <div className="flex justify-between text-muted font-bold">
             <span>إجمالي الكتب:</span>
             <span>{subtotalPrice} ج.م</span>

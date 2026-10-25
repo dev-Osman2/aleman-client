@@ -23,12 +23,12 @@ export default function CashierCartItemRow({
     <div className="py-3 flex items-center justify-between gap-3" dir="rtl">
       <div className="flex items-center gap-2.5 min-w-0 flex-1">
         <img
-          src={item.image || "https://placehold.co/80x80/f1f5f9/0f172a?text=كتاب"}
+          src={item.image || "https://placehold.co/80x80/f1f5f9/0f172a?text=?"}
           alt={itemTitle}
           className="w-12 h-14 rounded-xl object-cover border border-border shrink-0 bg-surface-soft shadow-xs"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
-              "https://placehold.co/80x80/f1f5f9/0f172a?text=كتاب";
+              "https://placehold.co/80x80/f1f5f9/0f172a?text=?";
           }}
         />
         <div className="min-w-0 flex-1 text-right">

@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "مطعم سرايا",
-    short_name: "السرايا",
-    description: "أشهى المأكولات والمشويات الطازجة.",
+    name: "مكتبة الإيمان",
+    short_name: "مكتبة الإيمان",
+    description: "خير جليس في الزمان كتاب",
     start_url: "/",
     display: "standalone",
     background_color: "#F3F4F6",

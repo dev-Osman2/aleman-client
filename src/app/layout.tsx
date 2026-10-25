@@ -40,22 +40,24 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://saraya.aswany.me"),
+  metadataBase: new URL("https://aleman.aswany.me"),
   title: {
-    default: "مطعم السرايا | أشهى المأكولات والمشويات",
-    template: "%s | مطعم السرايا",
+    default: "مكتبة الإيمان | كتب إسلامية، علمية وثقافية",
+    template: "%s | مكتبة الإيمان",
   },
   description:
-    "مطعم السرايا - أشهى المأكولات والمشويات الطازجة. اطلب وجبتك المفضلة أونلاين بسهولة وتوصيل سريع.",
+    "مكتبة الإيمان - وجهتك الأولى للكتب الإسلامية، التراثية، العلمية والأدبية. تصفح أحدث الإصدارات واطلب كتبك المفضلة أونلاين بسهولة وتوصيل سريع.",
   keywords: [
-    "مطعم السرايا",
-    "مشويات",
-    "حواوشي",
-    "سجق",
-    "وجبات",
-    "سندوتشات",
-    "مأكولات",
-    "توصيل طعام",
+    "مكتبة الإيمان",
+    "كتب إسلامية",
+    "كتب تراث",
+    "فقه",
+    "عقيدة",
+    "تفسير",
+    "روايات",
+    "شراء كتب أونلاين",
+    "مكتبة",
+    "كتب",
     "الأقصر",
   ],
   alternates: {
@@ -63,21 +65,21 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    google: "SG56LKgfX5LA3jQGAVaIks0hoCdhXLe4Dr0P18r6N3k",
+    google: "",
   },
 
   openGraph: {
-    title: "مطعم السرايا | أشهى المأكولات والمشويات",
+    title: "مكتبة الإيمان | صرح الثقافة والكتب الإسلامية",
     description:
-      "اطلب الآن أشهى المأكولات والمشويات الطازجة من مطعم السرايا أونلاين بأسرع توصيل.",
-    url: "https://saraya.aswany.me",
-    siteName: "مطعم السرايا",
+      "تصفح واطلب أحدث الكتب والمؤلفات الإسلامية والعلمية أونلاين من مكتبة الإيمان مع خدمة التوصيل السريع.",
+    url: "https://aleman.aswany.me",
+    siteName: "مكتبة الإيمان",
     images: [
       {
         url: "/logo.png",
         width: 800,
         height: 600,
-        alt: "شعار مطعم السرايا",
+        alt: "شعار مكتبة الإيمان",
       },
     ],
     locale: "ar_EG",
@@ -86,12 +88,13 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "مطعم السرايا | أشهى المأكولات والمشويات",
-    description: "اطلب الآن وجبتك المفضلة من مطعم السرايا أونلاين.",
+    title: "مكتبة الإيمان | كتب إسلامية وعلمية",
+    description:
+      "اطلب كتبك ومراجعك المفضلة أونلاين من مكتبة الإيمان بأفضل الأسعار وأسرع توصيل.",
     images: ["/logo.png"],
   },
 
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",
@@ -105,7 +108,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl"  data-scroll-behavior="smooth">
       <body
         className={`${tajawal.className} bg-lightBg text-gray-800 min-h-screen flex flex-col`}
       >

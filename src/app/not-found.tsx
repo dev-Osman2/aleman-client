@@ -40,7 +40,7 @@ export default function NotFound() {
         </Link>
 
         <div className="mt-10 pt-5 border-t border-border-subtle text-[11px] text-muted-light font-bold">
-          مطعم السرايا — أشهى المأكولات والمشويات
+          مكتبة الإيمكان - خير جليس في الزمان كتاب
         </div>
       </div>
     </div>

@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
       setAdminUser(user);
 
       // إعادة التوجيه لصفحة إدارة الكتب
-      router.replace("/lib/products");
+      router.replace("/lib/orders");
     } catch (err) {
       console.error("Login request failed:", err);
       setError("تعذر الاتصال بالسيرفر، تأكد من تشغيل خادم الباك إند");

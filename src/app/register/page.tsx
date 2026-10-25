@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { UserPlus, Mail, Lock, User, Phone, ArrowRight } from "lucide-react";
+import { UserPlus, Mail, Lock, User, Phone, ArrowRight, Eye, EyeOff } from "lucide-react";
 import Header from "@/src/components/layout/Header";
 import { useAuth } from "@/src/context/AuthContext";
 
@@ -18,6 +18,7 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -61,7 +62,7 @@ export default function RegisterPage() {
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-10 max-w-md" dir="rtl">
+      <main className="flex-1 container mx-auto px-4 py-10 max-w-md flex flex-col justify-center" dir="rtl">
         <div className="mb-5">
           <Link
             href="/"
@@ -153,15 +154,30 @@ export default function RegisterPage() {
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="8 أحرف أو أرقام على الأقل"
-                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none"
+                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-11 text-sm focus:border-primary focus:outline-none"
                 />
                 <Lock className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 hover:text-primary transition cursor-pointer"
+                  tabIndex={-1}
+                  aria-label={
+                    showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
+                  }
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 

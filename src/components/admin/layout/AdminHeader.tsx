@@ -4,7 +4,6 @@ import Link from "next/link";
 import {
   Menu,
   LogOut,
-  Search,
   BookOpen,
   ClipboardList,
   Calculator,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { User } from "@/src/types";
 
 interface AdminHeaderProps {
@@ -27,19 +27,19 @@ interface AdminHeaderProps {
 
 const ADMIN_NAV_ITEMS = [
   {
-    name: "الكتب والمخزون",
-    href: "/lib/products",
-    icon: BookOpen,
+    name: "الكاشير",
+    href: "/lib/cashier",
+    icon: Calculator,
   },
   {
-    name: "الطلبات الحية",
+    name: "الطلبات",
     href: "/lib/orders",
     icon: ClipboardList,
   },
   {
-    name: "نقطة البيع (الكاشير)",
-    href: "/lib/cashier",
-    icon: Calculator,
+    name: "الكتب",
+    href: "/lib/products",
+    icon: BookOpen,
   },
   {
     name: "سجل العملاء",
@@ -93,7 +93,7 @@ export default function AdminHeader({
       className="sticky top-0 z-40 bg-primary text-white shadow-md print:hidden transition-colors"
       dir="rtl"
     >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="container mx-auto sm:px-4 py-2.5 sm:py-3 sm:h-18  flex items-center justify-between">
         {/* الشعار وبيانات الهوية */}
         <div className="flex items-center gap-3">
           <div
@@ -101,7 +101,15 @@ export default function AdminHeader({
             onClick={handleLogoClick}
           >
             <div className="w-10 h-10 rounded-xl bg-white text-primary flex items-center justify-center p-2 shadow-sm transition-transform group-hover:scale-105">
-              <BookOpen className="w-6 h-6" />
+              <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="مكتبة الإيمان"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
+              </div>
             </div>
             <div className="leading-tight text-right">
               <div className="flex items-center gap-1.5">
@@ -149,7 +157,7 @@ export default function AdminHeader({
         {/* الأزرار الجانبية ومعلومات الأدمن */}
         <div className="flex items-center gap-2">
           {/* اسم الأدمن إن وجد */}
-          {currentUser && (
+          {/* {currentUser && (
             <div className="hidden md:flex items-center gap-2 pl-2 border-l border-white/20 text-right">
               <div className="leading-tight">
                 <span className="block text-xs font-black truncate max-w-[130px]">
@@ -160,33 +168,19 @@ export default function AdminHeader({
                 </span>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* زر التوجه للمتجر الرئيسي */}
-          <Link
+          {/* <Link
             href="/"
             title="المتجر الرئيسي"
             className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer text-white"
           >
             <Store className="w-4 h-4" />
-          </Link>
-
-          {/* زر البحث إن كان في صفحة الكاشير */}
-          {isCashierPage && onOpenSearch && (
-            <button
-              type="button"
-              onMouseDown={(e) => e.stopPropagation()}
-              onClick={onOpenSearch}
-              title="بحث عن كتاب"
-              aria-label="بحث عن كتاب"
-              className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          )}
+          </Link> */}
 
           {/* زر تسجيل الخروج */}
-          <button
+          {/* <button
             type="button"
             onClick={onLogout}
             title="تسجيل الخروج"
@@ -194,7 +188,7 @@ export default function AdminHeader({
             className="w-10 h-10 rounded-xl bg-white/15 hover:bg-danger hover:text-white flex items-center justify-center transition cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
-          </button>
+          </button> */}
 
           {/* زر فتح القائمة الجانبية للشاشات المتوسطة والصغيرة */}
           <button
@@ -203,7 +197,7 @@ export default function AdminHeader({
             onClick={onOpenMenu}
             title="القائمة"
             aria-label="القائمة الجانبية"
-            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer lg:hidden"
+            className="w-10 h-10 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition cursor-pointer "
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -212,7 +206,7 @@ export default function AdminHeader({
 
       {/* مؤشر التمرير السفلي */}
       <div
-        className="absolute bottom-0 right-0 h-0.5 bg-secondary transition-[width] duration-100 ease-out z-50"
+        className="absolute bottom-0 right-0 h-0.75 bg-white transition-[width] duration-100 ease-out z-50"
         style={{ width: `${scrollProgress}%` }}
       />
     </header>

@@ -77,13 +77,13 @@ export default function ProductsTable({
                         <img
                           src={
                             product.image ||
-                            "https://placehold.co/100x140/f1f5f9/0f172a?text=كتاب"
+                            "https://placehold.co/100x140/f1f5f9/0f172a?text=?"
                           }
                           alt={product.title}
                           className="w-14 h-20 rounded-xl object-cover border border-border/80 shadow-xs bg-surface-subtle"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src =
-                              "https://placehold.co/100x140/f1f5f9/0f172a?text=كتاب";
+                              "https://placehold.co/100x140/f1f5f9/0f172a?text=?";
                           }}
                         />
                         {hasDiscount && (

@@ -12,6 +12,7 @@ import CashierOrderWatcher from "@/src/components/admin/cashier/CashierOrderWatc
 import { useCart } from "@/src/context/CartContext";
 import { getAdminToken } from "@/src/lib/cookies";
 import { Product } from "@/src/types";
+import Image from "next/image";
 import { Plus, Search, BookOpen, Hash, Check } from "lucide-react";
 
 function CashierContent() {
@@ -223,20 +224,23 @@ function CashierContent() {
                     >
                       {/* الغلاف والكود */}
                       <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-surface-soft mb-2.5">
-                        <img
+                        <Image
                           src={book.image}
                           alt={book.title}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src =
-                              "https://placehold.co/120x160/f1f5f9/0f172a?text=غلاف";
+                              "https://placehold.co/120x160/f1f5f9/0f172a?text=?";
                           }}
                         />
 
-                        {book.code && (
+                        {book.quantity && (
                           <span className="absolute top-2 right-2 bg-black/70 backdrop-blur-xs text-white text-[10px] font-mono font-black px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
                             <Hash className="w-2.5 h-2.5" />
-                            <span>{book.code}</span>
+                            <span>{book.quantity}</span>
                           </span>
                         )}
 
@@ -297,7 +301,7 @@ function CashierContent() {
           </div>
 
           {/* لوحة سلة الكاشير والدفع */}
-          <div className="w-full lg:w-5/12">
+          <div className="w-full lg:w-5/12 lg:sticky lg:top-20">
             <CashierCartPanel
               notes={notes}
               setNotes={setNotes}

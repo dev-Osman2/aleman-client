@@ -57,7 +57,7 @@ export default function LoginPage() {
   return (
     <>
       <Header />
-      <main className="container mx-auto h-[82vh] px-4 py-10 max-w-md" dir="rtl">
+      <main className="flex-1 container mx-auto px-4 py-10 max-w-md flex flex-col justify-center" dir="rtl">
         <div className="mb-5">
           <Link
             href="/"

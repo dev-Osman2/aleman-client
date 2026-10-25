@@ -174,7 +174,7 @@ export default async function ProductDetailPage({
 
                 <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
                   <Hash className="w-3.5 h-3.5" />
-                  كود #{book.code}
+                  {book.code}
                 </span>
               </div>
 

@@ -10,8 +10,8 @@ interface OrderCardNotesProps {
   hasSavedAdminNote: boolean;
   showAdminNote: boolean;
   setShowAdminNote: React.Dispatch<React.SetStateAction<boolean>>;
-  adminNoteText: string;
-  setAdminNoteText: (val: string) => void;
+  adminNote: string;
+  setadminNote: (val: string) => void;
   savingNote: boolean;
   onSaveNote: () => void;
   onCancelNote: () => void;
@@ -25,8 +25,8 @@ export default function OrderCardNotes({
   hasSavedAdminNote,
   showAdminNote,
   setShowAdminNote,
-  adminNoteText,
-  setAdminNoteText,
+  adminNote,
+  setadminNote,
   savingNote,
   onSaveNote,
   onCancelNote,
@@ -91,9 +91,9 @@ export default function OrderCardNotes({
           </p>
           <textarea
             rows={2}
-            value={adminNoteText}
-            onChange={(e) => setAdminNoteText(e.target.value)}
-            placeholder="اكتب ملاحظات المطبخ أو النواقص أو باقي المبلغ..."
+            value={adminNote}
+            onChange={(e) => setadminNote(e.target.value)}
+            placeholder="اكتب ملاحظات الأدمن أو النواقص أو باقي المبلغ أو تفاصيل التجهيز..."
             className="w-full p-3 bg-white border border-warning-border rounded-xl text-xs sm:text-sm text-body focus:outline-none focus:border-primary resize-none"
           />
           <div className="flex items-center justify-end gap-3">

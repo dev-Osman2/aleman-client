@@ -106,7 +106,7 @@ export default function AddToCartSection({ book }: AddToCartProps) {
             <span>
               {isOutOfStock
                 ? 'نفد من المخزون'
-                : `إضافة إلى السلة (${price * quantity} ج.م)`}
+                : `أضف إلى السلة (${price * quantity} ج.م)`}
             </span>
           </>
         )}

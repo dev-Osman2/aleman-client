@@ -19,11 +19,13 @@ function normalizeSearchText(value: string) {
 interface SearchBarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  className?: string;
 }
 
 export default function SearchBar({
   isOpen: externalIsOpen,
   onClose: externalOnClose,
+  className,
 }: SearchBarProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
@@ -72,14 +74,14 @@ export default function SearchBar({
         const res = await fetch(`${apiUrl}/products`);
         if (res.ok) {
           const data = await res.json();
-          const products = Array.isArray(data)
+          const list = Array.isArray(data)
             ? data
             : Array.isArray(data.data)
             ? data.data
             : Array.isArray(data.products)
             ? data.products
             : [];
-          setProducts(products);
+          setProducts(list);
         }
       } catch (err) {
         console.error("Failed to load products in SearchBar:", err);
@@ -95,9 +97,13 @@ export default function SearchBar({
     clearCategoryFilter();
 
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const isTrigger = (target as HTMLElement)?.closest?.("[data-search-trigger]");
+      if (isTrigger) return;
+
       if (
         wrapperRef.current &&
-        !wrapperRef.current.contains(event.target as Node)
+        !wrapperRef.current.contains(target)
       ) {
         handleClose();
       }
@@ -133,9 +139,13 @@ export default function SearchBar({
 
   const filteredProducts = query.trim()
     ? products
-        .filter((item) =>
-          normalizeSearchText(item.title).includes(normalizeSearchText(query)),
-        )
+        .filter((item) => {
+          const q = normalizeSearchText(query);
+          const matchTitle = normalizeSearchText(item.title || "").includes(q);
+          const matchAuthor = normalizeSearchText(item.author || "").includes(q);
+          const matchCategory = normalizeSearchText(item.category || "").includes(q);
+          return matchTitle || matchAuthor || matchCategory;
+        })
         .slice(0, 6)
     : [];
 
@@ -146,14 +156,16 @@ export default function SearchBar({
 
   const searchDropdown = isOpen && (
     <div
-      className={`z-50 w-full rounded-2xl bg-white p-3 text-body shadow-2xl border border-border-subtle animate-in fade-in zoom-in duration-150 ${
-        isControlled
-          ? "relative"
-          : "absolute top-14 left-0 w-72 sm:w-84"
-      }`}
+      ref={wrapperRef}
+      dir="rtl"
+      className={
+        className ||
+        "absolute top-full left-[-48px] sm:left-0 mt-2 z-50 w-[calc(100vw-1.5rem)] sm:w-80 md:w-96 max-w-sm rounded-2xl bg-white p-2.5 sm:p-3 text-body shadow-2xl border border-gray-100 animate-in fade-in zoom-in-95 duration-150"
+      }
     >
-      <div className="relative flex items-center border-2 border-primary/80 rounded-2xl px-3 py-2 bg-white">
-        <Search size={18} className="text-primary shrink-0 ml-2" />
+      {/* حقل البحث الدائري (Pill) بألوان الموقع المتناسقة */}
+      <div className="relative flex items-center border-2 border-primary rounded-full px-3.5 py-1.5 sm:py-2 bg-white transition-all focus-within:ring-2 focus-within:ring-primary/20 shadow-2xs">
+        <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary shrink-0 ml-2" />
         <input
           ref={inputRef}
           type="text"
@@ -167,43 +179,52 @@ export default function SearchBar({
             }
           }}
           placeholder="ابحث عن منتج..."
-          className="w-full text-right text-sm text-body outline-none bg-transparent"
+          className="w-full text-right text-xs sm:text-sm text-heading placeholder:text-muted/60 outline-none bg-transparent font-medium"
         />
         {query && (
           <button
             type="button"
             onClick={() => setQuery("")}
-            className="p-1 text-muted-light hover:text-sub transition-colors cursor-pointer"
+            className="p-1 text-muted hover:text-heading transition-colors cursor-pointer mr-1"
+            aria-label="مسح البحث"
           >
-            <X size={16} />
+            <X className="w-3.5 h-3.5" />
           </button>
         )}
       </div>
 
+      {/* قائمة المنتجات المطابقة للبحث */}
       {filteredProducts.length > 0 && (
-        <div className="mt-3 flex flex-col gap-1 divide-y divide-border-subtle max-h-64 overflow-y-auto">
+        <div className="mt-2.5 flex flex-col gap-1 divide-y divide-border-subtle max-h-72 overflow-y-auto custom-scrollbar pt-1">
           {filteredProducts.map((product) => (
             <button
               key={product.id}
               type="button"
               onClick={() => handleSelectProduct(product)}
-              className="w-full text-right flex items-center gap-3 p-2 rounded-xl hover:bg-primary-light/70 transition-colors group"
+              className="w-full text-right flex items-center gap-2.5 p-2 rounded-xl hover:bg-primary-light transition-colors group cursor-pointer"
             >
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-10 h-10 rounded-lg object-cover bg-surface-subtle shrink-0 border border-border/60"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://placehold.co/80x80/e2e8f0/475569?text=صورة";
-                }}
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm font-medium text-body group-hover:text-primary truncate transition-colors">
+              <div className="relative w-9 h-12 rounded-md overflow-hidden bg-gray-50 border border-border-subtle shrink-0">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-full object-contain p-0.5"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://placehold.co/72x96/f0fdfa/0fa396?text=؟";
+                  }}
+                />
+              </div>
+              <div className="flex-1 min-w-0 text-right">
+                <p className="text-xs sm:text-sm font-bold text-heading group-hover:text-primary truncate transition-colors">
                   {product.title}
                 </p>
-                <span className="text-[10px] text-muted-light block">
-                  {product.price.toFixed(2)} ج
+                {product.author && (
+                  <span className="text-[11px] text-muted truncate block">
+                    {product.author}
+                  </span>
+                )}
+                <span className="text-xs font-black text-primary block mt-0.5">
+                  {product.price} ج.م
                 </span>
               </div>
             </button>
@@ -211,9 +232,9 @@ export default function SearchBar({
         </div>
       )}
 
-      {query && filteredProducts.length === 0 && (
-        <p className="text-center text-xs text-muted-light py-4">
-          لا توجد منتجات مطابقة لهذا البحث
+      {query.trim() && filteredProducts.length === 0 && (
+        <p className="text-center text-xs text-muted py-4 font-medium">
+          لا توجد نتائج مطابقة لهذا البحث
         </p>
       )}
     </div>
@@ -221,18 +242,14 @@ export default function SearchBar({
 
   if (isControlled) {
     if (!isOpen) return null;
-
-    return (
-      <div ref={wrapperRef} className="relative z-50 mx-auto w-full max-w-xl" dir="rtl">
-        {searchDropdown}
-      </div>
-    );
+    return searchDropdown;
   }
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div className="relative">
       <button
         type="button"
+        data-search-trigger="true"
         onClick={() => {
           const nextState = !isOpen;
           setInternalIsOpen(nextState);
@@ -241,7 +258,7 @@ export default function SearchBar({
             clearCategoryFilter();
           }
         }}
-        className={`p-2.5 rounded-xl transition ${
+        className={`p-2.5 rounded-xl transition cursor-pointer ${
           isOpen ? "bg-white/30" : "bg-white/20 hover:bg-white/30"
         }`}
         aria-label="Search"

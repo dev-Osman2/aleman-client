@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Menu, UserPlus, User, UserCheck } from "lucide-react";
@@ -12,6 +12,36 @@ export default function Header() {
   const { user } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const currentScroll =
+        window.scrollY || document.documentElement.scrollTop;
+
+      if (totalScroll > 0) {
+        const progress = (currentScroll / totalScroll) * 100;
+        setScrollProgress(Math.min(progress, 100));
+      }
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+    const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <header
@@ -20,7 +50,7 @@ export default function Header() {
     >
       <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
         {/* الشعار واسم المكتبة (يمين الهيدر) */}
-        <Link href="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2 sm:gap-3 min-w-0">
           <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
             <Image
               src="/logo.png"
@@ -75,15 +105,29 @@ export default function Header() {
             </Link>
           )}
 
-          {/* زر البحث */}
-          <button
-            type="button"
-            onClick={() => setIsSearchOpen((prev) => !prev)}
-            aria-label="بحث"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 transition-colors"
-          >
-            <Search className="h-5 w-5" />
-          </button>
+          {/* زر البحث وقائمته المنبثقة */}
+          <div className="relative">
+            <button
+              type="button"
+              data-search-trigger="true"
+              onClick={() => setIsSearchOpen((prev) => !prev)}
+              aria-label="بحث"
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all cursor-pointer ${
+                isSearchOpen
+                  ? "bg-white text-primary shadow-xs"
+                  : "bg-white/15 hover:bg-white/25 text-white"
+              }`}
+            >
+              <Search className="h-5 w-5" />
+            </button>
+
+            {isSearchOpen && (
+              <SearchBar
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+              />
+            )}
+          </div>
 
           {/* زر القائمة الجانبية */}
           <button
@@ -97,15 +141,10 @@ export default function Header() {
         </div>
       </div>
 
-      {/* شريط البحث المنسدل */}
-      {isSearchOpen && (
-        <div className="border-t border-white/15 bg-primary-dark/95 px-4 py-3">
-          <SearchBar
-            isOpen={isSearchOpen}
-            onClose={() => setIsSearchOpen(false)}
-          />
-        </div>
-      )}
+      <div
+        className="absolute bottom-0 right-0 h-0.75 bg-[#F0FDFA] transition-[width] duration-100 ease-out z-50"
+        style={{ width: `${scrollProgress}%` }}
+      />
 
       {/* القائمة الجانبية */}
       <MenuBar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />

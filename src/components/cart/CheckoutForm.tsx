@@ -22,10 +22,12 @@ import {
 import { useCart } from "@/src/context/CartContext";
 import { useAuth } from "@/src/context/AuthContext";
 import { PaymentMethod } from "@/src/types";
+import {
+  INSTAPAY_LINK,
+  VODAFONE_CASH_DISPLAY,
+} from "@/src/constants/payment";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
-const INSTAPAY_NUMBER = "01080859921";
-const VODAFONE_CASH_NUMBER = "01080859921";
 
 export default function CheckoutForm() {
   const router = useRouter();
@@ -394,21 +396,34 @@ export default function CheckoutForm() {
         </div>
 
         {/* 6. صندوق رقم التحويل */}
-        <div className="rounded-2xl bg-primary-light/50 border border-primary/20 p-4 text-center space-y-1.5">
-          <p className="text-xs font-extrabold text-heading">
-            {paymentMethod === "INSTAPAY"
-              ? "اضغط هنا للتحويل أو انسخ رقم إنستاباي:"
-              : "رقم محفظة فودافون كاش للتحويل:"}
-          </p>
-          <div className="inline-flex items-center gap-2 text-base md:text-lg font-black text-primary tracking-wider">
-            <span>
-              {paymentMethod === "INSTAPAY"
-                ? INSTAPAY_NUMBER
-                : VODAFONE_CASH_NUMBER}
-            </span>
-            <ExternalLink className="w-4 h-4" />
-          </div>
-        </div>
+        {(() => {
+          const isInstapay =
+            paymentMethod === "INSTAPAY" ||
+            (paymentMethod as string) === "instapay";
+          const link = isInstapay
+            ? INSTAPAY_LINK
+            : `tel:*9*7*${VODAFONE_CASH_DISPLAY}*${totalPrice}#`;
+          const subtitle = isInstapay
+            ? "اضغط هنا للتحويل مباشرة عبر تطبيق إنستاباي:"
+            : "رقم محفظة فودافون كاش للتحويل (اضغط للدفع السريع):";
+
+          return (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-2xl bg-primary-light/50 hover:bg-primary-subtle/80 border border-primary/20 hover:border-primary/40 p-4 text-center space-y-1.5 transition-all group shadow-2xs cursor-pointer"
+            >
+              <p className="text-xs font-extrabold text-heading">
+                {subtitle}
+              </p>
+              <div className="inline-flex items-center justify-center gap-2 text-base md:text-lg font-black text-primary tracking-wider group-hover:underline">
+                <span className="font-mono dir-ltr">{VODAFONE_CASH_DISPLAY}</span>
+                <ExternalLink className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" />
+              </div>
+            </a>
+          );
+        })()}
 
         {/* 7. الرقم الذي حولت منه المبلغ */}
         <div>

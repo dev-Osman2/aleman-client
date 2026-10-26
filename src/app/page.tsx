@@ -106,9 +106,14 @@ export default async function HomePage({
                         {group.name} ({group.products.length})
                       </h2>
                     )}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-5">
+                    <div className="flex flex-wrap gap-4 md:gap-5 items-stretch">
                       {group.products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <div
+                          key={product.id}
+                          className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.85rem)] flex flex-col"
+                        >
+                          <ProductCard product={product} />
+                        </div>
                       ))}
                     </div>
                   </section>

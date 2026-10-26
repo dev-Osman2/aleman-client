@@ -3,22 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  UserPlus,
-  Mail,
-  Lock,
-  User,
-  Phone,
-  ArrowRight,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { UserPlus, ArrowRight } from "lucide-react";
 import Header from "@/src/components/layout/Header";
 import { useAuth } from "@/src/context/AuthContext";
 import { registerSchema } from "@/src/lib/validation";
+import RegisterForm from "@/src/components/auth/RegisterForm";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
-console.log("API URL is:", apiUrl);
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,7 +19,6 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -74,11 +64,13 @@ export default function RegisterPage() {
       }
 
       saveAuthSession(json.data.token, json.data.user);
-
       router.push("/");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message || "حدث خطأ أثناء الاتصال بالسيرفر");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "حدث خطأ أثناء الاتصال بالسيرفر",
+      );
     } finally {
       setLoading(false);
     }
@@ -122,100 +114,18 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div>
-              <label className="block text-xs font-extrabold text-heading mb-1.5">
-                الاسم بالكامل <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="مثال: عثمان طاهر"
-                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none"
-                />
-                <User className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-extrabold text-heading mb-1.5">
-                رقم الهاتف <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  required
-                  maxLength={11}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="010xxxxxxxx"
-                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none text-right dir-ltr"
-                />
-                <Phone className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-extrabold text-heading mb-1.5">
-                البريد الإلكتروني <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none"
-                />
-                <Mail className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-extrabold text-heading mb-1.5">
-                كلمة المرور <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  minLength={8}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="8 أحرف أو أرقام على الأقل"
-                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-11 text-sm focus:border-primary focus:outline-none"
-                />
-                <Lock className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 hover:text-primary transition cursor-pointer"
-                  tabIndex={-1}
-                  aria-label={
-                    showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
-                  }
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-2 rounded-2xl bg-primary hover:opacity-95 py-3.5 text-sm font-black text-white shadow-sm transition-all disabled:opacity-50 active:scale-98"
-            >
-              {loading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
-            </button>
-          </form>
+          <RegisterForm
+            name={name}
+            setName={setName}
+            phone={phone}
+            setPhone={setPhone}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            loading={loading}
+            onSubmit={handleRegister}
+          />
 
           <div className="mt-6 pt-5 border-t border-gray-100 text-center text-xs font-bold text-muted">
             لديك حساب بالفعل؟{" "}

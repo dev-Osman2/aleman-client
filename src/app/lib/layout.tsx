@@ -1,133 +1,57 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import {
-  getAdminToken,
-  removeAdminToken,
-  setAdminUser,
-  getAdminUser,
-} from "@/src/lib/cookies";
+import { getAdminToken } from "@/src/lib/cookies";
 import AdminHeader from "@/src/components/admin/layout/AdminHeader";
 import AdminSidebar from "@/src/components/admin/layout/AdminSidebar";
 import SearchBar from "@/src/components/layout/SearchBar";
+import ConfirmModal from "@/src/components/ui/ConfirmModal";
 import { BookOpen, Loader2, ShieldCheck } from "lucide-react";
-import { User } from "@/src/types";
+import { useAdminAuthSession } from "@/src/components/admin/layout/hooks/useAdminAuthSession";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [authorized, setAuthorized] = useState(false);
-  const [checking, setChecking] = useState(true);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const { authorized, checking, currentUser, handleLogout, pathname } =
+    useAdminAuthSession();
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showClearOrdersModal, setShowClearOrdersModal] = useState(false);
+  const [clearingOrders, setClearingOrders] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
   const isCashierPage = pathname === "/lib/cashier";
 
-  const verifyAdminSession = useCallback(
-    async (token: string) => {
-      try {
-        const res = await fetch(`${apiUrl}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error("Session invalid");
-        }
-
-        const json = await res.json();
-        const user: User | undefined = json.data?.user || json.user;
-
-        if (!user || user.role !== "ADMIN") {
-          removeAdminToken();
-          toast.error("عذراً، هذا الحساب لا يملك صلاحيات وصول لوحة الإدارة");
-          router.replace("/");
-          return false;
-        }
-
-        setAdminUser(user);
-        setCurrentUser(user);
-        return true;
-      } catch {
-        const cachedUser = getAdminUser();
-        if (cachedUser && cachedUser.role === "ADMIN") {
-          setCurrentUser(cachedUser);
-          return true;
-        }
-
-        removeAdminToken();
-        return false;
-      }
-    },
-    [apiUrl, router],
-  );
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const checkAuth = async () => {
+  const handleClearAllOrders = async () => {
+    setClearingOrders(true);
+    try {
       const token = getAdminToken();
+      const res = await fetch(`${apiUrl}/admin/orders/clear-all`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      if (pathname === "/lib") {
-        if (token) {
-          const isValidAdmin = await verifyAdminSession(token);
-          if (isValidAdmin && isMounted) {
-            router.replace("/lib/products");
-            return;
-          }
-        }
-
-        if (isMounted) {
-          setAuthorized(true);
-          setChecking(false);
-        }
-        return;
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success("تم مسح كافة الطلبات وحذف رسائل التلجرام بنجاح");
+        setShowClearOrdersModal(false);
+        setDrawerOpen(false);
+        window.location.reload();
+      } else {
+        toast.error(data.message || "فشل في مسح الطلبات");
       }
-
-      if (!token) {
-        if (isMounted) {
-          setAuthorized(false);
-          setChecking(false);
-          router.replace("/lib");
-        }
-        return;
-      }
-
-      const isValid = await verifyAdminSession(token);
-      if (isMounted) {
-        if (isValid) {
-          setAuthorized(true);
-        } else {
-          setAuthorized(false);
-          router.replace("/lib");
-        }
-        setChecking(false);
-      }
-    };
-
-    checkAuth();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [pathname, router, verifyAdminSession]);
-
-  const handleLogout = () => {
-    removeAdminToken();
-    setDrawerOpen(false);
-    setCurrentUser(null);
-    setAuthorized(false);
-    toast.success("تم تسجيل الخروج بنجاح");
-    router.replace("/");
+    } catch (err) {
+      console.error("Failed to clear orders:", err);
+      toast.error("حدث خطأ في الاتصال أثناء مسح الطلبات");
+    } finally {
+      setClearingOrders(false);
+    }
   };
 
   if (checking) {
@@ -175,7 +99,10 @@ export default function AdminLayout({
         isCashierPage={isCashierPage}
         currentUser={currentUser}
         onOpenMenu={() => setDrawerOpen(true)}
-        onLogout={handleLogout}
+        onLogout={() => {
+          setDrawerOpen(false);
+          handleLogout();
+        }}
         onOpenSearch={() => setSearchOpen(true)}
       />
 
@@ -184,7 +111,12 @@ export default function AdminLayout({
         pathname={pathname}
         currentUser={currentUser}
         onClose={() => setDrawerOpen(false)}
-        onLogout={handleLogout}
+        onLogout={() => {
+          setDrawerOpen(false);
+          handleLogout();
+        }}
+        clearingOrders={clearingOrders}
+        onRequestClearOrders={() => setShowClearOrdersModal(true)}
       />
 
       {isCashierPage && (
@@ -194,6 +126,18 @@ export default function AdminLayout({
       <main className="flex-1 container mx-auto px-4 py-6 print:p-0 print:m-0 print:max-w-none">
         {children}
       </main>
+
+      <ConfirmModal
+        isOpen={showClearOrdersModal}
+        title="مسح وتفريغ جميع الطلبات نهائياً"
+        message="هل أنت متأكد من تفريغ قاعدة بيانات الطلبات بالكامل ومسح جميع رسائل التلجرام المرسلة؟ لا يمكن التراجع عن هذا الإجراء."
+        confirmText="افرغ قاعدة البيانات"
+        cancelText="تراجع"
+        variant="danger"
+        loading={clearingOrders}
+        onConfirm={handleClearAllOrders}
+        onCancel={() => setShowClearOrdersModal(false)}
+      />
     </div>
   );
 }

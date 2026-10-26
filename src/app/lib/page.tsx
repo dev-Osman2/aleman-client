@@ -1,108 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { setAdminToken, setAdminUser } from "@/src/lib/cookies";
-import {
-  Lock,
-  LogIn,
-  AlertCircle,
-  Loader2,
-  Eye,
-  EyeOff,
-  ShieldCheck,
-  ArrowRight,
-  BookOpen,
-  User as UserIcon,
-} from "lucide-react";
+import { ShieldCheck, ArrowRight, BookOpen } from "lucide-react";
 import Link from "next/link";
-import { User } from "@/src/types";
+import AdminLoginForm from "@/src/components/admin/auth/AdminLoginForm";
+import { useAdminLogin } from "@/src/components/admin/auth/useAdminLogin";
 
 export default function AdminLoginPage() {
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [shake, setShake] = useState(false);
-  const router = useRouter();
-
-  const triggerShake = () => {
-    setShake(false);
-    setTimeout(() => setShake(true), 10);
-    setTimeout(() => setShake(false), 500);
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!identifier.trim()) {
-      setError("يرجى إدخال البريد الإلكتروني أو رقم الهاتف");
-      triggerShake();
-      return;
-    }
-
-    if (!password) {
-      setError("يرجى إدخال كلمة المرور");
-      triggerShake();
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
-
-      const res = await fetch(`${apiUrl}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          identifier: identifier.trim(),
-          password,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        setError(
-          data.message ||
-            "بيانات الدخول غير صحيحة، تأكد من الإيميل/الهاتف وكلمة المرور",
-        );
-        triggerShake();
-        return;
-      }
-
-      const authData = data.data || data;
-      const token = authData.token;
-      const user: User | undefined = authData.user;
-
-      if (!token) {
-        setError("تعذر الحصول على رمز الجلسة من الخادم");
-        triggerShake();
-        return;
-      }
-
-      if (!user || user.role !== "ADMIN") {
-        setError("عذراً، هذا الحساب لا يملك صلاحيات وصول لوحة الإدارة");
-        triggerShake();
-        return;
-      }
-
-      setAdminToken(token);
-      setAdminUser(user);
-
-      router.replace("/lib/orders");
-    } catch (err) {
-      console.error("Login request failed:", err);
-      setError("تعذر الاتصال بالسيرفر، تأكد من تشغيل خادم الباك إند");
-      triggerShake();
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    identifier,
+    setIdentifier,
+    password,
+    setPassword,
+    error,
+    setError,
+    loading,
+    shake,
+    handleLogin,
+  } = useAdminLogin();
 
   return (
     <div
@@ -150,110 +64,16 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        {error && (
-          <div className="p-3.5 bg-danger-light border border-danger-border text-danger rounded-2xl text-xs font-extrabold flex items-center gap-2.5 animate-in fade-in duration-200">
-            <AlertCircle className="w-4 h-4 shrink-0 text-danger" />
-            <span className="leading-relaxed">{error}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <div>
-            <label className="block text-xs font-extrabold text-sub mb-2">
-              البريد الإلكتروني أو رقم الهاتف
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
-                <UserIcon
-                  className={`w-4 h-4 transition-colors ${
-                    error ? "text-danger" : "text-primary"
-                  }`}
-                />
-              </span>
-
-              <input
-                type="text"
-                required
-                value={identifier}
-                onChange={(e) => {
-                  setIdentifier(e.target.value);
-                  if (error) setError("");
-                }}
-                placeholder="010xxxxxxx أو admin@aleman.com"
-                className={`w-full pr-10 pl-4 py-3.5 bg-surface-soft border rounded-2xl text-sm font-bold text-body focus:bg-white focus:outline-none transition-all ${
-                  error
-                    ? "border-danger focus:border-danger focus:ring-2 focus:ring-danger/15"
-                    : "border-border focus:border-primary focus:ring-2 focus:ring-primary/15"
-                }`}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-extrabold text-sub mb-2">
-              كلمة المرور السرية
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
-                <Lock
-                  className={`w-4 h-4 transition-colors ${
-                    error ? "text-danger" : "text-primary"
-                  }`}
-                />
-              </span>
-
-              <input
-                type={showPassword ? "text" : "password"}
-                required
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (error) setError("");
-                }}
-                placeholder="أدخل كلمة المرور الخاصة بحساب الإدارة..."
-                className={`w-full pr-10 pl-11 py-3.5 bg-surface-soft border rounded-2xl text-sm font-bold text-body focus:bg-white focus:outline-none transition-all ${
-                  error
-                    ? "border-danger focus:border-danger focus:ring-2 focus:ring-danger/15"
-                    : "border-border focus:border-primary focus:ring-2 focus:ring-primary/15"
-                }`}
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-light hover:text-primary transition cursor-pointer"
-                tabIndex={-1}
-                aria-label={
-                  showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
-                }
-              >
-                {showPassword ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-2 bg-gradient-to-l from-primary to-primary-hover hover:from-primary-hover hover:to-primary-hover disabled:opacity-60 text-white font-black py-4 rounded-2xl shadow-lg shadow-primary/25 flex items-center justify-center gap-2 text-sm transition-all active:scale-[0.99] cursor-pointer"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>جاري التحقق من الصلاحيات الأمنية...</span>
-              </>
-            ) : (
-              <>
-                <LogIn className="w-4 h-4" />
-                <span>تسجيل الدخول للوحة الإدارة</span>
-              </>
-            )}
-          </button>
-        </form>
+        <AdminLoginForm
+          identifier={identifier}
+          setIdentifier={setIdentifier}
+          password={password}
+          setPassword={setPassword}
+          loading={loading}
+          error={error}
+          setError={setError}
+          onSubmit={handleLogin}
+        />
 
         <div className="pt-2 border-t border-border-subtle/80 text-center">
           <p className="text-[11px] text-muted flex items-center justify-center gap-1.5 font-medium">

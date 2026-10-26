@@ -2,10 +2,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { X, BookOpen, Layers, Receipt, User, LogIn } from "lucide-react";
-import { CATEGORIES } from "@/src/constants/categories";
+import { X, BookOpen, Receipt, User, LogIn } from "lucide-react";
 import { useCart } from "@/src/context/CartContext";
 import { useAuth } from "@/src/context/AuthContext";
+import MenuBarCategories from "./MenuBarCategories";
 
 interface MenuBarProps {
   isOpen: boolean;
@@ -23,13 +23,11 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
 
   const handleCategorySelect = (category: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
-
     if (category) {
       params.set("category", category.trim());
     } else {
       params.delete("category");
     }
-
     const queryString = params.toString();
     router.push(queryString ? `/?${queryString}` : "/");
     onClose();
@@ -39,9 +37,7 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
     onClose();
     setTimeout(() => {
       const el = document.getElementById("order-summary");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 150);
   };
 
@@ -109,43 +105,10 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={() => handleCategorySelect(null)}
-            className={`w-full text-right px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-between cursor-pointer ${
-              !currentCategory
-                ? "bg-primary text-white shadow-xs"
-                : "bg-surface-soft hover:bg-primary-light text-sub"
-            }`}
-          >
-            <span>جميع الكتب (المكتبة الكاملة)</span>
-            <Layers className="w-4 h-4 shrink-0" />
-          </button>
-
-          {CATEGORIES.map((category) => {
-            const isActive = currentCategory === category;
-            return (
-              <button
-                key={category}
-                type="button"
-                onClick={() => handleCategorySelect(category)}
-                className={`w-full text-right px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-between cursor-pointer ${
-                  isActive
-                    ? "bg-primary text-white shadow-xs"
-                    : "bg-surface-soft hover:bg-primary-light text-sub"
-                }`}
-              >
-                <span className="truncate">{category}</span>
-                <span
-                  className={`w-2 h-2 rounded-full shrink-0 ${
-                    isActive ? "bg-white" : "bg-primary/40"
-                  }`}
-                />
-              </button>
-            );
-          })}
-        </div>
+        <MenuBarCategories
+          currentCategory={currentCategory}
+          onSelectCategory={handleCategorySelect}
+        />
 
         <div className="border-t border-border-subtle pt-3 mt-3 text-center text-xs text-muted-light font-medium shrink-0">
           مكتبة الإيمان — خير جليس في الزمان كتاب

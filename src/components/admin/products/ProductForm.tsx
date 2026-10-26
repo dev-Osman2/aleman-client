@@ -42,6 +42,8 @@ export default function ProductForm({
         imagePreview={form.image}
         setImagePreview={form.setImage}
         onFileSelect={form.handleFileSelect}
+        isUploading={form.imageUploading}
+        uploadError={form.uploadError}
       />
 
       <ProductBasicInfo
@@ -81,13 +83,18 @@ export default function ProductForm({
       <div className="flex items-center gap-3 pt-3 border-t border-border">
         <button
           type="submit"
-          disabled={form.loading}
+          disabled={form.loading || form.imageUploading}
           className="flex-1 bg-primary hover:bg-primary-hover disabled:opacity-60 text-white font-black py-3.5 rounded-xl shadow-md shadow-primary/25 flex items-center justify-center gap-2 text-sm sm:text-base transition-all cursor-pointer"
         >
           {form.loading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
               <span>جاري حفظ بيانات الكتاب في المتجر...</span>
+            </>
+          ) : form.imageUploading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>جاري رفع الغلاف إلى Cloudinary...</span>
             </>
           ) : (
             <>
@@ -104,7 +111,7 @@ export default function ProductForm({
         <button
           type="button"
           onClick={onCancel}
-          disabled={form.loading}
+          disabled={form.loading || form.imageUploading}
           className="px-5 py-3.5 bg-surface-soft hover:bg-surface-hover text-sub font-bold rounded-xl text-sm transition cursor-pointer flex items-center gap-1.5"
         >
           <X className="w-4 h-4" />

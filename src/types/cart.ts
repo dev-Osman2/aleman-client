@@ -2,9 +2,6 @@ import { Product } from "./index";
 
 export interface CartItem extends Product {
   cartQuantity: number;
-  name?: string;
-  _id?: string;
-  selectedSize?: string;
 }
 
 export interface CartContextType {

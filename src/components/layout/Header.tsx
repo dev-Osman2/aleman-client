@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Menu, UserPlus, User, UserCheck } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
 import SearchBar from "./SearchBar";
 import MenuBar from "./MenuBar";
+import HeaderAuthButtons from "./HeaderAuthButtons";
 
 export default function Header() {
   const { user } = useAuth();
@@ -30,7 +31,6 @@ export default function Header() {
     };
 
     handleScroll();
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -74,39 +74,7 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {!user ? (
-            <div className="flex items-center gap-1.5">
-              <Link
-                href="/login"
-                title="تسجيل الدخول / حسابي"
-                className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-white/15 hover:bg-white/25 px-2.5 sm:px-3 text-white transition-all cursor-pointer shadow-xs active:scale-95"
-              >
-                <User className="h-5 w-5 shrink-0" />
-                <span className="hidden sm:inline text-xs font-extrabold">
-                  حسابي
-                </span>
-              </Link>
-              <Link
-                href="/register"
-                className="hidden sm:flex items-center gap-1.5 bg-white text-primary hover:bg-white/90 font-extrabold text-xs px-3 py-2.5 rounded-xl shadow-xs transition-all"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span>حساب جديد</span>
-              </Link>
-            </div>
-          ) : (
-            <Link
-              href="/profile"
-              title={`الملف الشخصي: ${user.name}`}
-              aria-label={`الملف الشخصي: ${user.name}`}
-              className="flex h-10 max-w-40 items-center gap-1.5 rounded-xl bg-white/15 hover:bg-white/25 px-2.5 sm:px-3 text-white transition-all cursor-pointer shadow-xs active:scale-95"
-            >
-              <User className="h-5 w-5 shrink-0" />
-              <span className="hidden max-w-24 truncate text-xs font-extrabold sm:inline">
-                {user.name}
-              </span>
-            </Link>
-          )}
+          <HeaderAuthButtons user={user} />
 
           <div className="relative">
             <button

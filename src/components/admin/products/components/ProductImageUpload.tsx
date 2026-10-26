@@ -1,19 +1,22 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
 import {
   CloudUpload,
-  X,
   Link as LinkIcon,
   Image as ImageIcon,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
+import ProductImagePreviewCard from "./ProductImagePreviewCard";
 
 interface ProductImageUploadProps {
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   imagePreview: string;
   setImagePreview: (val: string) => void;
   onFileSelect: (file: File) => void;
+  isUploading?: boolean;
+  uploadError?: string | null;
 }
 
 export default function ProductImageUpload({
@@ -21,6 +24,8 @@ export default function ProductImageUpload({
   imagePreview,
   setImagePreview,
   onFileSelect,
+  isUploading = false,
+  uploadError = null,
 }: ProductImageUploadProps) {
   const [showUrlInput, setShowUrlInput] = useState(false);
 
@@ -39,9 +44,7 @@ export default function ProductImageUpload({
           className="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
         >
           <LinkIcon className="w-3 h-3" />
-          <span>
-            {showUrlInput ? "إخفاء إدخال الرابط" : "إدخال رابط مباشر للصورة"}
-          </span>
+          <span>{showUrlInput ? "إخفاء إدخال الرابط" : "إدخال رابط مباشر للصورة"}</span>
         </button>
       </div>
 
@@ -51,9 +54,17 @@ export default function ProductImageUpload({
             type="url"
             value={imagePreview}
             onChange={(e) => setImagePreview(e.target.value)}
-            placeholder="https://example.com/book-cover.jpg"
+            disabled={isUploading}
+            placeholder="https://res.cloudinary.com/..."
             className="w-full px-4 py-2.5 bg-white border border-border rounded-xl text-xs sm:text-sm text-body focus:outline-none focus:border-primary transition"
           />
+        </div>
+      )}
+
+      {uploadError && (
+        <div className="p-3 bg-danger-light border border-danger-border rounded-xl text-xs font-bold text-danger flex items-center gap-2 animate-in fade-in">
+          <AlertCircle className="w-4 h-4 shrink-0 text-danger" />
+          <span>{uploadError}</span>
         </div>
       )}
 
@@ -61,56 +72,51 @@ export default function ProductImageUpload({
         ref={fileInputRef}
         type="file"
         accept="image/*"
+        disabled={isUploading}
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onFileSelect(file);
+          if (file) {
+            onFileSelect(file);
+            e.target.value = "";
+          }
         }}
         className="hidden"
       />
 
       <div
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => {
+          if (!isUploading) fileInputRef.current?.click();
+        }}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
+          if (isUploading) return;
           const file = e.dataTransfer.files?.[0];
           if (file) onFileSelect(file);
         }}
-        className="border-2 border-dashed border-border hover:border-primary bg-surface-soft/60 hover:bg-primary-light/20 rounded-2xl p-5 text-center cursor-pointer transition-all relative flex flex-col items-center justify-center min-h-[160px]"
+        className={`border-2 border-dashed rounded-2xl p-5 text-center transition-all relative flex flex-col items-center justify-center min-h-[160px] ${
+          isUploading
+            ? "border-primary/50 bg-primary-light/30 cursor-wait"
+            : "border-border hover:border-primary bg-surface-soft/60 hover:bg-primary-light/20 cursor-pointer"
+        }`}
       >
-        {imagePreview ? (
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <img
-                src={imagePreview}
-                alt="معاينة غلاف الكتاب"
-                className="h-32 w-24 object-cover rounded-xl border border-border shadow-md"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://placehold.co/120x160/e2e8f0/475569?text=خطأ+في+الرابط";
-                }}
-              />
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setImagePreview("");
-                }}
-                className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-danger text-white flex items-center justify-center shadow-xs cursor-pointer hover:bg-danger-hover transition"
-                title="إزالة الغلاف"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
+        {isUploading ? (
+          <div className="flex flex-col items-center justify-center gap-2.5 py-3 animate-in fade-in">
+            <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shadow-xs">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
-            <div className="text-right flex flex-col gap-1">
-              <span className="text-xs font-black text-heading">
-                تم تجهيز غلاف الكتاب بنجاح
-              </span>
-              <span className="text-[11px] text-muted-light font-medium">
-                اضغط هنا لتغيير الصورة أو اسحب ملفاً جديداً
-              </span>
-            </div>
+            <p className="text-xs sm:text-sm font-black text-primary">
+              جاري رفع الغلاف إلى Cloudinary...
+            </p>
+            <p className="text-[11px] text-muted-light font-medium">
+              يتم حفظ الصورة واستخراج الرابط الآمن (secure_url)
+            </p>
           </div>
+        ) : imagePreview ? (
+          <ProductImagePreviewCard
+            imagePreview={imagePreview}
+            onRemove={() => setImagePreview("")}
+          />
         ) : (
           <div className="flex flex-col items-center justify-center gap-2 py-2">
             <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shadow-xs">
@@ -120,7 +126,7 @@ export default function ProductImageUpload({
               اسحب وأفلت غلاف الكتاب هنا، أو اضغط للاختيار
             </p>
             <p className="text-[11px] text-muted-light font-medium">
-              يدعم صور JPG و PNG والروابط المباشرة
+              يتم الرفع سحابياً ومباشرة إلى Cloudinary (JPG, PNG, WebP)
             </p>
           </div>
         )}

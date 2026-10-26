@@ -1,18 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Headset,
-  Info,
-  CheckCircle2,
-  ChevronDown,
-  Compass,
-  Search,
-} from "lucide-react";
+import { Compass } from "lucide-react";
 import AboutUsModal from "./AboutUsModal";
 import OrderQuickViewModal, { TrackedOrder } from "./OrderQuickViewModal";
 import ContactUsModal from "./ContactUsModal";
 import { useAuth } from "@/src/context/AuthContext";
+import QuickServiceButtons from "./quick-services/QuickServiceButtons";
+import OrderTrackForm from "./quick-services/OrderTrackForm";
 
 export default function QuickServicesBar() {
   const [activeAccordion, setActiveAccordion] = useState<"none" | "track">(
@@ -106,96 +101,21 @@ export default function QuickServicesBar() {
           <h2 className="font-extrabold text-heading">خدمات سريعة</h2>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
-          <button
-            type="button"
-            onClick={() => setIsAboutOpen(true)}
-            className="md:flex-1 w-full h-14 bg-primary-light hover:bg-primary-subtle border border-primary/20 text-primary-hover rounded-2xl px-5 flex items-center justify-start gap-2.5 font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
-          >
-            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-              <Info className="w-4 h-4" />
-            </div>
-            <span>عن مكتبة الإيمان</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={toggleTrackAccordion}
-            className="md:flex-1 w-full h-14 bg-success-light hover:bg-success-light border border-success-border/60 text-success rounded-2xl px-5 flex items-center justify-between font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-success/10 flex items-center justify-center text-success">
-                <CheckCircle2 className="w-4 h-4" />
-              </div>
-              <span>تتبع طلبك</span>
-            </div>
-            <ChevronDown
-              className={`w-4 h-4 text-success transition-transform duration-300 ${
-                activeAccordion === "track" ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsContactOpen(true)}
-            className="md:flex-1 w-full h-14 bg-info-light hover:bg-info-light border border-info-border/70 text-info rounded-2xl px-5 flex items-center justify-between font-extrabold text-sm transition-all duration-200 cursor-pointer shadow-2xs active:scale-[0.99]"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-info/10 flex items-center justify-center text-info">
-                <Headset className="w-4 h-4" />
-              </div>
-              <span>تواصل معنا وشاركنا رأيك</span>
-            </div>
-            <span className="text-[11px] bg-info/10 text-info px-2.5 py-0.5 rounded-full font-bold">
-              دعم وآراء
-            </span>
-          </button>
-        </div>
+        <QuickServiceButtons
+          onOpenAbout={() => setIsAboutOpen(true)}
+          onToggleTrack={toggleTrackAccordion}
+          isTrackActive={activeAccordion === "track"}
+          onOpenContact={() => setIsContactOpen(true)}
+        />
 
         {activeAccordion === "track" && (
-          <div className="mt-5 pt-4 border-t border-border-subtle animate-in fade-in slide-in-from-top-3 duration-200">
-            <div className="bg-success-light/50 border border-success-border/90 rounded-3xl p-6 max-w-lg mx-auto shadow-xs">
-              <div className="flex items-center justify-between text-success font-extrabold text-sm mb-4">
-                <span>تفاصيل طلبك</span>
-                <span className="text-xs text-success font-bold">
-                  استعلام مباشر عن حالة الطلب
-                </span>
-              </div>
-
-              {errorMsg && (
-                <div className="bg-danger-light text-danger text-xs p-3 rounded-xl border border-danger-border mb-4 font-bold">
-                  {errorMsg}
-                </div>
-              )}
-
-              <form onSubmit={handleTrackSubmit} className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-sub mb-1.5 text-right">
-                    رقم الطلب <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min={1}
-                    placeholder="أدخل رقم الطلب (مثال: 2)"
-                    value={orderNumber}
-                    onChange={(e) => setOrderNumber(e.target.value)}
-                    className="w-full px-4 py-3 text-sm bg-white border border-success-border/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-success/40 text-right text-body placeholder:text-muted-light transition"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-success hover:bg-success/90 text-white py-3.5 rounded-2xl font-extrabold text-sm transition-all shadow-xs disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Search className="w-4 h-4" />
-                  <span>{loading ? "جاري البحث..." : "عرض تفاصيل الطلب"}</span>
-                </button>
-              </form>
-            </div>
-          </div>
+          <OrderTrackForm
+            orderNumber={orderNumber}
+            setOrderNumber={setOrderNumber}
+            loading={loading}
+            errorMsg={errorMsg}
+            onSubmit={handleTrackSubmit}
+          />
         )}
       </div>
 

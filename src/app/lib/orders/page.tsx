@@ -1,176 +1,27 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { Order, OrderStatus } from "@/src/types";
-import { getAdminToken } from "@/src/lib/cookies";
 import OrderStatsHeader from "@/src/components/admin/orders/OrderStatsHeader";
 import AdminSearchBar from "@/src/components/admin/orders/AdminSearchBar";
-import OrderFilterTabs, {
-  OrderFilterStatus,
-} from "@/src/components/admin/orders/OrderFilterTabs";
+import OrderFilterTabs from "@/src/components/admin/orders/OrderFilterTabs";
 import OrderCard from "@/src/components/admin/orders/OrderCard";
 import { Loader2, RefreshCw } from "lucide-react";
-import { toast } from "sonner";
+import { useAdminOrders } from "@/src/components/admin/orders/hooks/useAdminOrders";
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<OrderFilterStatus>("all");
-  const [updatingId, setUpdatingId] = useState<number | null>(null);
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
-
-  const fetchOrders = useCallback(async () => {
-    setError(null);
-    try {
-      const token = getAdminToken();
-      const res = await fetch(`${apiUrl}/admin/orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error("تعذر جلب سجل الطلبات، يرجى التأكد من الصلاحيات");
-      }
-
-      const json = await res.json();
-      const list: Order[] = Array.isArray(json)
-        ? json
-        : Array.isArray(json.data)
-          ? json.data
-          : [];
-      setOrders(list);
-    } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "حدث خطأ أثناء تحميل سجل الطلبات",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [apiUrl]);
-
-  useEffect(() => {
-    fetchOrders();
-
-    const interval = setInterval(fetchOrders, 30000);
-    return () => clearInterval(interval);
-  }, [fetchOrders]);
-
-  const handleUpdateStatus = async (
-    orderId: number,
-    newStatus: OrderStatus,
-  ) => {
-    setUpdatingId(orderId);
-    try {
-      const token = getAdminToken();
-      const res = await fetch(`${apiUrl}/admin/orders/${orderId}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast.success(
-          newStatus === "CONFIRMED"
-            ? `تم تأكيد الطلب #${orderId} وإرساله للتجهيز عبر التلجرام`
-            : `تم إلغاء الطلب #${orderId} وإرجاع المخزون بنجاح`,
-        );
-        setOrders((prev) =>
-          prev.map((o) => (o.id === orderId ? data.data : o)),
-        );
-      } else {
-        toast.error(data.message || "تعذر تحديث حالة الطلب");
-      }
-    } catch (err) {
-      console.error("Failed to update order status:", err);
-      toast.error("حدث خطأ أثناء الاتصال بالخادم لتحديث الطلب");
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  const handleUpdateAdminNote = async (
-    orderId: number,
-    adminNote: string,
-  ): Promise<boolean> => {
-    try {
-      const token = getAdminToken();
-      const res = await fetch(`${apiUrl}/admin/orders/${orderId}/note`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ adminNote }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast.success("تم حفظ ملاحظة الأدمن بنجاح");
-        setOrders((prev) =>
-          prev.map((o) =>
-            o.id === orderId
-              ? { ...o, adminNote: data.data?.adminNote ?? adminNote }
-              : o,
-          ),
-        );
-        return true;
-      } else {
-        toast.error(data.message || "تعذر حفظ ملاحظة الأدمن");
-        return false;
-      }
-    } catch (err) {
-      console.error("Failed to update admin note:", err);
-      toast.error("حدث خطأ أثناء الاتصال بالخادم لحفظ الملاحظة");
-      return false;
-    }
-  };
-
-  const counts = useMemo(() => {
-    return {
-      all: orders.length,
-      PENDING: orders.filter((o) => o.status === "PENDING").length,
-      CONFIRMED: orders.filter((o) => o.status === "CONFIRMED").length,
-      CANCELLED: orders.filter((o) => o.status === "CANCELLED").length,
-    };
-  }, [orders]);
-
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      const matchesTab =
-        activeFilter === "all" ? true : order.status === activeFilter;
-
-      if (!matchesTab) return false;
-
-      if (!searchQuery.trim()) return true;
-
-      const q = searchQuery.trim().toLowerCase();
-      const matchOrderNum = String(order.id).includes(q);
-      const matchName = (order.user?.name || "").toLowerCase().includes(q);
-      const matchPhone = (order.user?.phone || "").includes(q);
-      const matchAddress = (order.address || "").toLowerCase().includes(q);
-      const matchTransfer = (order.transferNumber || "")
-        .toLowerCase()
-        .includes(q);
-
-      return (
-        matchOrderNum ||
-        matchName ||
-        matchPhone ||
-        matchAddress ||
-        matchTransfer
-      );
-    });
-  }, [orders, activeFilter, searchQuery]);
+  const {
+    loading,
+    error,
+    searchQuery,
+    setSearchQuery,
+    activeFilter,
+    setActiveFilter,
+    updatingId,
+    fetchOrders,
+    handleUpdateStatus,
+    handleUpdateAdminNote,
+    counts,
+    filteredOrders,
+  } = useAdminOrders();
 
   return (
     <div className="flex flex-col gap-6" dir="rtl">
@@ -186,7 +37,9 @@ export default function AdminOrdersPage() {
             type="button"
             onClick={fetchOrders}
             title="تحديث قائمة الطلبات الآن"
-            className="w-11 h-11 rounded-full bg-white border border-border hover:border-primary text-sub hover:text-primary flex items-center justify-center shrink-0 transition cursor-pointer shadow-2xs"
+            className="w-11 h-11 rounded-full bg-white border border-border
+                     hover:border-primary text-sub hover:text-primary flex items-center justify-center
+                      shrink-0 transition cursor-pointer shadow-2xs"
           >
             <RefreshCw className="w-4 h-4" />
           </button>

@@ -49,9 +49,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group flex flex-col justify-between overflow-hidden rounded-2xl bg-white border border-border-subtle shadow-xs hover:shadow-md hover:border-primary/40 transition-all duration-200">
+    <div className="group flex flex-col justify-between overflow-hidden rounded-2xl bg-white border border-border-subtle shadow-xs hover:shadow-md hover:border-primary/40 transition-all duration-200 h-full w-full">
       <Link href={`/products/${product.code}`} className="flex flex-col flex-1">
-        <div className="relative aspect-[3/4] w-full bg-gray-50 overflow-hidden">
+        <div className="relative aspect-[3/4] w-full bg-gray-50 overflow-hidden shrink-0">
           {!imgError && product.image?.trim() ? (
             <Image
               src={product.image}
@@ -81,22 +81,24 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="p-4 flex flex-col gap-1.5 flex-1" dir="rtl">
-          <h3 className="text-sm md:text-base font-extrabold text-heading line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-            {product.title}
-          </h3>
+        <div className="p-4 flex flex-col gap-1.5 flex-1 justify-between" dir="rtl">
+          <div>
+            <h3 className="text-sm md:text-base font-extrabold text-heading line-clamp-2 leading-snug group-hover:text-primary transition-colors min-h-[2.5rem] md:min-h-[2.75rem] flex items-center">
+              {product.title}
+            </h3>
 
-          {product.author && (
-            <div className="flex items-center gap-1.5 text-xs text-muted mt-auto pt-1">
-              <User className="w-3.5 h-3.5 text-primary" />
-              <span className="line-clamp-1">{product.author}</span>
-            </div>
-          )}
+            {product.author && (
+              <div className="flex items-center gap-1.5 text-xs text-muted mt-1.5">
+                <User className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="line-clamp-1">{product.author}</span>
+              </div>
+            )}
+          </div>
         </div>
       </Link>
 
       <div
-        className="px-4 pb-4 pt-2 border-t border-gray-50 flex items-center justify-between gap-2"
+        className="px-4 pb-4 pt-2 border-t border-gray-50 flex items-center justify-between gap-2 mt-auto"
         dir="rtl"
       >
         <div className="flex items-baseline gap-1.5">

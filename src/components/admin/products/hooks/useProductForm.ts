@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Product } from "@/src/types";
-import { resizeImageFile } from "@/src/lib/imageUtils";
+import { uploadImageToCloudinary } from "@/src/lib/cloudinary";
 import { CATEGORIES } from "@/src/constants/categories";
 
 export interface UseProductFormProps {
@@ -36,15 +36,24 @@ export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
   const [image, setImage] = useState<string>(initialData?.image || "");
 
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleFileSelect = async (file: File) => {
+    setImageUploading(true);
+    setUploadError(null);
+    setError(null);
+
     try {
-      const base64 = await resizeImageFile(file);
-      setImage(base64);
-      setError(null);
+      const secureUrl = await uploadImageToCloudinary(file);
+      setImage(secureUrl);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "فشل في معالجة صورة الغلاف");
+      const message = err instanceof Error ? err.message : "فشل في رفع صورة الغلاف إلى Cloudinary";
+      setUploadError(message);
+      setError(message);
+    } finally {
+      setImageUploading(false);
     }
   };
 
@@ -52,43 +61,22 @@ export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
     e.preventDefault();
     setError(null);
 
-    
-    if (!code.trim()) {
-      setError("يرجى إدخال كود الكتاب المميز");
+    if (imageUploading) {
+      setError("يرجى الانتظار لحين اكتمال رفع صورة الغلاف إلى Cloudinary");
       return;
     }
-
-    if (!title.trim()) {
-      setError("يرجى إدخال عنوان الكتاب");
-      return;
-    }
-
-    if (!category.trim()) {
-      setError("يرجى اختيار قسم الكتاب");
-      return;
-    }
+    if (!code.trim()) return setError("يرجى إدخال كود الكتاب المميز");
+    if (!title.trim()) return setError("يرجى إدخال عنوان الكتاب");
+    if (!category.trim()) return setError("يرجى اختيار قسم الكتاب");
 
     const parsedPrice = Number(price);
-    if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      setError("يرجى إدخال سعر بيع صحيح للكتاب");
-      return;
-    }
+    if (isNaN(parsedPrice) || parsedPrice <= 0) return setError("يرجى إدخال سعر بيع صحيح للكتاب");
 
     const parsedQuantity = Number(quantity);
-    if (isNaN(parsedQuantity) || parsedQuantity < 0) {
-      setError("يرجى إدخال كمية مخزون صحيحة (0 أو أكثر)");
-      return;
-    }
+    if (isNaN(parsedQuantity) || parsedQuantity < 0) return setError("يرجى إدخال كمية مخزون صحيحة (0 أو أكثر)");
 
-    if (!description.trim()) {
-      setError("يرجى كتابة نبذة مختصرة عن الكتاب");
-      return;
-    }
-
-    if (!image.trim()) {
-      setError("يرجى إدخال رابط صورة غلاف الكتاب أو رفعها");
-      return;
-    }
+    if (!description.trim()) return setError("يرجى كتابة نبذة مختصرة عن الكتاب");
+    if (!image.trim()) return setError("يرجى إدخال رابط صورة غلاف الكتاب أو رفعها إلى Cloudinary");
 
     setLoading(true);
     try {
@@ -140,6 +128,8 @@ export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
     image,
     setImage,
     loading,
+    imageUploading,
+    uploadError,
     error,
     handleFileSelect,
     handleSubmit,

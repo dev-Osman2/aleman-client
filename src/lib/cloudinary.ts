@@ -24,12 +24,16 @@ export async function uploadImageToCloudinary(file: File): Promise<string> {
   }
 
   if (!file.type.startsWith("image/")) {
-    throw new Error("الملف المحدد ليس صورة صالحة. يرجى اختيار ملف بصيغة (JPG, PNG, WebP).");
+    throw new Error(
+      "الملف المحدد ليس صورة صالحة. يرجى اختيار ملف بصيغة (JPG, webp, WebP).",
+    );
   }
 
   const MAX_SIZE_MB = 10;
   if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-    throw new Error(`حجم الصورة كبير جداً. الحد الأقصى المسموح به هو ${MAX_SIZE_MB} ميجابايت.`);
+    throw new Error(
+      `حجم الصورة كبير جداً. الحد الأقصى المسموح به هو ${MAX_SIZE_MB} ميجابايت.`,
+    );
   }
 
   const cloudName =
@@ -56,12 +60,15 @@ export async function uploadImageToCloudinary(file: File): Promise<string> {
     const data: CloudinaryUploadResponse = await response.json();
 
     if (!response.ok || data.error) {
-      const errorDetail = data.error?.message || "فشل رفع الصورة إلى Cloudinary";
+      const errorDetail =
+        data.error?.message || "فشل رفع الصورة إلى Cloudinary";
       throw new Error(`خطأ أثناء الرفع: ${errorDetail}`);
     }
 
     if (!data.secure_url) {
-      throw new Error("لم يتم استلام رابط آمن (secure_url) من خادم Cloudinary.");
+      throw new Error(
+        "لم يتم استلام رابط آمن (secure_url) من خادم Cloudinary.",
+      );
     }
 
     return data.secure_url;
@@ -69,6 +76,8 @@ export async function uploadImageToCloudinary(file: File): Promise<string> {
     if (err instanceof Error) {
       throw err;
     }
-    throw new Error("تعذر الاتصال بخدمة Cloudinary. يرجى التحقق من اتصال الإنترنت.");
+    throw new Error(
+      "تعذر الاتصال بخدمة Cloudinary. يرجى التحقق من اتصال الإنترنت.",
+    );
   }
 }

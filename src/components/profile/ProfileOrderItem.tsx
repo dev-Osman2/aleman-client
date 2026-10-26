@@ -115,11 +115,11 @@ export default function ProfileOrderItem({ order }: ProfileOrderItemProps) {
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-muted">
         <div className="flex flex-col gap-1">
           <span className="font-medium">
-            📍 العنوان:{" "}
+            📍 العنوان:
             <span className="text-heading font-bold">{order.address}</span>
           </span>
           <span className="font-medium">
-            💳 طريقة الدفع:{" "}
+            💳 طريقة الدفع:
             <span className="text-heading font-bold">
               {order.paymentMethod === "INSTAPAY" ? "إنستاباي" : "فودافون كاش"}
             </span>

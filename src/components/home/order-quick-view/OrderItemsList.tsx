@@ -32,7 +32,7 @@ export default function OrderItemsList({
             <div className="flex items-center gap-3 min-w-0">
               <div className="relative w-12 h-16 rounded-lg overflow-hidden border border-gray-100 bg-gray-50 shrink-0">
                 <Image
-                  src={item.book?.image || "/logo.png"}
+                  src={item.book?.image || "/logo.webp"}
                   alt={item.book?.title || "غلاف الكتاب"}
                   fill
                   className="object-cover"
@@ -47,8 +47,8 @@ export default function OrderItemsList({
                     كود: {item.book?.code}
                   </span>
                   <span className="text-xs text-gray-500">
-                    الكمية:{" "}
-                    <strong className="text-gray-800">{item.quantity}</strong> ×{" "}
+                    الكمية:
+                    <strong className="text-gray-800">{item.quantity}</strong> ×
                     {item.priceAtBuy} ج.م
                   </span>
                 </div>

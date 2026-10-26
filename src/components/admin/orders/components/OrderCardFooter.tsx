@@ -41,7 +41,7 @@ export default function OrderCardFooter({
             إجمالي الفاتورة (شامل الشحن {order.deliveryFee} ج)
           </span>
           <span className="text-lg sm:text-xl font-black text-heading">
-            {Number(order.total || 0).toFixed(2)}{" "}
+            {Number(order.total || 0).toFixed(2)}
             <span className="text-xs font-bold">ج.م</span>
           </span>
         </div>

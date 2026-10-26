@@ -21,7 +21,7 @@ export default function ProfileStatsCards({
         <div className="text-right">
           <span className="text-xs font-bold text-muted">إجمالي الطلبات</span>
           <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
-            {orderStats.totalOrders}{" "}
+            {orderStats.totalOrders}
             <span className="text-xs font-semibold text-muted">طلب</span>
           </p>
         </div>
@@ -34,7 +34,7 @@ export default function ProfileStatsCards({
         <div className="text-right">
           <span className="text-xs font-bold text-muted">طلبات مؤكدة</span>
           <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
-            {orderStats.confirmedOrders}{" "}
+            {orderStats.confirmedOrders}
             <span className="text-xs font-semibold text-muted">طلب</span>
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function ProfileStatsCards({
         <div className="text-right">
           <span className="text-xs font-bold text-muted">قيد المراجعة</span>
           <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
-            {orderStats.pendingOrders}{" "}
+            {orderStats.pendingOrders}
             <span className="text-xs font-semibold text-muted">طلب</span>
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function ProfileStatsCards({
         <div className="text-right">
           <span className="text-xs font-bold text-muted">إجمالي المشتريات</span>
           <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
-            {orderStats.totalSpent.toFixed(2)}{" "}
+            {orderStats.totalSpent.toFixed(2)}
             <span className="text-xs font-semibold text-muted">ج.م</span>
           </p>
         </div>

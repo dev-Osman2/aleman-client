@@ -54,7 +54,7 @@ export default function ProfileSettingsTab({
 
             <div className="w-full sm:w-[calc(50%-0.5rem)]">
               <label className="block text-xs font-extrabold text-heading mb-1.5">
-                رقم الهاتف (المستخدم لتسجيل الدخول والتوصيل){" "}
+                رقم الهاتف (المستخدم لتسجيل الدخول والتوصيل)
                 <span className="text-danger">*</span>
               </label>
               <div className="relative">

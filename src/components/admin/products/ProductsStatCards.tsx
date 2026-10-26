@@ -36,7 +36,7 @@ export default function ProductsStatCards({
               إجمالي عناوين الكتب
             </span>
             <p className="text-2xl font-black text-heading mt-0.5">
-              {stats.totalTitles}{" "}
+              {stats.totalTitles}
               <span className="text-xs font-semibold text-muted">عنوان</span>
             </p>
           </div>
@@ -52,7 +52,7 @@ export default function ProductsStatCards({
             إجمالي النسخ بالمخزن
           </span>
           <p className="text-2xl font-black text-heading mt-0.5">
-            {stats.totalStock}{" "}
+            {stats.totalStock}
             <span className="text-xs font-semibold text-muted">نسخة</span>
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function ProductsStatCards({
               )}
             </div>
             <p className="text-2xl font-black text-heading mt-0.5">
-              {stats.lowStock}{" "}
+              {stats.lowStock}
               <span className="text-xs font-semibold text-muted">كتاب</span>
             </p>
           </div>
@@ -123,7 +123,7 @@ export default function ProductsStatCards({
               )}
             </div>
             <p className="text-2xl font-black text-heading mt-0.5">
-              {stats.outOfStock}{" "}
+              {stats.outOfStock}
               <span className="text-xs font-semibold text-muted">كتاب</span>
             </p>
           </div>

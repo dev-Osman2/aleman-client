@@ -56,7 +56,7 @@ export default function Header() {
         >
           <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               alt="مكتبة الإيمان"
               width={36}
               height={36}

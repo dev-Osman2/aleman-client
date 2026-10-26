@@ -44,7 +44,9 @@ export default function ProductImageUpload({
           className="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
         >
           <LinkIcon className="w-3 h-3" />
-          <span>{showUrlInput ? "إخفاء إدخال الرابط" : "إدخال رابط مباشر للصورة"}</span>
+          <span>
+            {showUrlInput ? "إخفاء إدخال الرابط" : "إدخال رابط مباشر للصورة"}
+          </span>
         </button>
       </div>
 
@@ -126,7 +128,7 @@ export default function ProductImageUpload({
               اسحب وأفلت غلاف الكتاب هنا، أو اضغط للاختيار
             </p>
             <p className="text-[11px] text-muted-light font-medium">
-              يتم الرفع سحابياً ومباشرة إلى Cloudinary (JPG, PNG, WebP)
+              يتم الرفع سحابياً ومباشرة إلى Cloudinary (JPG, webp, WebP)
             </p>
           </div>
         )}

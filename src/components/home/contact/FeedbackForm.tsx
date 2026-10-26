@@ -91,7 +91,7 @@ export default function FeedbackForm({
 
           <div>
             <label className="block text-xs font-bold text-sub mb-1">
-              مقترحك أو اسم الكتاب الذي تود توفيره{" "}
+              مقترحك أو اسم الكتاب الذي تود توفيره
               <span className="text-primary">*</span>
             </label>
             <textarea

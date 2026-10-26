@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     siteName: "مكتبة الإيمان",
     images: [
       {
-        url: "/logo.png",
+        url: "/logo.webp",
         width: 800,
         height: 600,
         alt: "شعار مكتبة الإيمان",
@@ -91,14 +91,14 @@ export const metadata: Metadata = {
     title: "مكتبة الإيمان | كتب إسلامية وعلمية",
     description:
       "اطلب كتبك ومراجعك المفضلة أونلاين من مكتبة الإيمان بأفضل الأسعار وأسرع توصيل.",
-    images: ["/logo.png"],
+    images: ["/logo.webp"],
   },
 
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/logo.webp",
+    shortcut: "/logo.webp",
+    apple: "/logo.webp",
   },
 };
 
@@ -108,7 +108,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl"  data-scroll-behavior="smooth">
+    <html lang="ar" dir="rtl" data-scroll-behavior="smooth">
       <body
         className={`${tajawal.className} bg-lightBg text-gray-800 min-h-screen flex flex-col`}
       >

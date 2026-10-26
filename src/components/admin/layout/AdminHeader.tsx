@@ -15,9 +15,7 @@ interface AdminHeaderProps {
   onOpenSearch?: () => void;
 }
 
-export default function AdminHeader({
-  onOpenMenu,
-}: AdminHeaderProps) {
+export default function AdminHeader({ onOpenMenu }: AdminHeaderProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const pathname = usePathname();
 
@@ -60,7 +58,7 @@ export default function AdminHeader({
             <div className="w-10 h-10 rounded-xl bg-white text-primary flex items-center justify-center p-2 shadow-sm transition-transform group-hover:scale-105">
               <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
                 <Image
-                  src="/logo.png"
+                  src="/logo.webp"
                   alt="مكتبة الإيمان"
                   width={36}
                   height={36}

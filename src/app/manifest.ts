@@ -11,22 +11,22 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#ea580c",
     icons: [
       {
-        src: "/logo.png",
+        src: "/logo.webp",
         sizes: "192x192",
-        type: "image/png",
-        purpose: "maskable", 
+        type: "image/webp",
+        purpose: "maskable",
       },
       {
-        src: "/logo.png",
+        src: "/logo.webp",
         sizes: "512x512",
-        type: "image/png",
-        purpose: "maskable", 
+        type: "image/webp",
+        purpose: "maskable",
       },
       {
-        src: "/logo.png",
+        src: "/logo.webp",
         sizes: "512x512",
-        type: "image/png",
-        purpose: "any", 
+        type: "image/webp",
+        purpose: "any",
       },
     ],
   };

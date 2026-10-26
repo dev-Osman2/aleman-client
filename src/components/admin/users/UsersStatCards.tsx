@@ -21,7 +21,7 @@ export default function UsersStatCards({ analytics }: UsersStatCardsProps) {
             إجمالي العملاء المسجلين
           </span>
           <p className="text-2xl font-black text-heading mt-0.5">
-            {analytics.totalUsers}{" "}
+            {analytics.totalUsers}
             <span className="text-xs font-semibold text-muted">عميل</span>
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function UsersStatCards({ analytics }: UsersStatCardsProps) {
             عملاء أتموا طلبات
           </span>
           <p className="text-2xl font-black text-heading mt-0.5">
-            {analytics.usersWithOrders}{" "}
+            {analytics.usersWithOrders}
             <span className="text-xs font-semibold text-muted">مشتري نشط</span>
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function UsersStatCards({ analytics }: UsersStatCardsProps) {
             إجمالي طلبات العملاء
           </span>
           <p className="text-2xl font-black text-heading mt-0.5">
-            {analytics.totalOrdersPlaced}{" "}
+            {analytics.totalOrdersPlaced}
             <span className="text-xs font-semibold text-muted">طلب مسجل</span>
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function UsersStatCards({ analytics }: UsersStatCardsProps) {
             حسابات جديدة قيد الانتظار
           </span>
           <p className="text-2xl font-black text-heading mt-0.5">
-            {analytics.usersWithoutOrders}{" "}
+            {analytics.usersWithoutOrders}
             <span className="text-xs font-semibold text-muted">مستخدم</span>
           </p>
         </div>

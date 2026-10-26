@@ -1,4 +1,3 @@
-import React from "react";
 import { Users, ShoppingBag, TrendingUp, UserCheck } from "lucide-react";
 
 interface UsersStatCardsProps {

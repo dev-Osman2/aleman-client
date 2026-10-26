@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { CATEGORIES } from "@/src/constants/categories";
 import { BookOpen, Hash, User, Bookmark } from "lucide-react";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { CreditCard, ExternalLink, Smartphone } from "lucide-react";
 import { PaymentMethod } from "@/src/types";
 import { INSTAPAY_LINK, VODAFONE_CASH_DISPLAY } from "@/src/constants/payment";

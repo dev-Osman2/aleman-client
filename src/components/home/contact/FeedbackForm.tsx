@@ -1,5 +1,10 @@
-import React from "react";
-import { MessageSquarePlus, AlertCircle, CheckCircle2, Send, Loader2 } from "lucide-react";
+import {
+  MessageSquarePlus,
+  AlertCircle,
+  CheckCircle2,
+  Send,
+  Loader2,
+} from "lucide-react";
 
 interface FeedbackFormProps {
   customerName: string;

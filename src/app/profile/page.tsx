@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import Link from "next/link";
 import { User, Loader2 } from "lucide-react";
 import Header from "@/src/components/layout/Header";

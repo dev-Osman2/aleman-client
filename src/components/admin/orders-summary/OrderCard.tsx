@@ -1,4 +1,3 @@
-import React from "react";
 import { Phone, MapPin, CreditCard, Check, X } from "lucide-react";
 import { SummaryOrder, OrderItem } from "./types";
 

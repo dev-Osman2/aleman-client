@@ -1,4 +1,3 @@
-import React from "react";
 import { PackageX, AlertTriangle, X } from "lucide-react";
 
 interface ProductsStockFilterBarProps {

@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { Package, Settings } from "lucide-react";
 
 interface ProfileTabsNavProps {

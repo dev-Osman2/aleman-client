@@ -1,4 +1,3 @@
-import React from "react";
 import { Wallet, TrendingUp, ShoppingBag, BookOpen, Users } from "lucide-react";
 import { AdminStatsResponse } from "./hooks/useOrdersSummary";
 

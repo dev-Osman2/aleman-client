@@ -1,13 +1,5 @@
 "use client";
-
-import React from "react";
-import {
-  Package,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  XCircle,
-} from "lucide-react";
+import { Package, Calendar, CheckCircle2, Clock, XCircle } from "lucide-react";
 import OrderDetailsInfo from "./order-quick-view/OrderDetailsInfo";
 import OrderItemsList from "./order-quick-view/OrderItemsList";
 import OrderPricingBreakdown from "./order-quick-view/OrderPricingBreakdown";
@@ -114,10 +106,7 @@ export default function OrderQuickViewModal({
 
         <OrderDetailsInfo order={order} paymentLabel={paymentLabel} />
 
-        <OrderItemsList
-          items={order.items}
-          totalBooksCount={totalBooksCount}
-        />
+        <OrderItemsList items={order.items} totalBooksCount={totalBooksCount} />
 
         <OrderPricingBreakdown order={order} />
 

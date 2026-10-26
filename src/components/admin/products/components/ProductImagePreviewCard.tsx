@@ -1,6 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
-import React from "react";
-import { X, CheckCircle2 } from "lucide-react";
+/* eslint-disable @next/next/no-img-element */ import {
+  X,
+  CheckCircle2,
+} from "lucide-react";
 
 interface ProductImagePreviewCardProps {
   imagePreview: string;

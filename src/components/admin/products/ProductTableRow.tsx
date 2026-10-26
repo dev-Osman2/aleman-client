@@ -1,6 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-import React from "react";
-import { Product } from "@/src/types";
+/* eslint-disable @next/next/no-img-element */ import { Product } from "@/src/types";
 import { Pencil, Trash2, Hash, Layers } from "lucide-react";
 import ProductStockBadge from "./ProductStockBadge";
 
@@ -17,10 +15,14 @@ export default function ProductTableRow({
 }: ProductTableRowProps) {
   const qty = Number(product.quantity || 0);
   const isOutOfStock = qty <= 0;
-  const hasDiscount = Boolean(product.oldPrice && product.oldPrice > product.price);
+  const hasDiscount = Boolean(
+    product.oldPrice && product.oldPrice > product.price,
+  );
   const discountPercent = hasDiscount
     ? Math.round(
-        ((Number(product.oldPrice) - Number(product.price)) / Number(product.oldPrice)) * 100,
+        ((Number(product.oldPrice) - Number(product.price)) /
+          Number(product.oldPrice)) *
+          100,
       )
     : 0;
 
@@ -34,7 +36,10 @@ export default function ProductTableRow({
         <div className="flex items-center gap-3.5">
           <div className="relative shrink-0">
             <img
-              src={product.image || "https://placehold.co/100x140/f1f5f9/0f172a?text=?"}
+              src={
+                product.image ||
+                "https://placehold.co/100x140/f1f5f9/0f172a?text=?"
+              }
               alt={product.title}
               className="w-14 h-20 rounded-xl object-cover border border-border/80 shadow-xs bg-surface-subtle"
               onError={(e) => {

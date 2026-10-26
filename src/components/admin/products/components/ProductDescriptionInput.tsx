@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { AlignLeft, FileText } from "lucide-react";
 
 interface ProductDescriptionInputProps {

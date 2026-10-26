@@ -1,4 +1,3 @@
-import React from "react";
 import { Trash2, Loader2, LogOut } from "lucide-react";
 
 interface AdminSidebarActionsProps {

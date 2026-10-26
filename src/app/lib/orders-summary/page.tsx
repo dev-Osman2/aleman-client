@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { RefreshCw, Loader2 } from "lucide-react";
 import { useOrdersSummary } from "@/src/components/admin/orders-summary/hooks/useOrdersSummary";
 import SummaryKpiCards from "@/src/components/admin/orders-summary/SummaryKpiCards";

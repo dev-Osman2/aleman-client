@@ -81,7 +81,7 @@ export default function AddToCartSection({ book }: AddToCartProps) {
   const isOutOfStock = availableQuantity <= 0;
 
   return (
-    <div className="flex flex-row items-center gap-3 w-full max-w-md pt-4">
+    <div className="flex flex-row  items-center gap-3 w-full max-w-md pt-4">
       <button
         type="button"
         onClick={handleAddToCart}
@@ -102,10 +102,10 @@ export default function AddToCartSection({ book }: AddToCartProps) {
         ) : (
           <>
             <ShoppingBag className="w-5 h-5" />
-            <span>
+            <span  className="text-sm">
               {isOutOfStock
                 ? "نفد من المخزون"
-                : `أضف إلى السلة (${price * quantity} ج.م)`}
+                : `أضف إلى السلة)`}
             </span>
           </>
         )}

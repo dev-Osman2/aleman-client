@@ -1,4 +1,3 @@
-import React from "react";
 import { Mail, Calendar, PackageCheck, Copy, Check } from "lucide-react";
 import { AdminUserRecord } from "./hooks/useAdminUsers";
 
@@ -30,13 +29,14 @@ export default function UsersTable({
           <tbody className="divide-y divide-border-subtle">
             {users.map((user, i) => {
               const ordersCount = user._count?.orders || 0;
-              const formattedDate = new Date(
-                user.createdAt,
-              ).toLocaleDateString("ar-EG", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              });
+              const formattedDate = new Date(user.createdAt).toLocaleDateString(
+                "ar-EG",
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                },
+              );
 
               return (
                 <tr
@@ -47,7 +47,7 @@ export default function UsersTable({
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-black text-sm flex items-center justify-center shrink-0">
                         {/* {user.name ? user.name.trim().charAt(0) : "ع"} */}
-                        {i+1}
+                        {i + 1}
                       </div>
                       <div className="min-w-0">
                         <span className="font-extrabold text-heading text-sm block truncate">

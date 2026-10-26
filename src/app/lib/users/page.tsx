@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { Users, RefreshCw, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAdminUsers } from "@/src/components/admin/users/hooks/useAdminUsers";

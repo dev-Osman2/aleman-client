@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import DirectContactChannels from "./contact/DirectContactChannels";
 import FeedbackForm from "./contact/FeedbackForm";
 import { useFeedbackForm } from "./contact/useFeedbackForm";

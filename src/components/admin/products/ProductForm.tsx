@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { Product } from "@/src/types";
 import { Loader2, AlertCircle, Save, X } from "lucide-react";
 import { useProductForm } from "./hooks/useProductForm";

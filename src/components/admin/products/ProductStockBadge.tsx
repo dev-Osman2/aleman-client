@@ -1,11 +1,12 @@
-import React from "react";
 import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 
 interface ProductStockBadgeProps {
   quantity: number;
 }
 
-export default function ProductStockBadge({ quantity }: ProductStockBadgeProps) {
+export default function ProductStockBadge({
+  quantity,
+}: ProductStockBadgeProps) {
   const isOutOfStock = quantity <= 0;
   const isLowStock = quantity > 0 && quantity <= 5;
 

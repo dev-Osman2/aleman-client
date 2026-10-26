@@ -1,4 +1,3 @@
-import React from "react";
 import { ShoppingBag, CheckCircle2, Clock, CreditCard } from "lucide-react";
 
 interface ProfileStatsCardsProps {

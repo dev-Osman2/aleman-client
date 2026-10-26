@@ -1,6 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-import React from "react";
-import { Flame } from "lucide-react";
+/* eslint-disable @next/next/no-img-element */ import { Flame } from "lucide-react";
 import { SoldBookStat } from "./hooks/useOrdersSummary";
 
 interface TopSellingBooksTableProps {

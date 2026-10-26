@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import Link from "next/link";
 import { Send, AlertCircle, CheckCircle2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/src/context/CartContext";
@@ -93,7 +91,10 @@ export default function CheckoutForm() {
         </div>
       )}
 
-      <form onSubmit={handleOrderSubmit} className="flex flex-col gap-4 shrink-0">
+      <form
+        onSubmit={handleOrderSubmit}
+        className="flex flex-col gap-4 shrink-0"
+      >
         <CheckoutCustomerInputs
           name={name}
           setName={setName}

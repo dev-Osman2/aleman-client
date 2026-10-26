@@ -1,4 +1,3 @@
-import React from "react";
 import { Clock, CheckCircle2, XCircle, CreditCard } from "lucide-react";
 
 interface SummaryStatusAndPaymentProps {

@@ -1,5 +1,9 @@
-import React from "react";
-import { User as UserIcon, Phone as PhoneIcon, MapPin, FileText } from "lucide-react";
+import {
+  User as UserIcon,
+  Phone as PhoneIcon,
+  MapPin,
+  FileText,
+} from "lucide-react";
 
 interface CheckoutCustomerInputsProps {
   name: string;

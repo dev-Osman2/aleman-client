@@ -1,4 +1,3 @@
-import React from "react";
 import { User, ShieldCheck, Phone, Mail, Calendar, LogOut } from "lucide-react";
 
 interface ProfileHeaderCardProps {

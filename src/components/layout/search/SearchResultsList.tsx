@@ -1,6 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-import React from "react";
-import { Product } from "@/src/types";
+/* eslint-disable @next/next/no-img-element */ import { Product } from "@/src/types";
 
 interface SearchResultsListProps {
   products: Product[];

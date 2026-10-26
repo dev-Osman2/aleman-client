@@ -1,4 +1,3 @@
-import React from "react";
 import { BookOpen } from "lucide-react";
 import { Product } from "@/src/types";
 import CashierBookCard from "./CashierBookCard";

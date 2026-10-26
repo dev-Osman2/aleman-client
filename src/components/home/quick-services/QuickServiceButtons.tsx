@@ -1,4 +1,3 @@
-import React from "react";
 import { Info, CheckCircle2, ChevronDown, Headset } from "lucide-react";
 
 interface QuickServiceButtonsProps {

@@ -1,4 +1,3 @@
-import React from "react";
 import { CATEGORY_TABS } from "@/src/constants/categories";
 import { Search, RefreshCw } from "lucide-react";
 

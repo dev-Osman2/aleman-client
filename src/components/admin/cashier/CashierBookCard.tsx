@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 import { Plus, Check, Hash } from "lucide-react";
 import { Product } from "@/src/types";

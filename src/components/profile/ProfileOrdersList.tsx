@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { RefreshCw, Loader2, BookOpen, ChevronLeft } from "lucide-react";
 import { Order } from "@/src/types";
@@ -27,7 +26,9 @@ export default function ProfileOrdersList({
           disabled={loading}
           className="inline-flex items-center gap-1.5 text-xs font-extrabold text-primary hover:text-primary-hover bg-primary-light px-3 py-1.5 rounded-xl border border-primary/20 transition cursor-pointer"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`}
+          />
           <span>تحديث</span>
         </button>
       </div>

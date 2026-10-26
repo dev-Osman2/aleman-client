@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { DollarSign, Tag, Boxes } from "lucide-react";
 
 interface ProductPricingInputsProps {

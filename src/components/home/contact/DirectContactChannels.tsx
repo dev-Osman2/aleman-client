@@ -1,4 +1,3 @@
-import React from "react";
 import { MessageCircle, PhoneCall, Send } from "lucide-react";
 
 interface DirectContactChannelsProps {

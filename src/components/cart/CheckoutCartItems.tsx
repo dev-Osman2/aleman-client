@@ -1,6 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-import React from "react";
-import { Plus, Minus, BookOpen } from "lucide-react";
+/* eslint-disable @next/next/no-img-element */ import {
+  Plus,
+  Minus,
+  BookOpen,
+} from "lucide-react";
 import { CartItem } from "@/src/types";
 
 interface CheckoutCartItemsProps {

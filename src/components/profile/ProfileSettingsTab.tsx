@@ -1,4 +1,3 @@
-import React from "react";
 import { User, Phone, Mail, Settings, Trash2, Loader2 } from "lucide-react";
 
 interface ProfileSettingsTabProps {
@@ -118,7 +117,7 @@ export default function ProfileSettingsTab({
         <div className="flex items-center gap-2.5 pb-3 border-b border-danger-border/50">
           <Trash2 className="w-5 h-5 text-danger" />
           <h3 className="text-base sm:text-lg font-black text-danger">
-             حذف الحساب نهائياً
+            حذف الحساب نهائياً
           </h3>
         </div>
 

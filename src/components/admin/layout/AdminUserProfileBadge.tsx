@@ -1,4 +1,3 @@
-import React from "react";
 import { User as UserIcon, ShieldCheck } from "lucide-react";
 import { User } from "@/src/types";
 

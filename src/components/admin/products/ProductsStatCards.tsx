@@ -1,4 +1,3 @@
-import React from "react";
 import { BookOpen, Boxes, AlertTriangle, PackageX } from "lucide-react";
 
 interface ProductsStatCardsProps {

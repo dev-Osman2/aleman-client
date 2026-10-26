@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
 import { TrackedOrderItem } from "../OrderQuickViewModal";

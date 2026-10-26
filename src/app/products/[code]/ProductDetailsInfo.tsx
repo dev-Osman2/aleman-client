@@ -1,5 +1,11 @@
-import React from "react";
-import { Layers, Hash, User, Building2, FileText, BookOpen } from "lucide-react";
+import {
+  Layers,
+  Hash,
+  User,
+  Building2,
+  FileText,
+  BookOpen,
+} from "lucide-react";
 import { Product } from "@/src/types";
 
 interface ProductDetailsInfoProps {
@@ -95,9 +101,7 @@ export default function ProductDetailsInfo({
         </h2>
         <div className="text-xs sm:text-sm text-sub leading-relaxed bg-gray-50/60 p-4 sm:p-5 rounded-2xl border border-gray-100">
           <p className="whitespace-pre-line">
-            {
-              book.description ||
-              "لا يوجد وصف إضافي متوفر لهذا الكتاب حالياً."}
+            {book.description || "لا يوجد وصف إضافي متوفر لهذا الكتاب حالياً."}
           </p>
         </div>
       </div>

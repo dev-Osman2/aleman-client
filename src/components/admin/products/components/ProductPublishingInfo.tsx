@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { Building2, FileText } from "lucide-react";
 
 interface ProductPublishingInfoProps {

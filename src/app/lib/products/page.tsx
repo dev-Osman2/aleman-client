@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import ProductsHeader from "@/src/components/admin/products/ProductsHeader";

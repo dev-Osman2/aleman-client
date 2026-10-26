@@ -1,6 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-import React from "react";
-import { Clock, CheckCircle2, XCircle } from "lucide-react";
+/* eslint-disable @next/next/no-img-element */ import {
+  Clock,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { Order, OrderStatus } from "@/src/types";
 
 interface ProfileOrderItemProps {

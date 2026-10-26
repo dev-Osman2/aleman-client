@@ -1,4 +1,3 @@
-import React from "react";
 import { TrackedOrder } from "../OrderQuickViewModal";
 
 interface OrderPricingBreakdownProps {
@@ -20,7 +19,9 @@ export default function OrderPricingBreakdown({
       </div>
       <div className="pt-2 border-t border-gray-200 flex justify-between items-center text-sm sm:text-base">
         <span className="font-extrabold text-gray-900">الإجمالي النهائي:</span>
-        <span className="font-black text-lg text-teal-700">{order.total} ج.م</span>
+        <span className="font-black text-lg text-teal-700">
+          {order.total} ج.م
+        </span>
       </div>
     </div>
   );

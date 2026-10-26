@@ -24,7 +24,6 @@ export default function AdminLayout({
   const [clearingOrders, setClearingOrders] = useState(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
-  const isCashierPage = pathname === "/lib/cashier";
 
   const handleClearAllOrders = async () => {
     setClearingOrders(true);
@@ -96,7 +95,6 @@ export default function AdminLayout({
       dir="rtl"
     >
       <AdminHeader
-        isCashierPage={isCashierPage}
         currentUser={currentUser}
         onOpenMenu={() => setDrawerOpen(true)}
         onLogout={() => {
@@ -118,10 +116,6 @@ export default function AdminLayout({
         clearingOrders={clearingOrders}
         onRequestClearOrders={() => setShowClearOrdersModal(true)}
       />
-
-      {isCashierPage && (
-        <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-      )}
 
       <main className="flex-1 container mx-auto px-4 py-6 print:p-0 print:m-0 print:max-w-none">
         {children}

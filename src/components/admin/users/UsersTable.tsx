@@ -46,7 +46,6 @@ export default function UsersTable({
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-black text-sm flex items-center justify-center shrink-0">
-                        {/* {user.name ? user.name.trim().charAt(0) : "ع"} */}
                         {i + 1}
                       </div>
                       <div className="min-w-0">

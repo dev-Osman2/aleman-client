@@ -8,7 +8,6 @@ import { User } from "@/src/types";
 import AdminNavLinks from "./AdminNavLinks";
 
 interface AdminHeaderProps {
-  isCashierPage?: boolean;
   currentUser?: User | null;
   onOpenMenu: () => void;
   onLogout: () => void;

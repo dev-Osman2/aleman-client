@@ -29,8 +29,11 @@ export default function CheckoutForm() {
     errorMsg,
     successOrderId,
     handleOrderSubmit,
+    successRef
   } = useCheckoutForm();
 
+
+  
   return (
     <div
       id="order-summary"
@@ -48,7 +51,9 @@ export default function CheckoutForm() {
       </div>
 
       {successOrderId && (
-        <div className="rounded-2xl bg-green-50 border border-green-200 p-4 text-center space-y-1 shrink-0">
+        <div className="rounded-2xl bg-green-50 border border-green-200 p-4 text-center space-y-1 shrink-0"
+          ref={successRef}
+        >
           <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto" />
           <p className="text-sm font-black text-green-800">
             تم تسجيل طلبك بنجاح! رقم الطلب: #{successOrderId}

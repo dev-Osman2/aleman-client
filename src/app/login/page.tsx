@@ -53,7 +53,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[91vh] flex flex-col bg-gray-50/40">
+    <div className="min-h-[92vh] sm:min-h-[91vh] flex flex-col bg-gray-50/40">
       <Header />
 
       <main

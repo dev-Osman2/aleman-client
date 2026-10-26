@@ -24,7 +24,7 @@ export default function CheckoutPaymentSection({
     : `tel:*9*7*${VODAFONE_CASH_DISPLAY}*${totalPrice}#`;
   const subtitle = isInstapay
     ? "اضغط هنا للتحويل مباشرة عبر تطبيق إنستاباي:"
-    : "رقم محفظة فودافون كاش للتحويل (اضغط للدفع السريع):";
+    : "اضغط هنا للتحويل مباشرة عبر محفظة كاش:";
 
   return (
     <div className="flex flex-col gap-4">
@@ -101,7 +101,8 @@ export default function CheckoutPaymentSection({
         </label>
         <div className="relative">
           <input
-            type="text"
+            type="tel"
+            maxLength={11}
             required
             value={transferNumber}
             onChange={(e) => setTransferNumber(e.target.value)}

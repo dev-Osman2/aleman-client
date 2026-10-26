@@ -20,7 +20,7 @@ export default function AdminLoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-dark relative overflow-hidden p-4 selection:bg-primary-light selection:text-primary"
+      className="min-h-[91vh] flex items-center justify-center bg-dark relative overflow-hidden p-4 selection:bg-primary-light selection:text-primary"
       dir="rtl"
     >
       <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />

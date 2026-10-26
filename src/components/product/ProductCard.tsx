@@ -98,7 +98,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       <div
-        className="px-4 pb-4 pt-2 border-t border-gray-50 flex items-center justify-between gap-2 mt-auto"
+        className="px-4 pb-4 pt-2 border-t border-gray-50 flex flex-col md:flex-row  items-center justify-between gap-2 mt-auto"
         dir="rtl"
       >
         <div className="flex items-baseline gap-1.5">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/src/context/CartContext";
 import { useAuth } from "@/src/context/AuthContext";
@@ -25,10 +25,13 @@ export function useCheckoutForm() {
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName((prev) => (prev ? prev : user.name || ""));
       setPhone((prev) => (prev ? prev : user.phone || ""));
     }
   }, [user]);
+
+  const successRef = useRef<HTMLDivElement | null>(null);
 
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,6 +112,21 @@ export function useCheckoutForm() {
     }
   };
 
+useEffect(() => {
+  if (!successOrderId) return;
+
+  successRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "center", 
+  });
+
+  const timer = setTimeout(() => {
+    setSuccessOrderId(null);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, [successOrderId]);
+
   return {
     user,
     cart,
@@ -128,5 +146,6 @@ export function useCheckoutForm() {
     errorMsg,
     successOrderId,
     handleOrderSubmit,
+    successRef
   };
 }

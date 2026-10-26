@@ -116,7 +116,7 @@ export default function RootLayout({
           <CartProvider>
             {children}
             <Footer />
-            <Toaster position="top-center" richColors dir="rtl" />
+            <Toaster position="bottom-left" richColors dir="rtl" />
           </CartProvider>
         </AuthProvider>
       </body>

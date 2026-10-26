@@ -35,11 +35,12 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUserRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<"all" | "with_orders" | "no_orders">("all");
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "with_orders" | "no_orders"
+  >("all");
   const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -58,13 +59,15 @@ export default function AdminUsersPage() {
       const list: AdminUserRecord[] = Array.isArray(json)
         ? json
         : Array.isArray(json.data)
-        ? json.data
-        : [];
+          ? json.data
+          : [];
       setUsers(list);
     } catch (err: unknown) {
       console.error("Failed to fetch admin users:", err);
       toast.error(
-        err instanceof Error ? err.message : "حدث خطأ أثناء تحميل بيانات العملاء"
+        err instanceof Error
+          ? err.message
+          : "حدث خطأ أثناء تحميل بيانات العملاء",
       );
     } finally {
       setLoading(false);
@@ -87,13 +90,14 @@ export default function AdminUsersPage() {
     }
   };
 
-  // إحصائيات تحليلية سريعة
   const analytics = useMemo(() => {
     const totalUsers = users.length;
-    const usersWithOrders = users.filter((u) => (u._count?.orders || 0) > 0).length;
+    const usersWithOrders = users.filter(
+      (u) => (u._count?.orders || 0) > 0,
+    ).length;
     const totalOrdersPlaced = users.reduce(
       (sum, u) => sum + (u._count?.orders || 0),
-      0
+      0,
     );
     const usersWithoutOrders = totalUsers - usersWithOrders;
 
@@ -105,15 +109,12 @@ export default function AdminUsersPage() {
     };
   }, [users]);
 
-  // تصفية وبحث المستخدمين
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
-      // فلترة النوع
       const orderCount = user._count?.orders || 0;
       if (activeFilter === "with_orders" && orderCount === 0) return false;
       if (activeFilter === "no_orders" && orderCount > 0) return false;
 
-      // بحث النص
       if (!searchQuery.trim()) return true;
       const q = searchQuery.trim().toLowerCase();
       const name = (user.name || "").toLowerCase();
@@ -126,7 +127,6 @@ export default function AdminUsersPage() {
 
   return (
     <div className="flex flex-col gap-6" dir="rtl">
-      {/* ترويسة الصفحة */}
       <div className="bg-white rounded-3xl border border-border/80 p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div className="text-right flex flex-col gap-1.5">
           <div className="flex items-center gap-2.5">
@@ -138,7 +138,8 @@ export default function AdminUsersPage() {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-muted font-medium">
-            متابعة حسابات العملاء المسجلين، أرقام الهواتف، وعدد الطلبات المسجلة لكل مستخدم
+            متابعة حسابات العملاء المسجلين، أرقام الهواتف، وعدد الطلبات المسجلة
+            لكل مستخدم
           </p>
         </div>
 
@@ -151,20 +152,22 @@ export default function AdminUsersPage() {
           }}
           className="bg-white hover:bg-surface-subtle border border-border/90 text-heading font-extrabold px-4 py-3 rounded-2xl shadow-2xs flex items-center justify-center gap-2 text-xs sm:text-sm transition-all active:scale-95 cursor-pointer shrink-0"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-primary" : ""}`} />
+          <RefreshCw
+            className={`w-4 h-4 ${loading ? "animate-spin text-primary" : ""}`}
+          />
           <span>تحديث القائمة</span>
         </button>
       </div>
 
-      {/* كروت التحليل البياني (مبنية بواسطة flex-box بدون grid) */}
       <div className="flex flex-wrap gap-4">
-        {/* كارت 1: إجمالي المستخدمين */}
         <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0">
             <Users className="w-6 h-6" />
           </div>
           <div className="text-right">
-            <span className="text-xs font-bold text-muted">إجمالي العملاء المسجلين</span>
+            <span className="text-xs font-bold text-muted">
+              إجمالي العملاء المسجلين
+            </span>
             <p className="text-2xl font-black text-heading mt-0.5">
               {analytics.totalUsers}{" "}
               <span className="text-xs font-semibold text-muted">عميل</span>
@@ -172,27 +175,31 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        {/* كارت 2: عملاء نشطون بطلبات */}
         <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-success-light text-success flex items-center justify-center shrink-0">
             <ShoppingBag className="w-6 h-6" />
           </div>
           <div className="text-right">
-            <span className="text-xs font-bold text-muted">عملاء أتموا طلبات</span>
+            <span className="text-xs font-bold text-muted">
+              عملاء أتموا طلبات
+            </span>
             <p className="text-2xl font-black text-heading mt-0.5">
               {analytics.usersWithOrders}{" "}
-              <span className="text-xs font-semibold text-muted">مشتري نشط</span>
+              <span className="text-xs font-semibold text-muted">
+                مشتري نشط
+              </span>
             </p>
           </div>
         </div>
 
-        {/* كارت 3: إجمالي الطلبات */}
         <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-warning-light text-warning flex items-center justify-center shrink-0">
             <TrendingUp className="w-6 h-6" />
           </div>
           <div className="text-right">
-            <span className="text-xs font-bold text-muted">إجمالي طلبات العملاء</span>
+            <span className="text-xs font-bold text-muted">
+              إجمالي طلبات العملاء
+            </span>
             <p className="text-2xl font-black text-heading mt-0.5">
               {analytics.totalOrdersPlaced}{" "}
               <span className="text-xs font-semibold text-muted">طلب مسجل</span>
@@ -200,13 +207,14 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        {/* كارت 4: عملاء جدد بدون طلبات */}
         <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-surface-subtle text-muted-dark flex items-center justify-center shrink-0">
             <UserCheck className="w-6 h-6" />
           </div>
           <div className="text-right">
-            <span className="text-xs font-bold text-muted">حسابات جديدة قيد الانتظار</span>
+            <span className="text-xs font-bold text-muted">
+              حسابات جديدة قيد الانتظار
+            </span>
             <p className="text-2xl font-black text-heading mt-0.5">
               {analytics.usersWithoutOrders}{" "}
               <span className="text-xs font-semibold text-muted">مستخدم</span>
@@ -215,9 +223,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* شريط البحث وتصفية الحسابات */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        {/* أزرار الفلترة السريعة */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
           <button
             type="button"
@@ -256,7 +262,6 @@ export default function AdminUsersPage() {
           </button>
         </div>
 
-        {/* حقل البحث بالاسم أو الرقم */}
         <div className="relative w-full sm:w-80 shrink-0">
           <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
             <Search className="w-4 h-4" />
@@ -271,7 +276,6 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* جدول العملاء أو مؤشر التحميل */}
       {loading ? (
         <div className="bg-white rounded-3xl border border-border/80 py-24 flex flex-col items-center justify-center gap-3 text-muted">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -282,9 +286,12 @@ export default function AdminUsersPage() {
           <div className="w-16 h-16 rounded-2xl bg-surface-subtle text-muted flex items-center justify-center">
             <Users className="w-8 h-8 text-muted-light" />
           </div>
-          <p className="text-heading font-black text-base">لا يوجد عملاء مطابقون للبحث</p>
+          <p className="text-heading font-black text-base">
+            لا يوجد عملاء مطابقون للبحث
+          </p>
           <p className="text-muted text-xs max-w-sm">
-            تأكد من كتابة الاسم أو رقم الهاتف أو البريد بشكل صحيح، أو اختر تصنيفاً آخر.
+            تأكد من كتابة الاسم أو رقم الهاتف أو البريد بشكل صحيح، أو اختر
+            تصنيفاً آخر.
           </p>
         </div>
       ) : (
@@ -304,7 +311,9 @@ export default function AdminUsersPage() {
               <tbody className="divide-y divide-border-subtle">
                 {filteredUsers.map((user) => {
                   const ordersCount = user._count?.orders || 0;
-                  const formattedDate = new Date(user.createdAt).toLocaleDateString("ar-EG", {
+                  const formattedDate = new Date(
+                    user.createdAt,
+                  ).toLocaleDateString("ar-EG", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -315,7 +324,6 @@ export default function AdminUsersPage() {
                       key={user.id}
                       className="transition-colors hover:bg-primary-light/10"
                     >
-                      {/* اسم العميل */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-primary/10 text-primary font-black text-sm flex items-center justify-center shrink-0">
@@ -332,7 +340,6 @@ export default function AdminUsersPage() {
                         </div>
                       </td>
 
-                      {/* رقم الهاتف */}
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs font-bold text-heading dir-ltr">
@@ -355,15 +362,16 @@ export default function AdminUsersPage() {
                         </div>
                       </td>
 
-                      {/* البريد الإلكتروني */}
                       <td className="py-4 px-4">
-                        <div className="flex items-center gap-1.5 text-xs text-sub truncate" title={user.email}>
+                        <div
+                          className="flex items-center gap-1.5 text-xs text-sub truncate"
+                          title={user.email}
+                        >
                           <Mail className="w-3.5 h-3.5 text-muted-light shrink-0" />
                           <span className="truncate">{user.email || "—"}</span>
                         </div>
                       </td>
 
-                      {/* عدد الطلبات */}
                       <td className="py-4 px-4 text-center">
                         <span
                           className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black ${
@@ -377,7 +385,6 @@ export default function AdminUsersPage() {
                         </span>
                       </td>
 
-                      {/* تاريخ التسجيل */}
                       <td className="py-4 px-6 text-left">
                         <div className="inline-flex items-center gap-1.5 text-xs text-muted font-medium">
                           <Calendar className="w-3.5 h-3.5 text-muted-light" />

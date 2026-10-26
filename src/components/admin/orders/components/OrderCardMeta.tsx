@@ -17,7 +17,6 @@ export default function OrderCardMeta({
 
   return (
     <div className="flex flex-col gap-2 text-xs text-muted">
-      {/* العنوان والتوصيل */}
       <div className="flex items-center gap-2 text-sub font-bold">
         <Truck className="w-4 h-4 text-primary shrink-0" />
         <span className="truncate" title={order.address}>

@@ -35,7 +35,6 @@ export default function OrderCardFooter({
 
   return (
     <div className="flex flex-col gap-4 pt-3 border-t border-border-subtle">
-      {/* سطر الإجمالي وطريقة الدفع */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <span className="block text-[11px] text-muted font-bold">
@@ -78,7 +77,6 @@ export default function OrderCardFooter({
         </div>
       </div>
 
-      {/* أزرار تغيير حالة الطلب */}
       <div className="flex gap-3">
         <button
           type="button"
@@ -108,7 +106,9 @@ export default function OrderCardFooter({
         >
           <X className="w-4 h-4 stroke-[2.5]" />
           <span>
-            {order.status === "CANCELLED" ? "الطلب ملغي (أُرجع المخزون)" : "إلغاء الطلب"}
+            {order.status === "CANCELLED"
+              ? "الطلب ملغي (أُرجع المخزون)"
+              : "إلغاء الطلب"}
           </span>
         </button>
       </div>

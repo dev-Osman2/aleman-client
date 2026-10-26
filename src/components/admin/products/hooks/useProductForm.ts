@@ -52,7 +52,7 @@ export function useProductForm({ initialData, onSubmit }: UseProductFormProps) {
     e.preventDefault();
     setError(null);
 
-    // التحقق من الحقول الأساسية
+    
     if (!code.trim()) {
       setError("يرجى إدخال كود الكتاب المميز");
       return;

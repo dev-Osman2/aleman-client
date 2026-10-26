@@ -74,7 +74,6 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
           </button>
         </div>
 
-        {/* زر الوصول للملف الشخصي والطلبات */}
         <div className="mb-3 flex flex-col gap-2 shrink-0">
           <Link
             href={user ? "/profile" : "/login"}
@@ -87,7 +86,9 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
               ) : (
                 <LogIn className="w-4 h-4 text-primary shrink-0" />
               )}
-              <span>{user ? `حسابي (${user.name})` : "تسجيل الدخول / حسابي"}</span>
+              <span>
+                {user ? `حسابي (${user.name})` : "تسجيل الدخول / حسابي"}
+              </span>
             </div>
           </Link>
 

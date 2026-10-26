@@ -26,17 +26,16 @@ function CashierContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [notes, setNotes] = useState("");
   const [paymentMode, setPaymentMode] = useState<"cash" | "card" | "instapay">(
-    "cash"
+    "cash",
   );
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [lastReceipt, setLastReceipt] = useState<PrintedOrderSnapshot | null>(
-    null
+    null,
   );
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   useEffect(() => {
     async function fetchBooks() {
@@ -47,8 +46,8 @@ function CashierContent() {
           const list: Product[] = Array.isArray(json)
             ? json
             : Array.isArray(json.data)
-            ? json.data
-            : [];
+              ? json.data
+              : [];
           setProducts(list);
         }
       } catch (err) {
@@ -60,11 +59,13 @@ function CashierContent() {
     fetchBooks();
   }, [apiUrl]);
 
-  // تصفية الكتب حسب القسم وبحث النص
   const displayedProducts = useMemo(() => {
     const list = Array.isArray(products) ? products : [];
     return list.filter((product) => {
-      if (currentCategory && (product.category ?? "").trim() !== currentCategory) {
+      if (
+        currentCategory &&
+        (product.category ?? "").trim() !== currentCategory
+      ) {
         return false;
       }
       if (!searchQuery.trim()) return true;
@@ -103,13 +104,14 @@ function CashierContent() {
       const payload = {
         address: "بيع مباشر من مقر المكتبة (كاشير)",
         notes: notes.trim() || `طلب كاشير - طريقة الدفع: ${paymentMode}`,
-        paymentMethod: paymentMode === "instapay" ? "INSTAPAY" : "VODAFONE_CASH",
+        paymentMethod:
+          paymentMode === "instapay" ? "INSTAPAY" : "VODAFONE_CASH",
         transferNumber:
           paymentMode === "cash"
             ? "نقدي - كاشير المكتبة"
             : paymentMode === "card"
-            ? "بطاقة دفع - كاشير المكتبة"
-            : "تحويل فوري - كاشير المكتبة",
+              ? "بطاقة دفع - كاشير المكتبة"
+              : "تحويل فوري - كاشير المكتبة",
         items: cart.map((item) => ({
           bookId: item.id,
           quantity: item.cartQuantity,
@@ -146,17 +148,20 @@ function CashierContent() {
       };
 
       setLastReceipt(receiptData);
-      setSuccessMsg(`تم إتمام البيع بنجاح للطلب #${receiptData.orderNumber} وخصم المخزون`);
+      setSuccessMsg(
+        `تم إتمام البيع بنجاح للطلب #${receiptData.orderNumber} وخصم المخزون`,
+      );
       clearCart();
       setNotes("");
 
-      // استدعاء نافذة الطباعة الحرارية بعد ثوانٍ بسيطة لضمان اكتمال الرندر
       setTimeout(() => {
         window.print();
       }, 200);
     } catch (err: unknown) {
       setErrorMsg(
-        err instanceof Error ? err.message : "حدث خطأ أثناء تسجيل الطلب بالسيرفر"
+        err instanceof Error
+          ? err.message
+          : "حدث خطأ أثناء تسجيل الطلب بالسيرفر",
       );
     } finally {
       setSubmitting(false);
@@ -168,7 +173,6 @@ function CashierContent() {
       <CashierOrderWatcher />
 
       <div className="print:hidden flex flex-col gap-5" dir="rtl">
-        {/* شريط الأقسام والبحث السريع */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <CashierCategoryBar
@@ -191,9 +195,7 @@ function CashierContent() {
           </div>
         </div>
 
-        {/* جسم الشاشة: شبكة الكتب + سلة الكاشير */}
         <div className="flex flex-col lg:flex-row gap-6 items-start">
-          {/* شبكة عرض الكتب للكاشير */}
           <div className="w-full lg:w-7/12">
             {loadingProducts ? (
               <div className="text-center py-24 bg-white rounded-3xl border border-border text-muted-light text-sm font-bold flex flex-col items-center justify-center gap-2">
@@ -222,7 +224,6 @@ function CashierContent() {
                           : "opacity-60 cursor-not-allowed border-border/60"
                       } ${inCartItem ? "ring-2 ring-primary/30 border-primary" : ""}`}
                     >
-                      {/* الغلاف والكود */}
                       <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-surface-soft mb-2.5">
                         <Image
                           src={book.image}
@@ -257,7 +258,6 @@ function CashierContent() {
                         )}
                       </div>
 
-                      {/* عنوان الكتاب والمؤلف والسعر */}
                       <div className="flex flex-col gap-1 text-right flex-1 justify-between">
                         <div>
                           <h4 className="text-xs sm:text-sm font-black text-heading line-clamp-2 leading-tight">
@@ -300,7 +300,6 @@ function CashierContent() {
             )}
           </div>
 
-          {/* لوحة سلة الكاشير والدفع */}
           <div className="w-full lg:w-5/12 lg:sticky lg:top-20">
             <CashierCartPanel
               notes={notes}

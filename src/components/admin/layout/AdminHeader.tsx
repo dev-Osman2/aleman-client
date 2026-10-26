@@ -94,7 +94,6 @@ export default function AdminHeader({
       dir="rtl"
     >
       <div className="container mx-auto sm:px-4 py-2.5 sm:py-3 sm:h-18  flex items-center justify-between">
-        {/* الشعار وبيانات الهوية */}
         <div className="flex items-center gap-3">
           <div
             className="flex items-center gap-2.5 cursor-pointer group"
@@ -128,7 +127,6 @@ export default function AdminHeader({
           </div>
         </div>
 
-        {/* شريط الروابط الرئيسية */}
         <nav className="hidden lg:flex items-center gap-1.5">
           {ADMIN_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -154,9 +152,7 @@ export default function AdminHeader({
           })}
         </nav>
 
-        {/* الأزرار الجانبية ومعلومات الأدمن */}
         <div className="flex items-center gap-2">
-          {/* اسم الأدمن إن وجد */}
           {/* {currentUser && (
             <div className="hidden md:flex items-center gap-2 pl-2 border-l border-white/20 text-right">
               <div className="leading-tight">
@@ -170,7 +166,6 @@ export default function AdminHeader({
             </div>
           )} */}
 
-          {/* زر التوجه للمتجر الرئيسي */}
           {/* <Link
             href="/"
             title="المتجر الرئيسي"
@@ -179,7 +174,6 @@ export default function AdminHeader({
             <Store className="w-4 h-4" />
           </Link> */}
 
-          {/* زر تسجيل الخروج */}
           {/* <button
             type="button"
             onClick={onLogout}
@@ -190,7 +184,6 @@ export default function AdminHeader({
             <LogOut className="w-4 h-4" />
           </button> */}
 
-          {/* زر فتح القائمة الجانبية للشاشات المتوسطة والصغيرة */}
           <button
             type="button"
             onMouseDown={(e) => e.stopPropagation()}
@@ -204,7 +197,6 @@ export default function AdminHeader({
         </div>
       </div>
 
-      {/* مؤشر التمرير السفلي */}
       <div
         className="absolute bottom-0 right-0 h-0.75 bg-white transition-[width] duration-100 ease-out z-50"
         style={{ width: `${scrollProgress}%` }}

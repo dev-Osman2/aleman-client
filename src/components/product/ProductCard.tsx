@@ -50,9 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group flex flex-col justify-between overflow-hidden rounded-2xl bg-white border border-border-subtle shadow-xs hover:shadow-md hover:border-primary/40 transition-all duration-200">
-      {/* رابط لصفحة تفاصيل الكتاب */}
       <Link href={`/products/${product.code}`} className="flex flex-col flex-1">
-        {/* غلاف الكتاب */}
         <div className="relative aspect-[3/4] w-full bg-gray-50 overflow-hidden">
           {!imgError && product.image?.trim() ? (
             <Image
@@ -72,7 +70,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
 
-          {/* شارة القسم */}
           <span className="absolute top-3 right-3 rounded-full bg-white/90 backdrop-blur-xs px-2.5 py-1 text-[11px] font-bold text-primary shadow-xs border border-gray-100 z-10">
             {getCategoryLabel(product.category)}
           </span>
@@ -84,7 +81,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* بيانات الكتاب */}
         <div className="p-4 flex flex-col gap-1.5 flex-1" dir="rtl">
           <h3 className="text-sm md:text-base font-extrabold text-heading line-clamp-2 leading-snug group-hover:text-primary transition-colors">
             {product.title}
@@ -99,13 +95,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      {/* شريط السعر والكمية */}
       <div
         className="px-4 pb-4 pt-2 border-t border-gray-50 flex items-center justify-between gap-2"
         dir="rtl"
       >
         <div className="flex items-baseline gap-1.5">
-          <span className="text-lg font-black text-primary">{product.price}</span>
+          <span className="text-lg font-black text-primary">
+            {product.price}
+          </span>
           <span className="text-xs font-bold text-muted">ج.م</span>
           {product.oldPrice && (
             <span className="text-xs line-through text-gray-400 mr-1">
@@ -114,7 +111,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* أزرار الكمية + و - */}
         <div
           className="flex items-center gap-1 bg-surface-soft border border-border/80 rounded-xl p-0.5 shrink-0"
           dir="rtl"

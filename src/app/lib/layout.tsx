@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import {
   getAdminToken,
   removeAdminToken,
@@ -28,48 +28,48 @@ export default function AdminLayout({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
   const isCashierPage = pathname === "/lib/cashier";
 
-  // دالة التحقق من جلسة الأدمن عبر الباك إند
-  const verifyAdminSession = useCallback(async (token: string) => {
-    try {
-      const res = await fetch(`${apiUrl}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const verifyAdminSession = useCallback(
+    async (token: string) => {
+      try {
+        const res = await fetch(`${apiUrl}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (!res.ok) {
-        throw new Error("Session invalid");
-      }
+        if (!res.ok) {
+          throw new Error("Session invalid");
+        }
 
-      const json = await res.json();
-      const user: User | undefined = json.data?.user || json.user;
+        const json = await res.json();
+        const user: User | undefined = json.data?.user || json.user;
 
-      if (!user || user.role !== "ADMIN") {
+        if (!user || user.role !== "ADMIN") {
+          removeAdminToken();
+          toast.error("عذراً، هذا الحساب لا يملك صلاحيات وصول لوحة الإدارة");
+          router.replace("/");
+          return false;
+        }
+
+        setAdminUser(user);
+        setCurrentUser(user);
+        return true;
+      } catch {
+        const cachedUser = getAdminUser();
+        if (cachedUser && cachedUser.role === "ADMIN") {
+          setCurrentUser(cachedUser);
+          return true;
+        }
+
         removeAdminToken();
-        toast.error("عذراً، هذا الحساب لا يملك صلاحيات وصول لوحة الإدارة");
-        router.replace("/");
         return false;
       }
-
-      setAdminUser(user);
-      setCurrentUser(user);
-      return true;
-    } catch {
-      // في حالة وجود كاش محلي لمعلومات المستخدم كـ ADMIN وانقطاع شبكة مؤقت
-      const cachedUser = getAdminUser();
-      if (cachedUser && cachedUser.role === "ADMIN") {
-        setCurrentUser(cachedUser);
-        return true;
-      }
-
-      removeAdminToken();
-      return false;
-    }
-  }, [apiUrl, router]);
+    },
+    [apiUrl, router],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -77,7 +77,6 @@ export default function AdminLayout({
     const checkAuth = async () => {
       const token = getAdminToken();
 
-      // حالة صفحة تسجيل الدخول (/lib)
       if (pathname === "/lib") {
         if (token) {
           const isValidAdmin = await verifyAdminSession(token);
@@ -94,7 +93,6 @@ export default function AdminLayout({
         return;
       }
 
-      // أي صفحة داخلية في لوحة الإدارة (/lib/products, /lib/orders, ...)
       if (!token) {
         if (isMounted) {
           setAuthorized(false);
@@ -132,7 +130,6 @@ export default function AdminLayout({
     router.replace("/");
   };
 
-  // شاشة فحص الصلاحيات
   if (checking) {
     return (
       <div
@@ -161,12 +158,10 @@ export default function AdminLayout({
     );
   }
 
-  // إذا كنا في صفحة الدخول، نعرض الصفحة نفسها
   if (pathname === "/lib") {
     return <>{children}</>;
   }
 
-  // إذا لم يكن مصرحاً له
   if (!authorized) {
     return null;
   }
@@ -176,9 +171,6 @@ export default function AdminLayout({
       className="min-h-screen bg-surface-soft flex flex-col print:bg-white print:min-h-0 text-body selection:bg-primary-light selection:text-primary"
       dir="rtl"
     >
-      <Toaster position="bottom-left" dir="rtl" richColors closeButton />
-
-      {/* الشريط العلوي للوحة الإدارة */}
       <AdminHeader
         isCashierPage={isCashierPage}
         currentUser={currentUser}
@@ -187,7 +179,6 @@ export default function AdminLayout({
         onOpenSearch={() => setSearchOpen(true)}
       />
 
-      {/* القائمة الجانبية المنسدلة للأدمن */}
       <AdminSidebar
         isOpen={drawerOpen}
         pathname={pathname}
@@ -196,12 +187,10 @@ export default function AdminLayout({
         onLogout={handleLogout}
       />
 
-      {/* نافذة البحث السريع في صفحة الكاشير إن لزم الأمر */}
       {isCashierPage && (
         <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       )}
 
-      {/* المحتوى الرئيسي لصفحات لوحة الإدارة */}
       <main className="flex-1 container mx-auto px-4 py-6 print:p-0 print:m-0 print:max-w-none">
         {children}
       </main>

@@ -18,7 +18,6 @@ export default function ProductDescriptionInput({
 }: ProductDescriptionInputProps) {
   return (
     <div className="flex flex-col gap-4" dir="rtl">
-      {/* النبذة المختصرة */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-extrabold text-heading flex items-center gap-1.5">
@@ -41,7 +40,6 @@ export default function ProductDescriptionInput({
         />
       </div>
 
-      {/* الوصف الشامل والفهرس */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-extrabold text-heading flex items-center gap-1.5">

@@ -45,13 +45,15 @@ export default async function HomePage({
     new Set([
       ...CATEGORIES,
       ...displayedProducts.map((p) => p.category?.trim()),
-    ])
+    ]),
   )
     .filter((category): category is string => Boolean(category))
     .map((category) => ({
       slug: category,
       name: getCategoryLabel(category),
-      products: displayedProducts.filter((p) => p.category?.trim() === category),
+      products: displayedProducts.filter(
+        (p) => p.category?.trim() === category,
+      ),
     }))
     .filter((group) => group.products.length > 0);
 
@@ -62,7 +64,6 @@ export default async function HomePage({
         <HomeCategoryBar currentCategory={currentCategory} />
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* قسم استعراض الكتب */}
           <div className="w-full lg:w-7/12 min-w-0">
             <div className="mb-5 flex justify-between items-start">
               <div>
@@ -116,7 +117,6 @@ export default async function HomePage({
             )}
           </div>
 
-          {/* لوحة إتمام الشراء السريع */}
           <div className="w-full lg:w-5/12 min-w-0 lg:sticky lg:top-20 self-start">
             <CheckoutForm />
           </div>

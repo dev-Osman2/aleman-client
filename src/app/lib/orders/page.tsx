@@ -20,8 +20,7 @@ export default function AdminOrdersPage() {
   const [activeFilter, setActiveFilter] = useState<OrderFilterStatus>("all");
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   const fetchOrders = useCallback(async () => {
     setError(null);
@@ -41,12 +40,12 @@ export default function AdminOrdersPage() {
       const list: Order[] = Array.isArray(json)
         ? json
         : Array.isArray(json.data)
-        ? json.data
-        : [];
+          ? json.data
+          : [];
       setOrders(list);
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : "حدث خطأ أثناء تحميل سجل الطلبات"
+        err instanceof Error ? err.message : "حدث خطأ أثناء تحميل سجل الطلبات",
       );
     } finally {
       setLoading(false);
@@ -56,14 +55,13 @@ export default function AdminOrdersPage() {
   useEffect(() => {
     fetchOrders();
 
-    // تحديث دوري هادئ كل 30 ثانية
     const interval = setInterval(fetchOrders, 30000);
     return () => clearInterval(interval);
   }, [fetchOrders]);
 
   const handleUpdateStatus = async (
     orderId: number,
-    newStatus: OrderStatus
+    newStatus: OrderStatus,
   ) => {
     setUpdatingId(orderId);
     try {
@@ -83,10 +81,10 @@ export default function AdminOrdersPage() {
         toast.success(
           newStatus === "CONFIRMED"
             ? `تم تأكيد الطلب #${orderId} وإرساله للتجهيز عبر التلجرام`
-            : `تم إلغاء الطلب #${orderId} وإرجاع المخزون بنجاح`
+            : `تم إلغاء الطلب #${orderId} وإرجاع المخزون بنجاح`,
         );
         setOrders((prev) =>
-          prev.map((o) => (o.id === orderId ? data.data : o))
+          prev.map((o) => (o.id === orderId ? data.data : o)),
         );
       } else {
         toast.error(data.message || "تعذر تحديث حالة الطلب");
@@ -101,7 +99,7 @@ export default function AdminOrdersPage() {
 
   const handleUpdateAdminNote = async (
     orderId: number,
-    adminNote: string
+    adminNote: string,
   ): Promise<boolean> => {
     try {
       const token = getAdminToken();
@@ -122,8 +120,8 @@ export default function AdminOrdersPage() {
           prev.map((o) =>
             o.id === orderId
               ? { ...o, adminNote: data.data?.adminNote ?? adminNote }
-              : o
-          )
+              : o,
+          ),
         );
         return true;
       } else {
@@ -160,7 +158,9 @@ export default function AdminOrdersPage() {
       const matchName = (order.user?.name || "").toLowerCase().includes(q);
       const matchPhone = (order.user?.phone || "").includes(q);
       const matchAddress = (order.address || "").toLowerCase().includes(q);
-      const matchTransfer = (order.transferNumber || "").toLowerCase().includes(q);
+      const matchTransfer = (order.transferNumber || "")
+        .toLowerCase()
+        .includes(q);
 
       return (
         matchOrderNum ||
@@ -174,7 +174,6 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="flex flex-col gap-6" dir="rtl">
-      {/* الترويسة وشريط البحث السريع */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <OrderStatsHeader />
 
@@ -194,18 +193,18 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      {/* تبويبات الفلترة بحالات الطلبات */}
       <OrderFilterTabs
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
         counts={counts}
       />
 
-      {/* عرض الطلبات أو حالات التحميل والخطأ */}
       {loading ? (
         <div className="bg-white rounded-3xl border border-border/80 py-24 flex flex-col items-center justify-center gap-3 text-muted">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <span className="text-sm font-bold">جاري تحميل سجل طلبات العملاء...</span>
+          <span className="text-sm font-bold">
+            جاري تحميل سجل طلبات العملاء...
+          </span>
         </div>
       ) : error ? (
         <div className="bg-danger-light border border-danger-border text-danger rounded-3xl p-6 text-center font-bold text-sm">

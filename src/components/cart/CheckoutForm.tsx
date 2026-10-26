@@ -22,10 +22,8 @@ import {
 import { useCart } from "@/src/context/CartContext";
 import { useAuth } from "@/src/context/AuthContext";
 import { PaymentMethod } from "@/src/types";
-import {
-  INSTAPAY_LINK,
-  VODAFONE_CASH_DISPLAY,
-} from "@/src/constants/payment";
+import { INSTAPAY_LINK, VODAFONE_CASH_DISPLAY } from "@/src/constants/payment";
+import { orderCheckoutSchema } from "@/src/lib/validation";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
@@ -41,7 +39,6 @@ export default function CheckoutForm() {
   } = useCart();
   const { user, token, updateUser } = useAuth();
 
-  // الحقول مع تهيئة الاسم ورقم الهاتف من حساب المستخدم كقيم افتراضية قابلة للتعديل
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [address, setAddress] = useState("");
@@ -53,7 +50,6 @@ export default function CheckoutForm() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successOrderId, setSuccessOrderId] = useState<number | null>(null);
 
-  // تحديث القيم الافتراضية عند تحميل بيانات المستخدم
   useEffect(() => {
     if (user) {
       setName((prev) => (prev ? prev : user.name || ""));
@@ -65,7 +61,6 @@ export default function CheckoutForm() {
     e.preventDefault();
     setErrorMsg("");
 
-    // إذا لم يكن المستخدم مسجلاً يتم توجيهه إلى صفحة إنشاء الحساب
     if (!user || !token) {
       router.push("/register");
       return;
@@ -76,8 +71,17 @@ export default function CheckoutForm() {
       return;
     }
 
-    if (!name.trim() || !phone.trim() || !address.trim() || !transferNumber.trim()) {
-      setErrorMsg("يرجى إدخال الاسم، رقم الهاتف، العنوان التفصيلي، والرقم المحول منه");
+    const validationResult = orderCheckoutSchema.safeParse({
+      name,
+      phone,
+      address,
+      transferNumber,
+      notes,
+    });
+
+    if (!validationResult.success) {
+      const firstIssue = validationResult.error.issues?.[0];
+      setErrorMsg(firstIssue?.message || "يرجى التحقق من صحة البيانات ورقم الهاتف");
       return;
     }
 
@@ -118,7 +122,6 @@ export default function CheckoutForm() {
       setNotes("");
       setTransferNumber("");
 
-      // إذا حدث تعديل على الاسم أو الهاتف، نحدث البيانات في حالة المصادقة محلياً
       if (user && (name.trim() !== user.name || phone.trim() !== user.phone)) {
         updateUser({ name: name.trim(), phone: phone.trim() });
       }
@@ -136,7 +139,6 @@ export default function CheckoutForm() {
       className="bg-white rounded-3xl border border-border-subtle p-5 sm:p-6 shadow-xs flex flex-col gap-5 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar"
       dir="rtl"
     >
-      {/* ترويسة الصندوق */}
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 shrink-0">
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-primary" />
@@ -147,7 +149,6 @@ export default function CheckoutForm() {
         </span>
       </div>
 
-      {/* رسالة نجاح الطلب */}
       {successOrderId && (
         <div className="rounded-2xl bg-green-50 border border-green-200 p-4 text-center space-y-1 shrink-0">
           <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto" />
@@ -155,12 +156,12 @@ export default function CheckoutForm() {
             تم تسجيل طلبك بنجاح! رقم الطلب: #{successOrderId}
           </p>
           <p className="text-xs text-green-700">
-            يمكنك متابعة حالة طلبك برقم الهاتف ({phone || user?.phone}) ورقم الطلب.
+            يمكنك متابعة حالة طلبك برقم الهاتف ({phone || user?.phone}) ورقم
+            الطلب.
           </p>
         </div>
       )}
 
-      {/* عرض عناصر السلة مع صورة كل كتاب وزري الإضافة والحذف */}
       {cart.length === 0 ? (
         <div className="text-center py-8 text-muted text-sm font-medium shrink-0">
           سلة الكتب فارغة حالياً، اختر كتبك المفضلة وأضفها للسلة.
@@ -172,7 +173,6 @@ export default function CheckoutForm() {
               key={item.id}
               className="flex items-center justify-between gap-3 bg-gray-50 p-2.5 sm:p-3 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors shrink-0"
             >
-              {/* صورة غلاف الكتاب */}
               <div className="relative w-12 h-16 rounded-xl overflow-hidden bg-white border border-gray-200/80 shrink-0 shadow-2xs flex items-center justify-center">
                 {item.image ? (
                   <img
@@ -189,7 +189,6 @@ export default function CheckoutForm() {
                 )}
               </div>
 
-              {/* بيانات الكتاب */}
               <div className="flex-1 min-w-0">
                 <p className="text-xs md:text-sm font-extrabold text-heading truncate">
                   {item.title}
@@ -202,7 +201,6 @@ export default function CheckoutForm() {
                 </p>
               </div>
 
-              {/* أزرار زيادة وتقليل الكمية */}
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
@@ -229,7 +227,6 @@ export default function CheckoutForm() {
         </div>
       )}
 
-      {/* حساب الإجمالي = إجمالي المنتجات + التوصيل */}
       {cart.length > 0 && (
         <div className=" bg-gray-50 rounded-2xl p-4 space-y-2 text-xs md:text-sm border border-gray-100 shrink-0">
           <div className="flex justify-between text-muted font-bold">
@@ -247,7 +244,6 @@ export default function CheckoutForm() {
         </div>
       )}
 
-      {/* تنبيه حالة الحساب لغير المسجلين */}
       {!user && (
         <div className="flex items-center justify-between gap-3 rounded-2xl bg-amber-50 border border-amber-200 p-3.5 text-amber-800 shrink-0">
           <div className="flex items-center gap-2 text-xs font-extrabold">
@@ -269,9 +265,10 @@ export default function CheckoutForm() {
         </div>
       )}
 
-      {/* نموذج الشحن والدفع */}
-      <form onSubmit={handleOrderSubmit} className="flex flex-col gap-4 shrink-0">
-        {/* 1. الاسم الكامل (افتراضي من الحساب وقابل للتعديل) */}
+      <form
+        onSubmit={handleOrderSubmit}
+        className="flex flex-col gap-4 shrink-0"
+      >
         <div>
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             الاسم الكامل <span className="text-red-500">*</span>
@@ -289,7 +286,6 @@ export default function CheckoutForm() {
           </div>
         </div>
 
-        {/* 2. رقم الهاتف (افتراضي من الحساب وقابل للتعديل) */}
         <div>
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             رقم الهاتف للتواصل <span className="text-red-500">*</span>
@@ -298,16 +294,16 @@ export default function CheckoutForm() {
             <input
               type="tel"
               required
+              maxLength={11}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="مثال: 01012345678"
-              className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none transition-colors"
+              className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none transition-colors text-right dir-ltr"
             />
             <PhoneIcon className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
           </div>
         </div>
 
-        {/* 3. العنوان التفصيلي */}
         <div>
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             العنوان التفصيلي <span className="text-red-500">*</span>
@@ -325,7 +321,6 @@ export default function CheckoutForm() {
           </div>
         </div>
 
-        {/* 4. ملاحظات إضافية (اختياري) */}
         <div>
           <label className="flex items-center gap-1.5 text-xs font-extrabold text-heading mb-1.5">
             <FileText className="w-3.5 h-3.5 text-muted" />
@@ -340,7 +335,6 @@ export default function CheckoutForm() {
           />
         </div>
 
-        {/* 5. طريقة الدفع (باستخدام flex-box بدون grid) */}
         <div>
           <label className="flex items-center gap-1.5 text-xs font-extrabold text-heading mb-2">
             <CreditCard className="w-4 h-4 text-primary" />
@@ -395,7 +389,6 @@ export default function CheckoutForm() {
           </div>
         </div>
 
-        {/* 6. صندوق رقم التحويل */}
         {(() => {
           const isInstapay =
             paymentMethod === "INSTAPAY" ||
@@ -414,18 +407,17 @@ export default function CheckoutForm() {
               rel="noopener noreferrer"
               className="block rounded-2xl bg-primary-light/50 hover:bg-primary-subtle/80 border border-primary/20 hover:border-primary/40 p-4 text-center space-y-1.5 transition-all group shadow-2xs cursor-pointer"
             >
-              <p className="text-xs font-extrabold text-heading">
-                {subtitle}
-              </p>
+              <p className="text-xs font-extrabold text-heading">{subtitle}</p>
               <div className="inline-flex items-center justify-center gap-2 text-base md:text-lg font-black text-primary tracking-wider group-hover:underline">
-                <span className="font-mono dir-ltr">{VODAFONE_CASH_DISPLAY}</span>
+                <span className="font-mono dir-ltr">
+                  {VODAFONE_CASH_DISPLAY}
+                </span>
                 <ExternalLink className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" />
               </div>
             </a>
           );
         })()}
 
-        {/* 7. الرقم الذي حولت منه المبلغ */}
         <div>
           <label className="block text-xs font-extrabold text-heading mb-1.5">
             الرقم الذي حولت منه المبلغ <span className="text-red-500">*</span>
@@ -446,7 +438,6 @@ export default function CheckoutForm() {
           </span>
         </div>
 
-        {/* زر الإرسال */}
         <button
           type="submit"
           disabled={isSubmitting}

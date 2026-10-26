@@ -36,7 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem(USER_KEY);
       }
 
-      // التحقق من صلاحية الجلسة مع الباك إند (/api/auth/me)
       fetch(`${apiUrl}/auth/me`, {
         headers: { Authorization: `Bearer ${savedToken}` },
       })

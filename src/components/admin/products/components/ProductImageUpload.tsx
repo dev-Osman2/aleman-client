@@ -2,7 +2,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { CloudUpload, X, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
+import {
+  CloudUpload,
+  X,
+  Link as LinkIcon,
+  Image as ImageIcon,
+} from "lucide-react";
 
 interface ProductImageUploadProps {
   fileInputRef: React.RefObject<HTMLInputElement | null>;
@@ -34,11 +39,12 @@ export default function ProductImageUpload({
           className="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
         >
           <LinkIcon className="w-3 h-3" />
-          <span>{showUrlInput ? "إخفاء إدخال الرابط" : "إدخال رابط مباشر للصورة"}</span>
+          <span>
+            {showUrlInput ? "إخفاء إدخال الرابط" : "إدخال رابط مباشر للصورة"}
+          </span>
         </button>
       </div>
 
-      {/* حقل الرابط المباشر في حال رغب المشرف بوضع رابط خارجي للغلاف */}
       {showUrlInput && (
         <div className="relative">
           <input

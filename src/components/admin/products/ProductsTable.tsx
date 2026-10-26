@@ -2,29 +2,72 @@
 "use client";
 
 import { Product } from "@/src/types";
-import { Pencil, Trash2, Hash, BookOpen, Layers, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Hash,
+  BookOpen,
+  Layers,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 
 interface ProductsTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
+  stockFilter?: "all" | "out_of_stock" | "low_stock";
+  onResetStockFilter?: () => void;
 }
 
 export default function ProductsTable({
   products,
   onEdit,
   onDelete,
+  stockFilter = "all",
+  onResetStockFilter,
 }: ProductsTableProps) {
   if (products.length === 0) {
+    const isOutOfStockFilter = stockFilter === "out_of_stock";
+    const isLowStockFilter = stockFilter === "low_stock";
+
     return (
-      <div className="bg-white rounded-3xl border border-border/80 py-20 text-center flex flex-col items-center justify-center gap-3 shadow-2xs">
-        <div className="w-16 h-16 rounded-2xl bg-surface-subtle text-muted flex items-center justify-center">
-          <BookOpen className="w-8 h-8 text-muted-light" />
+      <div className="bg-white rounded-3xl border border-border/80 py-20 text-center flex flex-col items-center justify-center gap-3 shadow-2xs" dir="rtl">
+        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${
+          isOutOfStockFilter || isLowStockFilter
+            ? "bg-success-light text-success"
+            : "bg-surface-subtle text-muted"
+        }`}>
+          {isOutOfStockFilter || isLowStockFilter ? (
+            <CheckCircle2 className="w-8 h-8 text-success" />
+          ) : (
+            <BookOpen className="w-8 h-8 text-muted-light" />
+          )}
         </div>
-        <p className="text-heading font-black text-base">لا توجد كتب مطابقة للعرض حالياً</p>
-        <p className="text-muted text-xs max-w-sm">
-          لم يتم العثور على أي كتب في هذا القسم أو باستخدام كلمة البحث الحالية، يمكنك إضافة كتاب جديد للبدء.
+        <p className="text-heading font-black text-base">
+          {isOutOfStockFilter
+            ? "رائع! لا توجد أي كتب نفدت من المخزون حالياً"
+            : isLowStockFilter
+              ? "المخزون بحالة جيدة، لا توجد كتب قاربت على الانتهاء"
+              : "لا توجد كتب مطابقة للعرض حالياً"}
         </p>
+        <p className="text-muted text-xs max-w-sm">
+          {isOutOfStockFilter
+            ? "جميع الكتب في المكتبة متوفرة ولديها رصيد بالمخزن."
+            : isLowStockFilter
+              ? "جميع الكتب المتوفرة رصيدها أعلى من 5 نسخ بالمخزن."
+              : "لم يتم العثور على أي كتب في هذا القسم أو باستخدام كلمة البحث الحالية، يمكنك إضافة كتاب جديد للبدء."}
+        </p>
+        {stockFilter !== "all" && onResetStockFilter && (
+          <button
+            type="button"
+            onClick={onResetStockFilter}
+            className="mt-2 px-4 py-2 bg-primary text-white text-xs font-black rounded-xl hover:bg-primary-hover transition cursor-pointer shadow-xs"
+          >
+            عرض جميع الكتب بالمخزن
+          </button>
+        )}
       </div>
     );
   }
@@ -42,7 +85,7 @@ export default function ProductsTable({
               <th className="py-4 px-4 w-[15%]">القسم</th>
               <th className="py-4 px-4 text-center w-[13%]">السعر والخصم</th>
               <th className="py-4 px-4 text-center w-[12%]">المخزون المتوفر</th>
-              {/* <th className="py-4 px-4 w-[18%]">المؤلف</th> */}
+
               <th className="py-4 px-6 text-left w-[10%]">الإجراءات</th>
             </tr>
           </thead>
@@ -53,13 +96,13 @@ export default function ProductsTable({
               const isOutOfStock = qty <= 0;
               const isLowStock = qty > 0 && qty <= 5;
               const hasDiscount = Boolean(
-                product.oldPrice && product.oldPrice > product.price
+                product.oldPrice && product.oldPrice > product.price,
               );
               const discountPercent = hasDiscount
                 ? Math.round(
                     ((Number(product.oldPrice) - Number(product.price)) /
                       Number(product.oldPrice)) *
-                      100
+                      100,
                   )
                 : 0;
 
@@ -70,7 +113,6 @@ export default function ProductsTable({
                     isOutOfStock ? "bg-surface-soft/40" : ""
                   }`}
                 >
-                  {/* الغلاف + العنوان + الكود */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3.5">
                       <div className="relative shrink-0">
@@ -101,7 +143,10 @@ export default function ProductsTable({
                           </span>
                         </div>
 
-                        <h3 className="font-black text-heading text-sm sm:text-base truncate leading-snug" title={product.title}>
+                        <h3
+                          className="font-black text-heading text-sm sm:text-base truncate leading-snug"
+                          title={product.title}
+                        >
                           {product.title}
                         </h3>
 
@@ -114,7 +159,6 @@ export default function ProductsTable({
                     </div>
                   </td>
 
-                  {/* القسم */}
                   <td className="py-4 px-4">
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-surface-subtle text-sub border border-border">
                       <Layers className="w-3 h-3 text-primary" />
@@ -122,7 +166,6 @@ export default function ProductsTable({
                     </span>
                   </td>
 
-                  {/* السعر والخصم */}
                   <td className="py-4 px-4 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <span className="text-sm sm:text-base font-black text-heading">
@@ -136,7 +179,6 @@ export default function ProductsTable({
                     </div>
                   </td>
 
-                  {/* المخزون */}
                   <td className="py-4 px-4 text-center">
                     <div className="inline-flex flex-col items-center gap-1">
                       {isOutOfStock ? (
@@ -158,10 +200,6 @@ export default function ProductsTable({
                     </div>
                   </td>
 
-                  {/* المؤلف (إسم المؤلف أو -) */}
-                 
-
-                  {/* الإجراءات */}
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end gap-2">
                       <button

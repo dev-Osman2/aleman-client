@@ -11,6 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
+import { feedbackSchema } from "@/src/lib/validation";
 
 interface ContactUsModalProps {
   isOpen: boolean;
@@ -25,13 +26,21 @@ export default function ContactUsModal({
   isOpen,
   onClose,
 }: ContactUsModalProps) {
-  const [customerName, setCustomerName] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
+  const { user, token } = useAuth();
+  const [customerName, setCustomerName] = useState(user?.name || "");
+  const [customerPhone, setCustomerPhone] = useState(user?.phone || "");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const { token, isLoading: isAuthLoading } = useAuth();
+
+  // Sync user info if user logs in while modal is used
+  React.useEffect(() => {
+    if (user) {
+      if (!customerName) setCustomerName(user.name || "");
+      if (!customerPhone) setCustomerPhone(user.phone || "");
+    }
+  }, [user, customerName, customerPhone]);
 
   if (!isOpen) return null;
 
@@ -39,33 +48,36 @@ export default function ContactUsModal({
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!feedback.trim()) return;
-
-    setLoading(true);
     setErrorMsg("");
 
-    if (isAuthLoading) {
-      setErrorMsg("جار التحقق من تسجيل الدخول، يرجى المحاولة بعد لحظات.");
-      setLoading(false);
+    const validationResult = feedbackSchema.safeParse({
+      customerName,
+      phone: customerPhone,
+      message: feedback,
+    });
+
+    if (!validationResult.success) {
+      const firstIssue = validationResult.error.issues?.[0];
+      setErrorMsg(firstIssue?.message || "يرجى التحقق من صحة البيانات المدخلة");
       return;
     }
 
-    if (!token) {
-      setErrorMsg("يرجى تسجيل الدخول أولاً لإرسال رأيك أو طلب توفير كتاب.");
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
 
     try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${apiUrl}/orders/feedback`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
         body: JSON.stringify({
-          customerName: customerName.trim(),
-          phone: customerPhone.trim(),
+          customerName: customerName.trim() || user?.name || undefined,
+          phone: customerPhone.trim() || user?.phone || undefined,
           message: feedback.trim(),
         }),
       });
@@ -79,8 +91,10 @@ export default function ContactUsModal({
       setSubmitted(true);
       setTimeout(() => {
         setFeedback("");
-        setCustomerName("");
-        setCustomerPhone("");
+        if (!user) {
+          setCustomerName("");
+          setCustomerPhone("");
+        }
         setSubmitted(false);
       }, 3500);
     } catch {

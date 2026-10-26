@@ -28,6 +28,7 @@ import {
 import { toast } from "sonner";
 import Header from "@/src/components/layout/Header";
 import ConfirmModal from "@/src/components/ui/ConfirmModal";
+import { profileUpdateSchema } from "@/src/lib/validation";
 import { useAuth } from "@/src/context/AuthContext";
 import { Order, OrderStatus } from "@/src/types";
 
@@ -37,23 +38,18 @@ export default function ProfilePage() {
 
   const [activeTab, setActiveTab] = useState<"orders" | "settings">("orders");
 
-  // بيانات الطلبات
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
-  // حقول تعديل الملف الشخصي
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
 
-  // حذف الحساب
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
-  // جلب سجل طلبات المستخدم
   const fetchMyOrders = useCallback(async () => {
     if (!token) return;
     setOrdersLoading(true);
@@ -72,8 +68,8 @@ export default function ProfilePage() {
       const list: Order[] = Array.isArray(json)
         ? json
         : Array.isArray(json.data)
-        ? json.data
-        : [];
+          ? json.data
+          : [];
       setOrders(list);
     } catch (err: unknown) {
       console.error("Error fetching my orders:", err);
@@ -83,7 +79,6 @@ export default function ProfilePage() {
     }
   }, [apiUrl, token]);
 
-  // ملء بيانات التعديل عند تحميل المستخدم
   useEffect(() => {
     if (user) {
       setEditName(user.name || "");
@@ -91,17 +86,17 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  // جلب الطلبات عند توفر التوكن
   useEffect(() => {
     if (token) {
       fetchMyOrders();
     }
   }, [token, fetchMyOrders]);
 
-  // إحصائيات سريعة للطلبات
   const orderStats = useMemo(() => {
     const totalOrders = orders.length;
-    const confirmedOrders = orders.filter((o) => o.status === "CONFIRMED").length;
+    const confirmedOrders = orders.filter(
+      (o) => o.status === "CONFIRMED",
+    ).length;
     const pendingOrders = orders.filter((o) => o.status === "PENDING").length;
     const totalSpent = orders
       .filter((o) => o.status !== "CANCELLED")
@@ -110,13 +105,20 @@ export default function ProfilePage() {
     return { totalOrders, confirmedOrders, pendingOrders, totalSpent };
   }, [orders]);
 
-  // حفظ تعديلات الملف الشخصي
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
 
-    if (!editName.trim() || !editPhone.trim()) {
-      toast.error("يرجى ملء الاسم ورقم الهاتف بشكل صحيح");
+    const validationResult = profileUpdateSchema.safeParse({
+      name: editName,
+      phone: editPhone,
+    });
+
+    if (!validationResult.success) {
+      const firstIssue = validationResult.error.issues?.[0];
+      toast.error(
+        firstIssue?.message || "يرجى التحقق من صحة الاسم ورقم الهاتف",
+      );
       return;
     }
 
@@ -153,7 +155,6 @@ export default function ProfilePage() {
     }
   };
 
-  // تأكيد وحذف الحساب نهائياً
   const handleConfirmDeleteAccount = async () => {
     if (!token) return;
 
@@ -190,12 +191,14 @@ export default function ProfilePage() {
     router.push("/");
   };
 
-  // شاشات التحميل والحماية
   if (authLoading) {
     return (
       <>
         <Header />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center gap-3 text-muted" dir="rtl">
+        <main
+          className="container mx-auto px-4 py-20 flex flex-col items-center justify-center gap-3 text-muted"
+          dir="rtl"
+        >
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
           <span className="text-sm font-bold">جاري تحميل بيانات حسابك...</span>
         </main>
@@ -203,12 +206,14 @@ export default function ProfilePage() {
     );
   }
 
-  // إذا لم يكن مسجلاً للدخول
   if (!user) {
     return (
       <>
         <Header />
-        <main className="container mx-auto px-4 py-16 flex flex-col items-center justify-center text-center" dir="rtl">
+        <main
+          className="container mx-auto px-4 py-16 flex flex-col items-center justify-center text-center"
+          dir="rtl"
+        >
           <div className="w-16 h-16 rounded-3xl bg-primary-light text-primary flex items-center justify-center mb-4 shadow-sm">
             <User className="w-8 h-8" />
           </div>
@@ -216,7 +221,8 @@ export default function ProfilePage() {
             يرجى تسجيل الدخول أولاً
           </h2>
           <p className="text-muted text-xs sm:text-sm max-w-sm mb-6 font-medium">
-            للوصول إلى ملفك الشخصي ومتابعة سجل طلباتك وتحديث بياناتك، يرجى تسجيل الدخول إلى حسابك.
+            للوصول إلى ملفك الشخصي ومتابعة سجل طلباتك وتحديث بياناتك، يرجى تسجيل
+            الدخول إلى حسابك.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
@@ -248,8 +254,10 @@ export default function ProfilePage() {
   return (
     <>
       <Header />
-      <main className="container mx-auto px-4 py-8 flex flex-col gap-8 max-w-5xl" dir="rtl">
-        {/* كارت هوية المستخدم (Flexbox Hero) */}
+      <main
+        className="container mx-auto px-4 py-8 flex flex-col gap-8 max-w-5xl"
+        dir="rtl"
+      >
         <div className="bg-white rounded-3xl border border-border/80 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-primary text-white font-black text-2xl sm:text-3xl flex items-center justify-center shrink-0 shadow-md shadow-primary/20">
@@ -263,7 +271,9 @@ export default function ProfilePage() {
                 </h1>
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary bg-primary-light px-2.5 py-0.5 rounded-full border border-primary/20 shrink-0">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>{user.role === "ADMIN" ? "مدير المكتبة" : "عميل مسجل"}</span>
+                  <span>
+                    {user.role === "ADMIN" ? "مدير المكتبة" : "عميل مسجل"}
+                  </span>
                 </span>
               </div>
 
@@ -296,14 +306,15 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* إحصائيات سريعة للطلبات (Flexbox - بدون grid) */}
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[200px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
             <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0">
               <ShoppingBag className="w-6 h-6" />
             </div>
             <div className="text-right">
-              <span className="text-xs font-bold text-muted">إجمالي الطلبات</span>
+              <span className="text-xs font-bold text-muted">
+                إجمالي الطلبات
+              </span>
               <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
                 {orderStats.totalOrders}{" "}
                 <span className="text-xs font-semibold text-muted">طلب</span>
@@ -342,7 +353,9 @@ export default function ProfilePage() {
               <CreditCard className="w-6 h-6" />
             </div>
             <div className="text-right">
-              <span className="text-xs font-bold text-muted">إجمالي المشتريات</span>
+              <span className="text-xs font-bold text-muted">
+                إجمالي المشتريات
+              </span>
               <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
                 {orderStats.totalSpent.toFixed(2)}{" "}
                 <span className="text-xs font-semibold text-muted">ج.م</span>
@@ -351,7 +364,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* أزرار التبديل بين التبويبات (Flexbox Tabs) */}
         <div className="flex items-center gap-3 border-b border-border/80 pb-3">
           <button
             type="button"
@@ -380,7 +392,6 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* محتوى التبويب الأول: سجل الطلبات */}
         {activeTab === "orders" && (
           <div className="flex flex-col gap-5">
             <div className="flex items-center justify-between">
@@ -393,7 +404,9 @@ export default function ProfilePage() {
                 disabled={ordersLoading}
                 className="inline-flex items-center gap-1.5 text-xs font-extrabold text-primary hover:text-primary-hover bg-primary-light px-3 py-1.5 rounded-xl border border-primary/20 transition cursor-pointer"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${ordersLoading ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`w-3.5 h-3.5 ${ordersLoading ? "animate-spin" : ""}`}
+                />
                 <span>تحديث</span>
               </button>
             </div>
@@ -401,7 +414,9 @@ export default function ProfilePage() {
             {ordersLoading ? (
               <div className="bg-white rounded-3xl border border-border/80 py-20 flex flex-col items-center justify-center gap-3 text-muted">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                <span className="text-sm font-bold">جاري تحميل قائمة طلباتك...</span>
+                <span className="text-sm font-bold">
+                  جاري تحميل قائمة طلباتك...
+                </span>
               </div>
             ) : orders.length === 0 ? (
               <div className="bg-white rounded-3xl border border-border/80 py-16 px-6 text-center flex flex-col items-center justify-center gap-3 shadow-2xs">
@@ -412,7 +427,8 @@ export default function ProfilePage() {
                   لم تقم بتسجيل أي طلبات حتى الآن
                 </h3>
                 <p className="text-xs text-muted max-w-sm">
-                  تصفح مجموعتنا الواسعة من كتب العقيدة والفقه والتفسير واطلب كتبك المفضلة لتصلك مباشرة.
+                  تصفح مجموعتنا الواسعة من كتب العقيدة والفقه والتفسير واطلب
+                  كتبك المفضلة لتصلك مباشرة.
                 </p>
                 <Link
                   href="/"
@@ -427,7 +443,13 @@ export default function ProfilePage() {
                 {orders.map((order) => {
                   const statusConfig: Record<
                     OrderStatus,
-                    { label: string; bg: string; text: string; border: string; icon: any }
+                    {
+                      label: string;
+                      bg: string;
+                      text: string;
+                      border: string;
+                      icon: any;
+                    }
                   > = {
                     PENDING: {
                       label: "قيد المراجعة والتجهيز",
@@ -452,9 +474,12 @@ export default function ProfilePage() {
                     },
                   };
 
-                  const currentStatus = statusConfig[order.status] || statusConfig.PENDING;
+                  const currentStatus =
+                    statusConfig[order.status] || statusConfig.PENDING;
                   const StatusIcon = currentStatus.icon;
-                  const orderDate = new Date(order.createdAt).toLocaleDateString("ar-EG", {
+                  const orderDate = new Date(
+                    order.createdAt,
+                  ).toLocaleDateString("ar-EG", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -467,7 +492,6 @@ export default function ProfilePage() {
                       key={order.id}
                       className="bg-white rounded-3xl border border-border/80 p-5 sm:p-6 shadow-xs flex flex-col gap-4 hover:shadow-md transition"
                     >
-                      {/* رأس كارت الطلب */}
                       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border-subtle">
                         <div className="flex items-center gap-2.5">
                           <span className="font-black text-sm sm:text-base text-heading">
@@ -486,7 +510,6 @@ export default function ProfilePage() {
                         </span>
                       </div>
 
-                      {/* قائمة عناصر الطلب (الكتب) */}
                       <div className="divide-y divide-border-subtle bg-surface-soft/60 rounded-2xl p-3 border border-border-subtle flex flex-col gap-2">
                         {order.items?.map((item, idx) => (
                           <div
@@ -500,7 +523,9 @@ export default function ProfilePage() {
                                   alt={item.book.title}
                                   className="w-8 h-11 rounded-lg object-cover border border-border shrink-0"
                                   onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = "none";
+                                    (
+                                      e.target as HTMLImageElement
+                                    ).style.display = "none";
                                   }}
                                 />
                               )}
@@ -521,23 +546,28 @@ export default function ProfilePage() {
                                 {item.quantity} × {item.priceAtBuy} ج
                               </span>
                               <span className="text-xs sm:text-sm font-black text-heading min-w-[60px] text-left">
-                                {(item.priceAtBuy * item.quantity).toFixed(2)} ج.م
+                                {(item.priceAtBuy * item.quantity).toFixed(2)}{" "}
+                                ج.م
                               </span>
                             </div>
                           </div>
                         ))}
                       </div>
 
-                      {/* ملخص الدفع والعنوان */}
                       <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-muted">
                         <div className="flex flex-col gap-1">
                           <span className="font-medium">
-                            📍 العنوان: <span className="text-heading font-bold">{order.address}</span>
+                            📍 العنوان:{" "}
+                            <span className="text-heading font-bold">
+                              {order.address}
+                            </span>
                           </span>
                           <span className="font-medium">
                             💳 طريقة الدفع:{" "}
                             <span className="text-heading font-bold">
-                              {order.paymentMethod === "INSTAPAY" ? "إنستاباي" : "فودافون كاش"}
+                              {order.paymentMethod === "INSTAPAY"
+                                ? "إنستاباي"
+                                : "فودافون كاش"}
                             </span>
                             {order.transferNumber && (
                               <span className="font-mono mr-1 font-bold">
@@ -564,10 +594,8 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* محتوى التبويب الثاني: إعدادات الحساب وحذف الحساب */}
         {activeTab === "settings" && (
           <div className="flex flex-col gap-6">
-            {/* نموذج تحديث البيانات الأساسية */}
             <div className="bg-white rounded-3xl border border-border/80 p-6 sm:p-8 shadow-xs flex flex-col gap-5">
               <div className="flex items-center gap-2.5 pb-3 border-b border-border-subtle">
                 <Settings className="w-5 h-5 text-primary" />
@@ -576,9 +604,11 @@ export default function ProfilePage() {
                 </h2>
               </div>
 
-              <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4">
+              <form
+                onSubmit={handleUpdateProfile}
+                className="flex flex-col gap-4"
+              >
                 <div className="flex flex-wrap gap-4">
-                  {/* الاسم الكامل */}
                   <div className="w-full sm:w-[calc(50%-0.5rem)]">
                     <label className="block text-xs font-extrabold text-heading mb-1.5">
                       الاسم الكامل <span className="text-danger">*</span>
@@ -598,10 +628,10 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* رقم الهاتف */}
                   <div className="w-full sm:w-[calc(50%-0.5rem)]">
                     <label className="block text-xs font-extrabold text-heading mb-1.5">
-                      رقم الهاتف (المستخدم لتسجيل الدخول والتوصيل) <span className="text-danger">*</span>
+                      رقم الهاتف (المستخدم لتسجيل الدخول والتوصيل){" "}
+                      <span className="text-danger">*</span>
                     </label>
                     <div className="relative">
                       <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
@@ -610,6 +640,7 @@ export default function ProfilePage() {
                       <input
                         type="tel"
                         required
+                        maxLength={11}
                         value={editPhone}
                         onChange={(e) => setEditPhone(e.target.value)}
                         placeholder="010xxxxxxxx"
@@ -619,7 +650,6 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* البريد الإلكتروني (للعرض فقط) */}
                 <div className="w-full">
                   <label className="block text-xs font-extrabold text-heading mb-1.5">
                     البريد الإلكتروني (معرف الحساب)
@@ -636,7 +666,8 @@ export default function ProfilePage() {
                     />
                   </div>
                   <span className="text-[11px] text-muted-light mt-1 block">
-                    البريد الإلكتروني مرتبط بحسابك الأمني ولا يمكن تعديله يدوياً.
+                    البريد الإلكتروني مرتبط بحسابك الأمني ولا يمكن تعديله
+                    يدوياً.
                   </span>
                 </div>
 
@@ -659,7 +690,6 @@ export default function ProfilePage() {
               </form>
             </div>
 
-            {/* منطقة الخطر: حذف الحساب */}
             <div className="bg-white rounded-3xl border border-danger-border/80 p-6 sm:p-8 shadow-xs flex flex-col gap-4">
               <div className="flex items-center gap-2.5 pb-3 border-b border-danger-border/50">
                 <Trash2 className="w-5 h-5 text-danger" />
@@ -669,7 +699,9 @@ export default function ProfilePage() {
               </div>
 
               <p className="text-xs sm:text-sm text-muted font-medium leading-relaxed">
-                عند حذف حسابك، سيتم مسح كافة بياناتك وسجل طلباتك وجلسات تسجيل الدخول بالكامل من قاعدة بيانات مكتبة الإيمان. هذا الإجراء نهائي ولا يمكن استرجاع الحساب بعد تأكيده.
+                عند حذف حسابك، سيتم مسح كافة بياناتك وسجل طلباتك وجلسات تسجيل
+                الدخول بالكامل من قاعدة بيانات مكتبة الإيمان. هذا الإجراء نهائي
+                ولا يمكن استرجاع الحساب بعد تأكيده.
               </p>
 
               <div className="pt-2 flex justify-start">
@@ -686,7 +718,6 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* نافذة تأكيد حذف الحساب */}
         <ConfirmModal
           isOpen={showDeleteModal}
           title="حذف الحساب نهائياً"

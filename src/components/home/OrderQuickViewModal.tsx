@@ -91,12 +91,12 @@ export default function OrderQuickViewModal({
     order.paymentMethod === "INSTAPAY"
       ? "إنستاباي (InstaPay)"
       : order.paymentMethod === "VODAFONE_CASH"
-      ? "فودافون كاش (Vodafone Cash)"
-      : order.paymentMethod;
+        ? "فودافون كاش (Vodafone Cash)"
+        : order.paymentMethod;
 
   const totalBooksCount = order.items.reduce(
     (sum, item) => sum + item.quantity,
-    0
+    0,
   );
 
   return (
@@ -109,7 +109,6 @@ export default function OrderQuickViewModal({
         className="bg-white w-full max-w-xl rounded-3xl p-6 md:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto text-right text-body animate-in fade-in zoom-in-95 duration-200 custom-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* زر الإغلاق */}
         <button
           onClick={onClose}
           className="absolute top-5 left-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 transition cursor-pointer"
@@ -117,7 +116,6 @@ export default function OrderQuickViewModal({
           ✕
         </button>
 
-        {/* رأس النافذة ورقم الطلب */}
         <div className="border-b border-gray-100 pb-4 mb-5">
           <div className="flex items-center gap-2.5 mb-2">
             <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
@@ -134,7 +132,6 @@ export default function OrderQuickViewModal({
             </div>
           </div>
 
-          {/* شارة حالة الطلب */}
           <div
             className={`mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-extrabold ${statusInfo.bg}`}
           >
@@ -143,7 +140,6 @@ export default function OrderQuickViewModal({
           </div>
         </div>
 
-        {/* معلومات التوصيل والدفع */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5 text-xs">
           <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-100">
             <div className="flex items-center gap-1.5 text-gray-500 font-bold mb-1">
@@ -177,7 +173,6 @@ export default function OrderQuickViewModal({
           )}
         </div>
 
-        {/* قائمة الكتب داخل الطلب مع Scroll-Y */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-extrabold text-sm text-gray-800 flex items-center gap-1.5">
@@ -213,7 +208,11 @@ export default function OrderQuickViewModal({
                         كود: {item.book?.code}
                       </span>
                       <span className="text-xs text-gray-500">
-                        الكمية: <strong className="text-gray-800">{item.quantity}</strong> × {item.priceAtBuy} ج.م
+                        الكمية:{" "}
+                        <strong className="text-gray-800">
+                          {item.quantity}
+                        </strong>{" "}
+                        × {item.priceAtBuy} ج.م
                       </span>
                     </div>
                   </div>
@@ -229,19 +228,26 @@ export default function OrderQuickViewModal({
           </div>
         </div>
 
-        {/* ملخص الحساب */}
         <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-2 text-xs sm:text-sm">
           <div className="flex justify-between text-gray-600">
             <span>قيمة الكتب:</span>
-            <span className="font-bold text-gray-800">{order.subtotal} ج.م</span>
+            <span className="font-bold text-gray-800">
+              {order.subtotal} ج.م
+            </span>
           </div>
           <div className="flex justify-between text-gray-600">
             <span>رسوم التوصيل:</span>
-            <span className="font-bold text-gray-800">{order.deliveryFee} ج.م</span>
+            <span className="font-bold text-gray-800">
+              {order.deliveryFee} ج.م
+            </span>
           </div>
           <div className="pt-2 border-t border-gray-200 flex justify-between items-center text-sm sm:text-base">
-            <span className="font-extrabold text-gray-900">الإجمالي النهائي:</span>
-            <span className="font-black text-lg text-teal-700">{order.total} ج.م</span>
+            <span className="font-extrabold text-gray-900">
+              الإجمالي النهائي:
+            </span>
+            <span className="font-black text-lg text-teal-700">
+              {order.total} ج.م
+            </span>
           </div>
         </div>
 

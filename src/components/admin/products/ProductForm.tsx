@@ -25,7 +25,11 @@ export default function ProductForm({
   const form = useProductForm({ initialData, onSubmit });
 
   return (
-    <form onSubmit={form.handleSubmit} className="flex flex-col gap-5" dir="rtl">
+    <form
+      onSubmit={form.handleSubmit}
+      className="flex flex-col gap-5"
+      dir="rtl"
+    >
       {form.error && (
         <div className="p-3.5 bg-danger-light border border-danger-border text-danger rounded-2xl text-xs font-bold flex items-center gap-2 animate-in fade-in">
           <AlertCircle className="w-4 h-4 shrink-0 text-danger" />
@@ -33,7 +37,6 @@ export default function ProductForm({
         </div>
       )}
 
-      {/* 1. غلاف الكتاب */}
       <ProductImageUpload
         fileInputRef={form.fileInputRef}
         imagePreview={form.image}
@@ -41,7 +44,6 @@ export default function ProductForm({
         onFileSelect={form.handleFileSelect}
       />
 
-      {/* 2. المعلومات الأساسية: كود، عنوان، مؤلف، قسم */}
       <ProductBasicInfo
         code={form.code}
         setCode={form.setCode}
@@ -53,7 +55,6 @@ export default function ProductForm({
         setCategory={form.setCategory}
       />
 
-      {/* 3. الأسعار وكمية المخزون */}
       <ProductPricingInputs
         price={form.price}
         setPrice={form.setPrice}
@@ -63,7 +64,6 @@ export default function ProductForm({
         setQuantity={form.setQuantity}
       />
 
-      {/* 4. بيانات النشر: دار النشر وعدد الصفحات */}
       <ProductPublishingInfo
         publisher={form.publisher}
         setPublisher={form.setPublisher}
@@ -71,7 +71,6 @@ export default function ProductForm({
         setPagesCount={form.setPagesCount}
       />
 
-      {/* 5. النبذة المختصرة والوصف الكامل */}
       <ProductDescriptionInput
         description={form.description}
         setDescription={form.setDescription}
@@ -79,7 +78,6 @@ export default function ProductForm({
         setFullDescription={form.setFullDescription}
       />
 
-      {/* أزرار الإجراءات */}
       <div className="flex items-center gap-3 pt-3 border-t border-border">
         <button
           type="submit"
@@ -95,7 +93,9 @@ export default function ProductForm({
             <>
               <Save className="w-5 h-5" />
               <span>
-                {initialData ? "حفظ تعديلات الكتاب" : "إضافة الكتاب للمكتبة والمخزون"}
+                {initialData
+                  ? "حفظ تعديلات الكتاب"
+                  : "إضافة الكتاب للمكتبة والمخزون"}
               </span>
             </>
           )}

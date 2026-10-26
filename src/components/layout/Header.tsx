@@ -16,7 +16,7 @@ export default function Header() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const totalScroll =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -38,7 +38,7 @@ export default function Header() {
     };
   }, []);
 
-    const handleLogoClick = (e: React.MouseEvent) => {
+  const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -49,8 +49,11 @@ export default function Header() {
       dir="rtl"
     >
       <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
-        {/* الشعار واسم المكتبة (يمين الهيدر) */}
-        <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <Link
+          href="/"
+          onClick={handleLogoClick}
+          className="flex items-center gap-2 sm:gap-3 min-w-0"
+        >
           <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
             <Image
               src="/logo.png"
@@ -70,9 +73,7 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* أزرار البحث والحساب والقائمة (يسار الهيدر) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* زر أيقونة المستخدم (الملف الشخصي والطلبات) */}
           {!user ? (
             <div className="flex items-center gap-1.5">
               <Link
@@ -81,7 +82,9 @@ export default function Header() {
                 className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-white/15 hover:bg-white/25 px-2.5 sm:px-3 text-white transition-all cursor-pointer shadow-xs active:scale-95"
               >
                 <User className="h-5 w-5 shrink-0" />
-                <span className="hidden sm:inline text-xs font-extrabold">حسابي</span>
+                <span className="hidden sm:inline text-xs font-extrabold">
+                  حسابي
+                </span>
               </Link>
               <Link
                 href="/register"
@@ -105,7 +108,6 @@ export default function Header() {
             </Link>
           )}
 
-          {/* زر البحث وقائمته المنبثقة */}
           <div className="relative">
             <button
               type="button"
@@ -129,7 +131,6 @@ export default function Header() {
             )}
           </div>
 
-          {/* زر القائمة الجانبية */}
           <button
             type="button"
             onClick={() => setIsMenuOpen(true)}
@@ -146,7 +147,6 @@ export default function Header() {
         style={{ width: `${scrollProgress}%` }}
       />
 
-      {/* القائمة الجانبية */}
       <MenuBar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </header>
   );

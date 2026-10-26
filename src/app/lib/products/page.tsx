@@ -9,22 +9,35 @@ import ProductsHeader from "@/src/components/admin/products/ProductsHeader";
 import ProductsTable from "@/src/components/admin/products/ProductsTable";
 import ProductFormModal from "@/src/components/admin/products/ProductFormModal";
 import ConfirmModal from "@/src/components/ui/ConfirmModal";
-import { Search, Loader2, BookOpen, Boxes, AlertTriangle, RefreshCw } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  BookOpen,
+  Boxes,
+  AlertTriangle,
+  RefreshCw,
+  PackageX,
+  X,
+} from "lucide-react";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [stockFilter, setStockFilter] = useState<
+    "all" | "out_of_stock" | "low_stock"
+  >("all");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(
+    null,
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -34,8 +47,8 @@ export default function AdminProductsPage() {
         const list = Array.isArray(json)
           ? json
           : Array.isArray(json.data)
-          ? json.data
-          : [];
+            ? json.data
+            : [];
         setProducts(list);
       }
     } catch (err) {
@@ -50,7 +63,6 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, [fetchProducts]);
 
-  // حفظ أو تعديل الكتاب عبر مسارات الأدمن
   const handleSaveProduct = async (payload: Record<string, unknown>) => {
     const token = getAdminToken();
     const isEditing = Boolean(editingProduct);
@@ -77,7 +89,7 @@ export default function AdminProductsPage() {
 
     if (isEditing) {
       setProducts((prev) =>
-        prev.map((p) => (p.id === editingProduct!.id ? savedBook : p))
+        prev.map((p) => (p.id === editingProduct!.id ? savedBook : p)),
       );
       toast.success("تم تحديث بيانات الكتاب بنجاح");
     } else {
@@ -89,7 +101,6 @@ export default function AdminProductsPage() {
     setEditingProduct(null);
   };
 
-  // تأكيد وحذف كتاب من النظام
   const confirmDeleteProduct = async () => {
     if (!deletingProductId) return;
     setIsDeleting(true);
@@ -112,7 +123,7 @@ export default function AdminProductsPage() {
       } else {
         toast.error(
           data.message ||
-            "لا يمكن حذف هذا الكتاب لوجود طلبات سابقة مرتبطة به، يرجى تصفير كمية المخزون بدلاً من الحذف."
+            "لا يمكن حذف هذا الكتاب لوجود طلبات سابقة مرتبطة به، يرجى تصفير كمية المخزون بدلاً من الحذف.",
         );
       }
     } catch (err) {
@@ -123,23 +134,32 @@ export default function AdminProductsPage() {
     }
   };
 
-  // دالة لتوحيد الحروف العربية والهمزات للبحث والتصفية الدقيقة
   const normalizeText = (text: string) => {
     return (text || "")
       .toLowerCase()
       .replace(/[إأآا]/g, "ا")
       .replace(/ة/g, "ه")
       .replace(/ى/g, "ي")
-      .replace(/[\u064B-\u065F]/g, "") // إزالة التشكيل
+      .replace(/[\u064B-\u065F]/g, "")
       .trim();
   };
 
-  // تصفية الكتب حسب القسم وبحث النص
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
+      const qty = Number(product.quantity || 0);
+
+      // تصفية حالة المخزون
+      if (stockFilter === "out_of_stock" && qty > 0) {
+        return false;
+      }
+      if (stockFilter === "low_stock" && (qty <= 0 || qty > 5)) {
+        return false;
+      }
+
       const prodCat = (product.category || "").trim();
       const resolvedProdCat = getCategoryLabel(prodCat) || prodCat;
-      const resolvedActiveCat = getCategoryLabel(activeCategory) || activeCategory;
+      const resolvedActiveCat =
+        getCategoryLabel(activeCategory) || activeCategory;
 
       const normProdCat = normalizeText(resolvedProdCat);
       const normActiveCat = normalizeText(resolvedActiveCat);
@@ -165,25 +185,28 @@ export default function AdminProductsPage() {
         normProdCat.includes(q)
       );
     });
-  }, [products, activeCategory, searchQuery]);
+  }, [products, stockFilter, activeCategory, searchQuery]);
 
-  // إحصائيات سريعة للكتب
   const stats = useMemo(() => {
     const totalTitles = products.length;
     const totalStock = products.reduce(
       (acc, item) => acc + Number(item.quantity || 0),
-      0
+      0,
     );
-    const lowOrOutStock = products.filter(
-      (item) => Number(item.quantity || 0) <= 5
-    ).length;
+    const lowStock = products.filter((item) => {
+      const q = Number(item.quantity || 0);
+      return q > 0 && q <= 5;
+    }).length;
+    const outOfStock = products.filter((item) => {
+      const q = Number(item.quantity || 0);
+      return q <= 0;
+    }).length;
 
-    return { totalTitles, totalStock, lowOrOutStock };
+    return { totalTitles, totalStock, lowStock, outOfStock };
   }, [products]);
 
   return (
     <div className="flex flex-col gap-6" dir="rtl">
-      {/* ترويسة الصفحة وزر الإضافة */}
       <ProductsHeader
         onAddClick={() => {
           setEditingProduct(null);
@@ -191,27 +214,41 @@ export default function AdminProductsPage() {
         }}
       />
 
-      {/* بطاقات الإحصائيات السريعة (flex-box بدلاً من grid) */}
-      <div className="flex flex-wrap gap-4">
-        <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
-          <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0">
-            <BookOpen className="w-6 h-6" />
+      {/* كروت الإحصائيات مع كارت الكتب التي نفذت من المخزون وكارت قاربت على الانتهاء */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button
+          type="button"
+          onClick={() => setStockFilter("all")}
+          className={`bg-white rounded-2xl border p-5 flex items-center justify-between text-right transition-all cursor-pointer shadow-2xs ${
+            stockFilter === "all"
+              ? "border-primary/50 ring-2 ring-primary/20"
+              : "border-border/80 hover:border-primary/40"
+          }`}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-muted">
+                إجمالي عناوين الكتب
+              </span>
+              <p className="text-2xl font-black text-heading mt-0.5">
+                {stats.totalTitles}{" "}
+                <span className="text-xs font-semibold text-muted">عنوان</span>
+              </p>
+            </div>
           </div>
-          <div className="text-right">
-            <span className="text-xs font-bold text-muted">إجمالي عناوين الكتب</span>
-            <p className="text-2xl font-black text-heading mt-0.5">
-              {stats.totalTitles}{" "}
-              <span className="text-xs font-semibold text-muted">عنوان</span>
-            </p>
-          </div>
-        </div>
+        </button>
 
-        <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
+        <div className="bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-success-light text-success flex items-center justify-center shrink-0">
             <Boxes className="w-6 h-6" />
           </div>
           <div className="text-right">
-            <span className="text-xs font-bold text-muted">إجمالي النسخ بالمخزن</span>
+            <span className="text-xs font-bold text-muted">
+              إجمالي النسخ بالمخزن
+            </span>
             <p className="text-2xl font-black text-heading mt-0.5">
               {stats.totalStock}{" "}
               <span className="text-xs font-semibold text-muted">نسخة</span>
@@ -219,23 +256,182 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        <div className="flex-1 min-w-[240px] bg-white rounded-2xl border border-border/80 p-5 flex items-center gap-4 shadow-2xs">
-          <div className="w-12 h-12 rounded-2xl bg-warning-light text-warning flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-6 h-6" />
+        {/* كارت الكتب التي قاربت على الإنتهاء (قابل للنقر للتصفية) */}
+        <button
+          type="button"
+          onClick={() =>
+            setStockFilter((prev) => (prev === "low_stock" ? "all" : "low_stock"))
+          }
+          className={`bg-white rounded-2xl border p-5 flex items-center justify-between text-right transition-all cursor-pointer shadow-2xs ${
+            stockFilter === "low_stock"
+              ? "border-warning ring-2 ring-warning/30 bg-warning-light/15"
+              : "border-border/80 hover:border-warning/40"
+          }`}
+          title="اضغط لتصفية الكتب التي قاربت على الانتهاء"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-warning-light text-warning flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-bold text-muted">
+                  كتب قاربت على الإنتهاء
+                </span>
+                {stockFilter === "low_stock" && (
+                  <span className="text-[10px] bg-warning text-white font-extrabold px-1.5 py-0.5 rounded-full">
+                    مُفعّل
+                  </span>
+                )}
+              </div>
+              <p className="text-2xl font-black text-heading mt-0.5">
+                {stats.lowStock}{" "}
+                <span className="text-xs font-semibold text-muted">كتاب</span>
+              </p>
+            </div>
           </div>
-          <div className="text-right">
-            <span className="text-xs font-bold text-muted">كتب قاربت أو نفدت</span>
-            <p className="text-2xl font-black text-heading mt-0.5">
-              {stats.lowOrOutStock}{" "}
-              <span className="text-xs font-semibold text-muted">كتاب</span>
-            </p>
+        </button>
+
+        {/* كارت الكتب التي نفذت من المخزون (قابل للنقر للتصفية) */}
+        <button
+          type="button"
+          onClick={() =>
+            setStockFilter((prev) =>
+              prev === "out_of_stock" ? "all" : "out_of_stock",
+            )
+          }
+          className={`bg-white rounded-2xl border p-5 flex items-center justify-between text-right transition-all cursor-pointer shadow-2xs ${
+            stockFilter === "out_of_stock"
+              ? "border-danger ring-2 ring-danger/30 bg-danger-light/15"
+              : "border-border/80 hover:border-danger/40"
+          }`}
+          title="اضغط لتصفية الكتب التي نفذت من المخزون"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-danger-light text-danger flex items-center justify-center shrink-0">
+              <PackageX className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-bold text-muted">
+                  كتب نفدت من المخزون
+                </span>
+                {stockFilter === "out_of_stock" && (
+                  <span className="text-[10px] bg-danger text-white font-extrabold px-1.5 py-0.5 rounded-full">
+                    مُفعّل
+                  </span>
+                )}
+              </div>
+              <p className="text-2xl font-black text-heading mt-0.5">
+                {stats.outOfStock}{" "}
+                <span className="text-xs font-semibold text-muted">كتاب</span>
+              </p>
+            </div>
           </div>
-        </div>
+        </button>
       </div>
 
-      {/* شريط الأقسام وحقل البحث وزر التحديث */}
+      {/* أزرار الـ Toggle لتصفية المخزون */}
+      <div className="bg-white rounded-2xl border border-border/80 p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold text-muted ml-1">
+            تصفية المخزون السريعة:
+          </span>
+
+          <button
+            type="button"
+            onClick={() => setStockFilter("all")}
+            className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer ${
+              stockFilter === "all"
+                ? "bg-heading text-white shadow-2xs"
+                : "bg-surface-subtle text-sub hover:text-heading hover:bg-surface-hover"
+            }`}
+          >
+            عرض الكل ({products.length})
+          </button>
+
+          {/* زر Toggle للكتب التي نفذت من المخزون */}
+          <button
+            type="button"
+            onClick={() =>
+              setStockFilter((prev) =>
+                prev === "out_of_stock" ? "all" : "out_of_stock",
+              )
+            }
+            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer border ${
+              stockFilter === "out_of_stock"
+                ? "bg-danger text-white border-danger shadow-xs shadow-danger/25"
+                : "bg-white text-sub border-border/80 hover:border-danger/40 hover:text-danger"
+            }`}
+          >
+            <PackageX className="w-4 h-4 shrink-0" />
+            <span>نفدت من المخزون</span>
+            <span
+              className={`px-1.5 py-0.5 rounded-md text-[11px] font-black font-mono ${
+                stockFilter === "out_of_stock"
+                  ? "bg-white text-danger"
+                  : "bg-danger-light text-danger"
+              }`}
+            >
+              {stats.outOfStock}
+            </span>
+            <span
+              className={`w-2 h-2 rounded-full ${
+                stockFilter === "out_of_stock"
+                  ? "bg-white animate-ping"
+                  : "bg-gray-300"
+              }`}
+            />
+          </button>
+
+          {/* زر Toggle للكتب التي قاربت على الإنتهاء */}
+          <button
+            type="button"
+            onClick={() =>
+              setStockFilter((prev) =>
+                prev === "low_stock" ? "all" : "low_stock",
+              )
+            }
+            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer border ${
+              stockFilter === "low_stock"
+                ? "bg-warning text-white border-warning shadow-xs shadow-warning/25"
+                : "bg-white text-sub border-border/80 hover:border-warning/40 hover:text-warning"
+            }`}
+          >
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>قاربت على الإنتهاء</span>
+            <span
+              className={`px-1.5 py-0.5 rounded-md text-[11px] font-black font-mono ${
+                stockFilter === "low_stock"
+                  ? "bg-white text-warning"
+                  : "bg-warning-light text-warning"
+              }`}
+            >
+              {stats.lowStock}
+            </span>
+            <span
+              className={`w-2 h-2 rounded-full ${
+                stockFilter === "low_stock"
+                  ? "bg-white animate-ping"
+                  : "bg-gray-300"
+              }`}
+            />
+          </button>
+        </div>
+
+        {stockFilter !== "all" && (
+          <button
+            type="button"
+            onClick={() => setStockFilter("all")}
+            className="inline-flex items-center gap-1.5 text-xs font-black text-muted hover:text-danger transition cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+            <span>إلغاء التصفية وعرض جميع الكتب</span>
+          </button>
+        )}
+      </div>
+
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        {/* تبويبات الأقسام */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
           {CATEGORY_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -258,7 +454,6 @@ export default function AdminProductsPage() {
           })}
         </div>
 
-        {/* حقل البحث وزر تحديث قائمة المخزون */}
         <div className="flex items-center gap-2.5 w-full lg:w-auto shrink-0">
           <div className="relative w-full lg:w-72 shrink-0">
             <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-muted-light">
@@ -283,21 +478,26 @@ export default function AdminProductsPage() {
             title="تحديث قائمة المخزون الآن"
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-border/90 hover:border-primary hover:text-primary rounded-2xl text-xs sm:text-sm font-extrabold text-sub transition cursor-pointer shadow-2xs shrink-0"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-primary" : ""}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${loading ? "animate-spin text-primary" : ""}`}
+            />
             <span className="hidden sm:inline">تحديث المخزون</span>
           </button>
         </div>
       </div>
 
-      {/* جدول الكتب أو مؤشر التحميل */}
       {loading ? (
         <div className="bg-white rounded-3xl border border-border/80 py-24 flex flex-col items-center justify-center gap-3 text-muted">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <span className="text-sm font-bold">جاري تحميل قائمة الكتب والمخزون...</span>
+          <span className="text-sm font-bold">
+            جاري تحميل قائمة الكتب والمخزون...
+          </span>
         </div>
       ) : (
         <ProductsTable
           products={filteredProducts}
+          stockFilter={stockFilter}
+          onResetStockFilter={() => setStockFilter("all")}
           onEdit={(product) => {
             setEditingProduct(product);
             setModalOpen(true);
@@ -306,7 +506,6 @@ export default function AdminProductsPage() {
         />
       )}
 
-      {/* نافذة إضافة / تعديل الكتاب */}
       <ProductFormModal
         isOpen={modalOpen}
         editingProduct={editingProduct}
@@ -317,7 +516,6 @@ export default function AdminProductsPage() {
         onSubmit={handleSaveProduct}
       />
 
-      {/* نافذة تأكيد الحذف */}
       <ConfirmModal
         isOpen={Boolean(deletingProductId)}
         title="حذف كتاب من المتجر"

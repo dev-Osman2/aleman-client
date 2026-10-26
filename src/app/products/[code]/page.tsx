@@ -23,7 +23,6 @@ import AddToCartSection from "./AddToCartSection";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
-// دالة جلب الكتاب عبر الكود
 async function getBookByCode(code: string): Promise<Product | null> {
   try {
     const res = await fetch(`${apiUrl}/products/${code}`, {
@@ -39,7 +38,6 @@ async function getBookByCode(code: string): Promise<Product | null> {
   }
 }
 
-// إنشاء بيانات السيو (Metadata) تلقائياً
 export async function generateMetadata({
   params,
 }: {
@@ -71,7 +69,6 @@ export default async function ProductDetailPage({
   const isAvailable = book.quantity > 0;
   const categoryLabel = getCategoryLabel(book.category);
 
-  // حساب نسبة الخصم إن وُجد سعر قديم
   const discountPercent =
     book.oldPrice && book.oldPrice > book.price
       ? Math.round(((book.oldPrice - book.price) / book.oldPrice) * 100)
@@ -81,7 +78,6 @@ export default async function ProductDetailPage({
     <>
       <Header />
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-5xl" dir="rtl">
-        {/* مسار التنقل (Breadcrumbs) وزر الرجوع */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <nav className="flex items-center gap-1.5 text-xs font-bold text-muted">
             <Link href="/" className="hover:text-primary transition-colors">
@@ -109,12 +105,8 @@ export default async function ProductDetailPage({
           </Link>
         </div>
 
-        {/* بطاقة تفاصيل الكتاب الرئيسية باستخدام Flexbox بدون Grid */}
         <div className="bg-white rounded-3xl border border-border-subtle p-5 sm:p-7 md:p-8 shadow-xs flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
-          
-          {/* العمود الأيمن: غلاف الكتاب والضمانات */}
           <div className="w-full lg:w-5/12 min-w-0 flex flex-col gap-4">
-            {/* صندوق عرض الغلاف */}
             <div className="group relative flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100/70 rounded-2xl p-6 sm:p-8 border border-gray-100 shadow-2xs overflow-hidden">
               <div className="relative w-full aspect-[3/4] max-w-[280px]">
                 <Image
@@ -127,14 +119,12 @@ export default async function ProductDetailPage({
                 />
               </div>
 
-              {/* شارة الخصم إن وجد */}
               {discountPercent && (
                 <span className="absolute top-4 left-4 rounded-full bg-red-500 text-white font-black text-xs px-2.5 py-1 shadow-md">
                   خصم {discountPercent}%
                 </span>
               )}
 
-              {/* شارة نفاد المخزون */}
               {!isAvailable && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center p-4">
                   <span className="rounded-2xl bg-red-600 text-white text-sm font-black px-4 py-2 shadow-lg">
@@ -144,7 +134,6 @@ export default async function ProductDetailPage({
               )}
             </div>
 
-            {/* بطاقات المزايا والضمانات */}
             <div className="flex flex-col gap-2.5 bg-gray-50/80 rounded-2xl p-4 border border-gray-100 text-xs font-bold text-sub">
               <div className="flex items-center gap-2.5">
                 <Truck className="w-4 h-4 text-primary shrink-0" />
@@ -161,11 +150,8 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          {/* العمود الأيسر: بيانات وتفاصيل الكتاب وزر الإضافة للسلة */}
           <div className="w-full lg:w-7/12 min-w-0 flex flex-col gap-6">
             <div className="flex flex-col gap-4">
-              
-              {/* شارات القسم والكود */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-light px-3.5 py-1 text-xs font-extrabold text-primary border border-primary/20">
                   <Layers className="w-3.5 h-3.5" />
@@ -178,12 +164,10 @@ export default async function ProductDetailPage({
                 </span>
               </div>
 
-              {/* عنوان الكتاب */}
               <h1 className="text-2xl sm:text-3xl font-black text-heading leading-snug">
                 {book.title}
               </h1>
 
-              {/* بطاقات البيانات الوصفية (المؤلف، الناشر، الصفحات) */}
               <div className="flex flex-wrap items-center gap-3 text-xs font-bold">
                 {book.author && (
                   <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 text-sub">
@@ -205,20 +189,25 @@ export default async function ProductDetailPage({
                   <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 text-sub">
                     <FileText className="w-3.5 h-3.5 text-primary" />
                     <span>الصفحات:</span>
-                    <strong className="text-heading">{book.pagesCount} صفحة</strong>
+                    <strong className="text-heading">
+                      {book.pagesCount} صفحة
+                    </strong>
                   </div>
                 )}
               </div>
 
-              {/* بطاقة السعر والتوفر */}
               <div className="flex flex-wrap items-center justify-between gap-4 bg-gray-50/90 rounded-2xl p-4 sm:p-5 border border-gray-100">
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-xs text-muted font-bold">السعر الحالي:</span>
+                  <span className="text-xs text-muted font-bold">
+                    السعر الحالي:
+                  </span>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-black text-primary">
                       {book.price}
                     </span>
-                    <span className="text-sm font-extrabold text-heading">ج.م</span>
+                    <span className="text-sm font-extrabold text-heading">
+                      ج.م
+                    </span>
 
                     {book.oldPrice && (
                       <span className="text-sm line-through text-gray-400 font-bold mr-2">
@@ -242,7 +231,6 @@ export default async function ProductDetailPage({
                 </div>
               </div>
 
-              {/* نبذة عن الكتاب */}
               <div className="flex flex-col gap-2 pt-2">
                 <h2 className="flex items-center gap-2 text-sm font-black text-heading">
                   <BookOpen className="w-4 h-4 text-primary" />
@@ -250,17 +238,17 @@ export default async function ProductDetailPage({
                 </h2>
                 <div className="text-xs sm:text-sm text-sub leading-relaxed bg-gray-50/60 p-4 sm:p-5 rounded-2xl border border-gray-100">
                   <p className="whitespace-pre-line">
-                    {book.fullDescription || book.description || "لا يوجد وصف إضافي متوفر لهذا الكتاب حالياً."}
+                    {book.fullDescription ||
+                      book.description ||
+                      "لا يوجد وصف إضافي متوفر لهذا الكتاب حالياً."}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* قسم الإضافة إلى السلة التفاعلي مع تنبيه Sonner */}
             <div className="pt-2 border-t border-gray-100">
               <AddToCartSection book={book} />
             </div>
-
           </div>
         </div>
       </main>

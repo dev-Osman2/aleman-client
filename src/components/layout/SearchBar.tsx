@@ -51,7 +51,6 @@ export default function SearchBar({
     const basePath = pathname || window.location.pathname || "/";
     const targetUrl = qs ? `${basePath}?${qs}` : basePath;
 
-    // نستخدم setTimeout لضمان انتهاء دورة الرندر الحالية في React قبل تحديث الراوتر
     setTimeout(() => {
       router.replace(targetUrl, { scroll: false });
     }, 0);
@@ -77,10 +76,10 @@ export default function SearchBar({
           const list = Array.isArray(data)
             ? data
             : Array.isArray(data.data)
-            ? data.data
-            : Array.isArray(data.products)
-            ? data.products
-            : [];
+              ? data.data
+              : Array.isArray(data.products)
+                ? data.products
+                : [];
           setProducts(list);
         }
       } catch (err) {
@@ -93,18 +92,16 @@ export default function SearchBar({
   useEffect(() => {
     if (!isOpen) return;
 
-    // إلغاء تحديد القسم عند بدء/فتح البحث ليتمكن المستخدم من الوصول لجميع المنتجات
     clearCategoryFilter();
 
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      const isTrigger = (target as HTMLElement)?.closest?.("[data-search-trigger]");
+      const isTrigger = (target as HTMLElement)?.closest?.(
+        "[data-search-trigger]",
+      );
       if (isTrigger) return;
 
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(target)
-      ) {
+      if (wrapperRef.current && !wrapperRef.current.contains(target)) {
         handleClose();
       }
     };
@@ -142,8 +139,12 @@ export default function SearchBar({
         .filter((item) => {
           const q = normalizeSearchText(query);
           const matchTitle = normalizeSearchText(item.title || "").includes(q);
-          const matchAuthor = normalizeSearchText(item.author || "").includes(q);
-          const matchCategory = normalizeSearchText(item.category || "").includes(q);
+          const matchAuthor = normalizeSearchText(item.author || "").includes(
+            q,
+          );
+          const matchCategory = normalizeSearchText(
+            item.category || "",
+          ).includes(q);
           return matchTitle || matchAuthor || matchCategory;
         })
         .slice(0, 6)
@@ -163,7 +164,6 @@ export default function SearchBar({
         "absolute top-full left-[-48px] sm:left-0 mt-2 z-50 w-[calc(100vw-1.5rem)] sm:w-80 md:w-96 max-w-sm rounded-2xl bg-white p-2.5 sm:p-3 text-body shadow-2xl border border-gray-100 animate-in fade-in zoom-in-95 duration-150"
       }
     >
-      {/* حقل البحث الدائري (Pill) بألوان الموقع المتناسقة */}
       <div className="relative flex items-center border-2 border-primary rounded-full px-3.5 py-1.5 sm:py-2 bg-white transition-all focus-within:ring-2 focus-within:ring-primary/20 shadow-2xs">
         <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-primary shrink-0 ml-2" />
         <input
@@ -193,7 +193,6 @@ export default function SearchBar({
         )}
       </div>
 
-      {/* قائمة المنتجات المطابقة للبحث */}
       {filteredProducts.length > 0 && (
         <div className="mt-2.5 flex flex-col gap-1 divide-y divide-border-subtle max-h-72 overflow-y-auto custom-scrollbar pt-1">
           {filteredProducts.map((product) => (

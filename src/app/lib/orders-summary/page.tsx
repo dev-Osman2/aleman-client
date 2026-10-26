@@ -44,20 +44,17 @@ export default function AdminOrdersSummaryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
       const token = getAdminToken();
 
-      // جلب إحصائيات الأدمن الأساسية
       const statsPromise = fetch(`${apiUrl}/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // جلب سجل الطلبات لحساب الإحصائيات التفصيلية
       const ordersPromise = fetch(`${apiUrl}/admin/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -77,8 +74,8 @@ export default function AdminOrdersSummaryPage() {
         const list: Order[] = Array.isArray(ordersJson)
           ? ordersJson
           : Array.isArray(ordersJson.data)
-          ? ordersJson.data
-          : [];
+            ? ordersJson.data
+            : [];
         setOrders(list);
       }
     } catch (err) {
@@ -93,7 +90,6 @@ export default function AdminOrdersSummaryPage() {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  // حساب تفاصيل التقارير من الطلبات
   const calculatedReports = useMemo(() => {
     const confirmedOrders = orders.filter((o) => o.status === "CONFIRMED");
     const pendingOrders = orders.filter((o) => o.status === "PENDING");
@@ -101,7 +97,7 @@ export default function AdminOrdersSummaryPage() {
 
     const instapayOrders = orders.filter((o) => o.paymentMethod === "INSTAPAY");
     const vodafoneOrders = orders.filter(
-      (o) => o.paymentMethod === "VODAFONE_CASH"
+      (o) => o.paymentMethod === "VODAFONE_CASH",
     );
 
     const totalRevenue =
@@ -112,10 +108,9 @@ export default function AdminOrdersSummaryPage() {
       confirmedOrders.length > 0
         ? totalRevenue / confirmedOrders.length
         : orders.length > 0
-        ? totalRevenue / orders.length
-        : 0;
+          ? totalRevenue / orders.length
+          : 0;
 
-    // تجميع الكتب الأكثر مبيعاً
     const booksMap = new Map<string, SoldBookStat>();
 
     confirmedOrders.forEach((order) => {
@@ -145,7 +140,7 @@ export default function AdminOrdersSummaryPage() {
     });
 
     const topSoldBooks = Array.from(booksMap.values()).sort(
-      (a, b) => b.totalQty - a.totalQty
+      (a, b) => b.totalQty - a.totalQty,
     );
 
     return {
@@ -162,16 +157,20 @@ export default function AdminOrdersSummaryPage() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl border border-border/80 py-24 flex flex-col items-center justify-center gap-3 text-muted" dir="rtl">
+      <div
+        className="bg-white rounded-3xl border border-border/80 py-24 flex flex-col items-center justify-center gap-3 text-muted"
+        dir="rtl"
+      >
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <span className="text-sm font-bold">جاري تحليل بيانات وتقارير مبيعات المكتبة...</span>
+        <span className="text-sm font-bold">
+          جاري تحليل بيانات وتقارير مبيعات المكتبة...
+        </span>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-6" dir="rtl">
-      {/* الترويسة وزر التحديث */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-heading">
@@ -192,9 +191,7 @@ export default function AdminOrdersSummaryPage() {
         </button>
       </div>
 
-      {/* بطاقات الإحصائيات الأربعة الأساسية */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* إجمالي الإيرادات */}
         <div className="bg-white rounded-3xl border border-border/80 p-5 flex flex-col gap-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted text-xs font-bold">
             <span>إجمالي الإيرادات المؤكدة</span>
@@ -208,7 +205,6 @@ export default function AdminOrdersSummaryPage() {
           </p>
         </div>
 
-        {/* متوسط قيمة الطلب */}
         <div className="bg-white rounded-3xl border border-border/80 p-5 flex flex-col gap-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted text-xs font-bold">
             <span>متوسط قيمة الطلب</span>
@@ -222,7 +218,6 @@ export default function AdminOrdersSummaryPage() {
           </p>
         </div>
 
-        {/* إجمالي الطلبات */}
         <div className="bg-white rounded-3xl border border-border/80 p-5 flex flex-col gap-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted text-xs font-bold">
             <span>الطلبات المكتملة</span>
@@ -238,7 +233,6 @@ export default function AdminOrdersSummaryPage() {
           </p>
         </div>
 
-        {/* عدد الكتب والمستخدمين */}
         <div className="bg-white rounded-3xl border border-border/80 p-5 flex flex-col gap-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted text-xs font-bold">
             <span>الكتب والعملاء المسجلين</span>
@@ -259,9 +253,7 @@ export default function AdminOrdersSummaryPage() {
         </div>
       </div>
 
-      {/* تفصيل حالات الطلبات وطرق الدفع */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* حالات الطلبات */}
         <div className="bg-white rounded-3xl border border-border/80 p-6 flex flex-col gap-4 shadow-2xs">
           <h2 className="text-base font-black text-heading flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
@@ -273,7 +265,9 @@ export default function AdminOrdersSummaryPage() {
               <div className="flex items-center justify-center text-success mb-1">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
-              <span className="block text-xs font-bold text-success">مؤكد ومكتمل</span>
+              <span className="block text-xs font-bold text-success">
+                مؤكد ومكتمل
+              </span>
               <span className="text-xl font-black text-heading mt-1 block">
                 {calculatedReports.confirmedCount}
               </span>
@@ -283,7 +277,9 @@ export default function AdminOrdersSummaryPage() {
               <div className="flex items-center justify-center text-warning mb-1">
                 <Clock className="w-5 h-5" />
               </div>
-              <span className="block text-xs font-bold text-warning">قيد المراجعة</span>
+              <span className="block text-xs font-bold text-warning">
+                قيد المراجعة
+              </span>
               <span className="text-xl font-black text-heading mt-1 block">
                 {calculatedReports.pendingCount}
               </span>
@@ -293,7 +289,9 @@ export default function AdminOrdersSummaryPage() {
               <div className="flex items-center justify-center text-danger mb-1">
                 <XCircle className="w-5 h-5" />
               </div>
-              <span className="block text-xs font-bold text-danger">طلبات ملغاة</span>
+              <span className="block text-xs font-bold text-danger">
+                طلبات ملغاة
+              </span>
               <span className="text-xl font-black text-heading mt-1 block">
                 {calculatedReports.cancelledCount}
               </span>
@@ -301,7 +299,6 @@ export default function AdminOrdersSummaryPage() {
           </div>
         </div>
 
-        {/* طرق الدفع الإلكتروني */}
         <div className="bg-white rounded-3xl border border-border/80 p-6 flex flex-col gap-4 shadow-2xs">
           <h2 className="text-base font-black text-heading flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-primary" />
@@ -311,7 +308,9 @@ export default function AdminOrdersSummaryPage() {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-surface-soft border border-border rounded-2xl p-4 text-right flex items-center justify-between">
               <div>
-                <span className="block text-xs font-bold text-muted">إنستاباي (InstaPay)</span>
+                <span className="block text-xs font-bold text-muted">
+                  إنستاباي (InstaPay)
+                </span>
                 <span className="text-xl font-black text-heading mt-1 block">
                   {calculatedReports.instapayCount} طلب
                 </span>
@@ -323,7 +322,9 @@ export default function AdminOrdersSummaryPage() {
 
             <div className="bg-surface-soft border border-border rounded-2xl p-4 text-right flex items-center justify-between">
               <div>
-                <span className="block text-xs font-bold text-muted">فودافون كاش</span>
+                <span className="block text-xs font-bold text-muted">
+                  فودافون كاش
+                </span>
                 <span className="text-xl font-black text-heading mt-1 block">
                   {calculatedReports.vodafoneCount} طلب
                 </span>
@@ -336,7 +337,6 @@ export default function AdminOrdersSummaryPage() {
         </div>
       </div>
 
-      {/* جدول الكتب الأكثر مبيعاً */}
       <div className="bg-white rounded-3xl border border-border/80 overflow-hidden shadow-2xs">
         <div className="p-6 border-b border-border-subtle flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -368,7 +368,10 @@ export default function AdminOrdersSummaryPage() {
               </thead>
               <tbody className="divide-y divide-border-subtle text-xs sm:text-sm">
                 {calculatedReports.topSoldBooks.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-primary-light/10 transition-colors">
+                  <tr
+                    key={idx}
+                    className="hover:bg-primary-light/10 transition-colors"
+                  >
                     <td className="py-3.5 px-6 font-black text-primary">
                       {idx + 1}
                     </td>

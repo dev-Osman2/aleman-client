@@ -26,7 +26,7 @@ function normalizeCartItem(item: unknown): CartItem | null {
   const price = Math.max(0, toFiniteNumber(candidate.price));
   const cartQuantity = Math.min(
     quantity,
-    Math.max(1, toFiniteNumber(candidate.cartQuantity, 1))
+    Math.max(1, toFiniteNumber(candidate.cartQuantity, 1)),
   );
 
   if (
@@ -60,7 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           setCart(
             parsed
               .map(normalizeCartItem)
-              .filter((item): item is CartItem => item !== null)
+              .filter((item): item is CartItem => item !== null),
           );
         }
       }
@@ -95,12 +95,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const updated = [...prev];
         const currentQty = Math.max(
           0,
-          toFiniteNumber(updated[existingIndex].cartQuantity)
+          toFiniteNumber(updated[existingIndex].cartQuantity),
         );
-        // ضمان عدم تجاوز الكمية المتوفرة في مخزون المكتبة
+
         const nextQty = Math.min(
           availableQuantity,
-          currentQty + requestedQuantity
+          currentQty + requestedQuantity,
         );
 
         updated[existingIndex] = {
@@ -143,12 +143,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             ...item,
             cartQuantity: Math.min(
               Math.max(0, toFiniteNumber(item.quantity)),
-              nextQuantity
+              nextQuantity,
             ),
           };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -168,7 +168,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       sum +
       toFiniteNumber(item.price) *
         Math.max(0, toFiniteNumber(item.cartQuantity)),
-    0
+    0,
   );
 
   const deliveryFee = cart.length > 0 ? DEFAULT_DELIVERY_FEE : 0;

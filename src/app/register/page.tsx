@@ -3,9 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { UserPlus, Mail, Lock, User, Phone, ArrowRight, Eye, EyeOff } from "lucide-react";
+import {
+  UserPlus,
+  Mail,
+  Lock,
+  User,
+  Phone,
+  ArrowRight,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import Header from "@/src/components/layout/Header";
 import { useAuth } from "@/src/context/AuthContext";
+import { registerSchema } from "@/src/lib/validation";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 console.log("API URL is:", apiUrl);
@@ -26,6 +36,20 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const validationResult = registerSchema.safeParse({
+      name,
+      phone,
+      email,
+      password,
+    });
+
+    if (!validationResult.success) {
+      const firstIssue = validationResult.error.issues?.[0];
+      setError(firstIssue?.message || "يرجى التحقق من صحة البيانات المدخلة");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -43,15 +67,16 @@ export default function RegisterPage() {
       const json = await res.json();
 
       if (!res.ok || !json.success) {
-        throw new Error(json.message || "تعذر إنشاء الحساب، تأكد من عدم تكرار الهاتف أو الإيميل");
+        throw new Error(
+          json.message ||
+            "تعذر إنشاء الحساب، تأكد من عدم تكرار الهاتف أو الإيميل",
+        );
       }
 
-      // حفظ التوكن وبيانات المستخدم مباشرة في الجلسة
       saveAuthSession(json.data.token, json.data.user);
 
-      // توجيه المستخدم إلى الصفحة الرئيسية لإتمام طلبه
       router.push("/");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "حدث خطأ أثناء الاتصال بالسيرفر");
     } finally {
@@ -62,7 +87,10 @@ export default function RegisterPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-10 max-w-md flex flex-col justify-center" dir="rtl">
+      <main
+        className="flex-1 container mx-auto px-4 py-10 max-w-md flex flex-col justify-center"
+        dir="rtl"
+      >
         <div className="mb-5">
           <Link
             href="/"
@@ -79,7 +107,9 @@ export default function RegisterPage() {
               <UserPlus className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-black text-heading">إنشاء حساب جديد</h1>
+              <h1 className="text-xl font-black text-heading">
+                إنشاء حساب جديد
+              </h1>
               <p className="text-xs text-muted mt-0.5">
                 سجل حسابك في مكتبة الإيمان لإتمام طلبات الكتب بسهولة
               </p>
@@ -93,7 +123,6 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleRegister} className="space-y-4">
-            {/* الاسم الكامل */}
             <div>
               <label className="block text-xs font-extrabold text-heading mb-1.5">
                 الاسم بالكامل <span className="text-red-500">*</span>
@@ -111,7 +140,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* رقم الهاتف */}
             <div>
               <label className="block text-xs font-extrabold text-heading mb-1.5">
                 رقم الهاتف <span className="text-red-500">*</span>
@@ -120,16 +148,16 @@ export default function RegisterPage() {
                 <input
                   type="tel"
                   required
+                  maxLength={11}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="010xxxxxxxx"
-                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none"
+                  className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none text-right dir-ltr"
                 />
                 <Phone className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
               </div>
             </div>
 
-            {/* البريد الإلكتروني */}
             <div>
               <label className="block text-xs font-extrabold text-heading mb-1.5">
                 البريد الإلكتروني <span className="text-red-500">*</span>
@@ -147,7 +175,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* كلمة المرور */}
             <div>
               <label className="block text-xs font-extrabold text-heading mb-1.5">
                 كلمة المرور <span className="text-red-500">*</span>
@@ -190,10 +217,12 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* رابط الانتقال لصفحة تسجيل الدخول */}
           <div className="mt-6 pt-5 border-t border-gray-100 text-center text-xs font-bold text-muted">
             لديك حساب بالفعل؟{" "}
-            <Link href="/login" className="text-primary font-extrabold hover:underline">
+            <Link
+              href="/login"
+              className="text-primary font-extrabold hover:underline"
+            >
               سجل دخولك من هنا
             </Link>
           </div>

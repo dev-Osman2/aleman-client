@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   User as UserIcon,
   Users,
-  MessageCircle
+  MessageCircle,
 } from "lucide-react";
 import { User } from "@/src/types";
 
@@ -72,7 +72,6 @@ export default function AdminSidebar({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col gap-5">
-          {/* رأس القائمة الجانبية */}
           <div className="flex items-center justify-between border-b border-border pb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-primary-light text-primary flex items-center justify-center p-2 border border-primary/20">
@@ -98,7 +97,6 @@ export default function AdminSidebar({
             </button>
           </div>
 
-          {/* بطاقة معلومات المشرف الحالي */}
           {currentUser && (
             <div className="p-3.5 bg-surface-soft border border-border rounded-2xl flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -121,7 +119,6 @@ export default function AdminSidebar({
             </div>
           )}
 
-          {/* روابط التنقل الرئيسية */}
           <nav className="flex flex-col gap-1.5">
             {ADMIN_NAV_LINKS.map((item) => {
               const Icon = item.icon;
@@ -147,7 +144,6 @@ export default function AdminSidebar({
               );
             })}
 
-            {/* الفاصل ورابط المتجر */}
             <div className="pt-2 mt-2 border-t border-border-subtle">
               <Link
                 href="/"
@@ -165,11 +161,23 @@ export default function AdminSidebar({
                 <MessageCircle className="w-4 h-4 shrink-0 text-primary" />
                 <span>الذهاب لجروب التلجرام</span>
               </Link>
+              <button
+                type="button"
+                disabled={clearingOrders}
+                onClick={onRequestClearOrders}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-surface-subtle hover:bg-danger hover:text-white text-sub font-extrabold text-xs sm:text-sm transition cursor-pointer"
+              >
+                {clearingOrders ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
+                <span>مسح الطلبات</span>
+              </button>
             </div>
           </nav>
         </div>
 
-        {/* زر تسجيل الخروج السفلي */}
         <div className="pt-4 border-t border-border">
           <button
             type="button"

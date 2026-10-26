@@ -41,12 +41,10 @@ export default function LoginPage() {
         throw new Error(json.message || "بيانات الدخول غير صحيحة");
       }
 
-      // حفظ التوكن وبيانات المستخدم في الجلسة
       saveAuthSession(json.data.token, json.data.user);
 
-      // إذا كان الحساب للأدمن يمكن توجيهه للوحة التحكم أو للصفحة الرئيسية
       router.push("/");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "حدث خطأ أثناء تسجيل الدخول");
     } finally {
@@ -57,7 +55,10 @@ export default function LoginPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-10 max-w-md flex flex-col justify-center" dir="rtl">
+      <main
+        className="flex-1 container mx-auto px-4 py-10 max-w-md flex flex-col justify-center"
+        dir="rtl"
+      >
         <div className="mb-5">
           <Link
             href="/"
@@ -88,10 +89,10 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* البريد الإلكتروني أو رقم الهاتف */}
             <div>
               <label className="block text-xs font-extrabold text-heading mb-1.5">
-                البريد الإلكتروني أو رقم الهاتف <span className="text-red-500">*</span>
+                البريد الإلكتروني أو رقم الهاتف{" "}
+                <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -106,7 +107,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* كلمة المرور */}
             <div>
               <label className="block text-xs font-extrabold text-heading mb-1.5">
                 كلمة المرور <span className="text-red-500">*</span>
@@ -133,10 +133,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* رابط الانتقال لصفحة إنشاء حساب جديد */}
           <div className="mt-6 pt-5 border-t border-gray-100 text-center text-xs font-bold text-muted">
             ليس لديك حساب في المكتبة؟{" "}
-            <Link href="/register" className="text-primary font-extrabold hover:underline">
+            <Link
+              href="/register"
+              className="text-primary font-extrabold hover:underline"
+            >
               أنشئ حساباً جديداً الآن
             </Link>
           </div>

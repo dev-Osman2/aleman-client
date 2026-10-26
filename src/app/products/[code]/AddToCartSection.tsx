@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useCart } from '@/src/context/CartContext';
-import { ShoppingBag, Check, Plus, Minus } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { useCart } from "@/src/context/CartContext";
+import { ShoppingBag, Check, Plus, Minus } from "lucide-react";
 
 interface AddToCartProps {
   book: {
@@ -11,7 +11,7 @@ interface AddToCartProps {
     title: string;
     price: number;
     image: string;
-    quantity: number; // المخزون المتاح
+    quantity: number;
   };
 }
 
@@ -65,7 +65,7 @@ export default function AddToCartSection({ book }: AddToCartProps) {
         pagesCount: null,
         createdAt: "",
       },
-      quantity
+      quantity,
     );
 
     setAdded(true);
@@ -82,17 +82,16 @@ export default function AddToCartSection({ book }: AddToCartProps) {
 
   return (
     <div className="flex flex-row items-center gap-3 w-full max-w-md pt-4">
-      {/* زر الإضافة إلى السلة */}
       <button
         type="button"
         onClick={handleAddToCart}
         disabled={isOutOfStock || added}
         className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold text-white transition-all shadow-md active:scale-95 ${
           isOutOfStock
-            ? 'bg-gray-400 cursor-not-allowed'
+            ? "bg-gray-400 cursor-not-allowed"
             : added
-            ? 'bg-emerald-600'
-            : 'bg-teal-600 hover:bg-teal-700'
+              ? "bg-emerald-600"
+              : "bg-teal-600 hover:bg-teal-700"
         }`}
       >
         {added ? (
@@ -105,14 +104,13 @@ export default function AddToCartSection({ book }: AddToCartProps) {
             <ShoppingBag className="w-5 h-5" />
             <span>
               {isOutOfStock
-                ? 'نفد من المخزون'
+                ? "نفد من المخزون"
                 : `أضف إلى السلة (${price * quantity} ج.م)`}
             </span>
           </>
         )}
       </button>
 
-      {/* عداد الكمية */}
       <div className="flex items-center justify-between border border-gray-200 bg-gray-50 rounded-xl px-2 py-1.5 min-w-[120px]">
         <button
           type="button"

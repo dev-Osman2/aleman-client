@@ -69,13 +69,12 @@ export default function AdminLoginPage() {
       if (!res.ok || !data.success) {
         setError(
           data.message ||
-            "بيانات الدخول غير صحيحة، تأكد من الإيميل/الهاتف وكلمة المرور"
+            "بيانات الدخول غير صحيحة، تأكد من الإيميل/الهاتف وكلمة المرور",
         );
         triggerShake();
         return;
       }
 
-      // استخراج التوكن والمستخدم من استجابة Better Auth
       const authData = data.data || data;
       const token = authData.token;
       const user: User | undefined = authData.user;
@@ -86,18 +85,15 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // فحص رتبة المستخدم: يجب أن يكون ADMIN حصراً
       if (!user || user.role !== "ADMIN") {
         setError("عذراً، هذا الحساب لا يملك صلاحيات وصول لوحة الإدارة");
         triggerShake();
         return;
       }
 
-      // حفظ التوكن وبيانات المشرف
       setAdminToken(token);
       setAdminUser(user);
 
-      // إعادة التوجيه لصفحة إدارة الكتب
       router.replace("/lib/orders");
     } catch (err) {
       console.error("Login request failed:", err);
@@ -113,7 +109,6 @@ export default function AdminLoginPage() {
       className="min-h-screen flex items-center justify-center bg-dark relative overflow-hidden p-4 selection:bg-primary-light selection:text-primary"
       dir="rtl"
     >
-      {/* خلفية جمالية بتدرجات لونية هادئة */}
       <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-primary-hover/15 blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
@@ -123,7 +118,6 @@ export default function AdminLoginPage() {
           shake ? "animate-shake border-danger-border" : ""
         }`}
       >
-        {/* الترويسة والشارات العلوية */}
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold bg-primary-light text-primary px-3 py-1.5 rounded-full border border-primary/20">
             <ShieldCheck className="w-3.5 h-3.5 text-primary" />
@@ -139,7 +133,6 @@ export default function AdminLoginPage() {
           </Link>
         </div>
 
-        {/* الشعار واسم المكتبة */}
         <div className="text-center flex flex-col items-center gap-3 pt-1">
           <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-primary-hover to-dark p-0.5 shadow-xl shadow-primary/20">
             <div className="w-full h-full bg-white rounded-[22px] flex items-center justify-center p-2 text-primary">
@@ -157,7 +150,6 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        {/* تنبيه الخطأ */}
         {error && (
           <div className="p-3.5 bg-danger-light border border-danger-border text-danger rounded-2xl text-xs font-extrabold flex items-center gap-2.5 animate-in fade-in duration-200">
             <AlertCircle className="w-4 h-4 shrink-0 text-danger" />
@@ -165,9 +157,7 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        {/* نموذج تسجيل الدخول */}
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          {/* حقل اسم المستخدم أو الهاتف */}
           <div>
             <label className="block text-xs font-extrabold text-sub mb-2">
               البريد الإلكتروني أو رقم الهاتف
@@ -199,7 +189,6 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          {/* حقل كلمة المرور */}
           <div>
             <label className="block text-xs font-extrabold text-sub mb-2">
               كلمة المرور السرية
@@ -247,7 +236,6 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          {/* زر تسجيل الدخول */}
           <button
             type="submit"
             disabled={loading}
@@ -267,7 +255,6 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        {/* تذييل أمني */}
         <div className="pt-2 border-t border-border-subtle/80 text-center">
           <p className="text-[11px] text-muted flex items-center justify-center gap-1.5 font-medium">
             <ShieldCheck className="w-3.5 h-3.5 text-primary" />

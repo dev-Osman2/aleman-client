@@ -18,7 +18,6 @@ export default function ProductPublishingInfo({
 }: ProductPublishingInfoProps) {
   return (
     <div className="flex flex-wrap gap-4" dir="rtl">
-      {/* دار النشر */}
       <div className="w-full sm:w-[calc(50%-0.5rem)]">
         <label className="block text-xs font-extrabold text-heading mb-1.5">
           دار النشر والتوزيع
@@ -37,7 +36,6 @@ export default function ProductPublishingInfo({
         </div>
       </div>
 
-      {/* عدد الصفحات */}
       <div className="w-full sm:w-[calc(50%-0.5rem)]">
         <label className="block text-xs font-extrabold text-heading mb-1.5">
           عدد الصفحات

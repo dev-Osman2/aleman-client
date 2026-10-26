@@ -1,6 +1,6 @@
-// ==========================================
-// 1. الثوابت والأنواع الأساسية (Enums) من Prisma Schema
-// ==========================================
+
+
+
 export type Role = "CUSTOMER" | "ADMIN";
 
 export type PaymentMethod = "INSTAPAY" | "VODAFONE_CASH" | "instapay" | "vodafone_cash";
@@ -37,9 +37,9 @@ export interface CustomerInfoFormProps {
   errors?: Record<string, string>;
 }
 
-// ==========================================
-// 2. أنواع المستخدم والمصادقة (User & Better Auth)
-// ==========================================
+
+
+
 export interface User {
   id: string;
   name: string;
@@ -63,14 +63,14 @@ export interface Session {
   updatedAt: string;
 }
 
-// البيانات الراجعة عند تسجيل الدخول أو إنشاء حساب (/api/auth/login & /api/auth/register)
+
 export interface AuthData {
   token: string;
   user: User;
   redirect?: boolean;
 }
 
-// البيانات المرسلة عند إنشاء حساب جديد
+
 export interface RegisterPayload {
   name: string;
   phone: string;
@@ -78,21 +78,21 @@ export interface RegisterPayload {
   password: string;
 }
 
-// البيانات المرسلة عند تسجيل الدخول
+
 export interface LoginPayload {
   email: string;
   password: string;
 }
 
-// البيانات المرسلة عند تحديث الملف الشخصي (/api/auth/profile)
+
 export interface UpdateProfilePayload {
   name?: string;
   phone?: string;
 }
 
-// ==========================================
-// 3. أنواع الكتب (Book / Product)
-// ==========================================
+
+
+
 export interface Product {
   id: string;
   code: string;
@@ -110,19 +110,19 @@ export interface Product {
   createdAt: string;
 }
 
-// اسم بديل (Alias) حتى تتمكن من استخدام Book أو Product في أي مكون بحرية
+
 export type Book = Product;
 
-// ==========================================
-// 4. أنواع الطلبات وعناصر الطلب (Order & OrderItem)
-// ==========================================
+
+
+
 export interface OrderItem {
   id: string;
   quantity: number;
   priceAtBuy: number;
   orderId: number;
   bookId: string;
-  // تفاصيل الكتاب المضمنة عند جلب الطلب من الـ API
+  
   book?: {
     code: string;
     title: string;
@@ -144,7 +144,7 @@ export interface Order {
   status: OrderStatus;
   createdAt: string;
   userId: string;
-  // بيانات صاحب الطلب (تظهر في مسارات الأدمن)
+  
   user?: {
     name: string;
     phone: string;
@@ -153,7 +153,7 @@ export interface Order {
   items: OrderItem[];
 }
 
-// البيانات المرسلة من الفرونت إند عند إتمام الطلب (POST /api/orders)
+
 export interface CreateOrderItemInput {
   bookId: string;
   quantity: number;
@@ -167,9 +167,9 @@ export interface CreateOrderPayload {
   items: CreateOrderItemInput[];
 }
 
-// ==========================================
-// 5. غلاف استجابة السيرفر الموحد (API Response Envelope)
-// ==========================================
+
+
+
 export interface PaginationMeta {
   page: number;
   limit: number;

@@ -29,7 +29,10 @@ export default function SummaryDesktopTable({
         </thead>
         <tbody className="divide-y divide-border-subtle text-sub">
           {items.map((item, idx) => (
-            <tr key={idx} className="hover:bg-surface-soft/70 transition-colors">
+            <tr
+              key={idx}
+              className="hover:bg-surface-soft/70 transition-colors"
+            >
               <td className="py-4 px-6 font-bold text-heading flex items-center gap-3">
                 {item.image && (
                   <img
@@ -50,7 +53,7 @@ export default function SummaryDesktopTable({
                 {item.totalQty}
               </td>
               <td className="py-4 px-6 text-left font-bold font-mono text-heading">
-                {item.totalPrice.toFixed(2)} ج
+                {item.totalPrice} ج
               </td>
             </tr>
           ))}

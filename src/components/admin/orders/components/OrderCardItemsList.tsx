@@ -54,7 +54,7 @@ export default function OrderCardItemsList({ items }: OrderCardItemsListProps) {
               </div>
 
               <div className="w-1/4 text-left font-extrabold text-heading">
-                {(unitPrice * qty).toFixed(2)} ج.م
+                {unitPrice * qty} ج.م
               </div>
             </div>
           );

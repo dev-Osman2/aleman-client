@@ -105,7 +105,7 @@ export default function ProfileOrderItem({ order }: ProfileOrderItemProps) {
                 {item.quantity} × {item.priceAtBuy} ج
               </span>
               <span className="text-xs sm:text-sm font-black text-heading min-w-[60px] text-left">
-                {(item.priceAtBuy * item.quantity).toFixed(2)} ج.م
+                {item.priceAtBuy * item.quantity} ج.م
               </span>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function ProfileOrderItem({ order }: ProfileOrderItemProps) {
             المجموع (شامل توصيل {order.deliveryFee} ج)
           </span>
           <span className="text-base sm:text-lg font-black text-primary">
-            {Number(order.total).toFixed(2)} ج.م
+            {Number(order.total)} ج.م
           </span>
         </div>
       </div>

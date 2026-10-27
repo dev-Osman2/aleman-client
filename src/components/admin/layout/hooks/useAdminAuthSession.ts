@@ -116,7 +116,7 @@ export function useAdminAuthSession() {
     setCurrentUser(null);
     setAuthorized(false);
     toast.success("تم تسجيل الخروج من لوحة الإدارة بنجاح");
-    router.replace("/lib");
+    router.replace("/");
   };
 
   return {

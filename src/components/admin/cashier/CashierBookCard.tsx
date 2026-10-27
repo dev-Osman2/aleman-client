@@ -74,7 +74,7 @@ export default function CashierBookCard({
 
         <div className="flex items-center justify-between pt-2 border-t border-border-subtle mt-2">
           <span className="text-sm font-black text-primary">
-            {Number(book.price).toFixed(2)} ج
+            {Number(book.price)} ج
           </span>
 
           <button

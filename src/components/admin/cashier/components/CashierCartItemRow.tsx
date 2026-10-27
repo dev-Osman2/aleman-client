@@ -37,7 +37,7 @@ export default function CashierCartItemRow({
           </p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-[11px] text-primary font-bold">
-              {price.toFixed(2)} ج.م
+              {price} ج.م
             </span>
             {item.code && (
               <span className="text-[10px] text-muted-light font-mono">
@@ -53,7 +53,11 @@ export default function CashierCartItemRow({
           <button
             type="button"
             onClick={() =>
-              onUpdateQuantity(itemId, item.cartQuantity + 1, (item as any).selectedSize)
+              onUpdateQuantity(
+                itemId,
+                item.cartQuantity + 1,
+                (item as any).selectedSize,
+              )
             }
             className="w-5 h-5 rounded bg-primary text-white text-xs font-bold flex items-center justify-center cursor-pointer hover:bg-primary-hover transition"
             title="زيادة الكمية"
@@ -66,7 +70,11 @@ export default function CashierCartItemRow({
           <button
             type="button"
             onClick={() =>
-              onUpdateQuantity(itemId, item.cartQuantity - 1, (item as any).selectedSize)
+              onUpdateQuantity(
+                itemId,
+                item.cartQuantity - 1,
+                (item as any).selectedSize,
+              )
             }
             className="w-5 h-5 rounded bg-white border border-border text-sub text-xs font-bold flex items-center justify-center cursor-pointer hover:bg-surface-subtle transition"
             title="تقليل الكمية"
@@ -76,7 +84,7 @@ export default function CashierCartItemRow({
         </div>
 
         <span className="font-extrabold text-heading text-xs sm:text-sm min-w-[70px] text-left">
-          {(price * item.cartQuantity).toFixed(2)} ج
+          {price * item.cartQuantity} ج
         </span>
 
         <button

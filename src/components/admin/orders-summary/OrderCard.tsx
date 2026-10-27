@@ -80,7 +80,7 @@ export default function OrderCard({
             المبلغ الإجمالي
           </span>
           <span className="text-base font-black text-heading font-mono">
-            {order.totalAmount.toFixed(2)} ج
+            {order.totalAmount} ج
           </span>
         </div>
 

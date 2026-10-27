@@ -21,6 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const currentQty = cartItem ? cartItem.cartQuantity : 0;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setImgError(false);
   }, [product.image]);
 

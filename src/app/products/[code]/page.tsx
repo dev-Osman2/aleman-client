@@ -8,6 +8,8 @@ import { getCategoryLabel } from "@/src/constants/categories";
 import AddToCartSection from "./AddToCartSection";
 import ProductImageGallery from "./ProductImageGallery";
 import ProductDetailsInfo from "./ProductDetailsInfo";
+import RelatedBooksSection from "@/src/components/product/RelatedBooksSection";
+import DiscoverMoreSection from "@/src/components/product/DiscoverMoreSection";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -23,6 +25,67 @@ async function getBookByCode(code: string): Promise<Product | null> {
   } catch (error) {
     console.error("Error fetching book:", error);
     return null;
+  }
+}
+
+async function getRelatedBooks(code: string): Promise<Product[]> {
+  try {
+    const res = await fetch(`${apiUrl.replace(/\/api$/, "")}/api/books/${code}/related`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    return Array.isArray(data) ? (data as Product[]) : [];
+  } catch (error) {
+    console.error("Error fetching related books:", error);
+    return [];
+  }
+}
+
+function getDailySortValue(value: string, seed: string): number {
+  let hash = 0;
+  for (const character of `${seed}:${value}`) {
+    hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+  }
+  return hash;
+}
+
+async function getDiscoverMoreBooks(
+  code: string,
+  category: string
+): Promise<Product[]> {
+  try {
+    const res = await fetch(`${apiUrl}/products`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+
+    const json: unknown = await res.json();
+    const data =
+      typeof json === "object" &&
+      json !== null &&
+      "data" in json &&
+      Array.isArray(json.data)
+        ? json.data
+        : [];
+    const daySeed = new Date().toISOString().slice(0, 10);
+
+    return (data as Product[])
+      .filter(
+        (product) =>
+          product.code !== code &&
+          product.quantity > 0 &&
+          product.category.trim() !== category.trim()
+      )
+      .sort((a, b) => {
+        const seedA = getDailySortValue(a.id || a.code, daySeed);
+        const seedB = getDailySortValue(b.id || b.code, daySeed);
+        return seedA - seedB;
+      })
+      .slice(0, 4);
+  } catch (error) {
+    console.error("Error fetching discover-more books:", error);
+    return [];
   }
 }
 
@@ -56,6 +119,10 @@ export default async function ProductDetailPage({
 
   const isAvailable = book.quantity > 0;
   const categoryLabel = getCategoryLabel(book.category);
+  const [relatedBooks, discoverMoreBooks] = await Promise.all([
+    getRelatedBooks(code),
+    getDiscoverMoreBooks(code, book.category),
+  ]);
 
   const discountPercent =
     book.oldPrice && book.oldPrice > book.price
@@ -123,6 +190,12 @@ export default async function ProductDetailPage({
             </div>
           </div>
         )}
+
+        <RelatedBooksSection
+          books={relatedBooks}
+          categoryLabel={categoryLabel}
+        />
+        <DiscoverMoreSection books={discoverMoreBooks} />
       </main>
     </>
   );

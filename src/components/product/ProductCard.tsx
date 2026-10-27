@@ -10,9 +10,13 @@ import { useCart } from "@/src/context/CartContext";
 
 interface ProductCardProps {
   product: Product;
+  showStockBadge?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  showStockBadge = false,
+}: ProductCardProps) {
   const isAvailable = product.quantity > 0;
   const [imgError, setImgError] = useState(false);
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
@@ -75,6 +79,23 @@ export default function ProductCard({ product }: ProductCardProps) {
             {getCategoryLabel(product.category)}
           </span>
 
+          {showStockBadge && product.quantity <= 15 && (
+            <span
+              className={`absolute top-3 left-3 rounded-full px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[11px] font-bold shadow-xs z-10 ${
+                product.quantity <= 5
+                  ? "bg-[#C62828] text-white ring-1 ring-[#EF9A9A]/60 animate-pulse"
+                  : product.quantity <= 10
+                    ? "bg-[#F8ECC1] text-amber-900 animate-pulse"
+                    : "bg-white/90 text-slate-700 backdrop-blur-xs"
+              }`}
+              aria-label={`متبقي ${product.quantity} قطع`}
+            >
+              <span className="hidden sm:inline">متبقي </span>
+              <span>{product.quantity}</span>
+              <span className="hidden sm:inline"> قطع</span>
+            </span>
+          )}
+
           {!isAvailable && (
             <span className="absolute inset-0 m-auto flex items-center justify-center bg-black/60 text-white font-extrabold text-sm rounded-xl h-10 w-32 shadow-lg z-10">
               نفد من المخزون
@@ -82,7 +103,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="p-4 flex flex-col gap-1.5 flex-1 justify-between" dir="rtl">
+        <div
+          className="p-4 flex flex-col gap-1.5 flex-1 justify-between"
+          dir="rtl"
+        >
           <div>
             <h3 className="text-sm md:text-base font-extrabold text-heading line-clamp-2 leading-snug group-hover:text-primary transition-colors min-h-[2.5rem] md:min-h-[2.75rem] flex items-center">
               {product.title}

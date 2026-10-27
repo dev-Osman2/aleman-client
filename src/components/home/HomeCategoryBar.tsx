@@ -14,7 +14,18 @@ export default function HomeCategoryBar({ currentCategory }: HomeCategoryBarProp
         <Link
           href="/"
           className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
-            !currentCategory
+            currentCategory === "latest"
+              ? "bg-primary text-white shadow-xs"
+              : "bg-white text-heading border border-border-subtle hover:bg-gray-50"
+          }`}
+        >
+          أحدث الكتب
+        </Link>
+
+        <Link
+          href="/?category=all"
+          className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
+            currentCategory === "all"
               ? "bg-primary text-white shadow-xs"
               : "bg-white text-heading border border-border-subtle hover:bg-gray-50"
           }`}

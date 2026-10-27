@@ -10,6 +10,8 @@ import { CATEGORIES, getCategoryLabel } from "@/src/constants/categories";
 import MobileCheckoutFloatingButton from "../components/cart/MobileCheckoutFloatingButton";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+const LATEST_CATEGORY = "latest";
+const ALL_CATEGORY = "all";
 
 async function getProducts(): Promise<Product[]> {
   try {
@@ -30,16 +32,39 @@ async function getProducts(): Promise<Product[]> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; page?: string }>;
 }) {
   const params = await searchParams;
   const allProducts = await getProducts();
 
-  const currentCategory = params.category?.trim() || null;
+  const requestedCategory = params.category?.trim() || LATEST_CATEGORY;
+  const currentCategory = requestedCategory;
+  const latestPage = Math.max(1, Number.parseInt(params.page || "1", 10) || 1);
 
-  const displayedProducts = currentCategory
-    ? allProducts.filter((p) => (p.category ?? "").trim() === currentCategory)
-    : allProducts;
+  const isLatestBooks = currentCategory === LATEST_CATEGORY;
+  const isAllBooks = currentCategory === "all";
+  const displayedProducts = isLatestBooks
+    ? allProducts
+        .filter((product) => product.quantity > 0)
+        .sort((a, b) => {
+          const discountA =
+            a.oldPrice && a.oldPrice > a.price
+              ? a.oldPrice - a.price
+              : 0;
+          const discountB =
+            b.oldPrice && b.oldPrice > b.price
+              ? b.oldPrice - b.price
+              : 0;
+
+          return (
+            discountB - discountA ||
+            a.price - b.price ||
+            a.quantity - b.quantity
+          );
+        })
+    : currentCategory && !isAllBooks
+      ? allProducts.filter((p) => (p.category ?? "").trim() === currentCategory)
+      : allProducts;
 
   const categoriesWithProducts = Array.from(
     new Set([
@@ -57,6 +82,18 @@ export default async function HomePage({
     }))
     .filter((group) => group.products.length > 0);
 
+  const latestProductsByCategory = isLatestBooks
+    ? categoriesWithProducts.map((group) => ({
+        ...group,
+        products: group.products.slice(0, latestPage * 3),
+      }))
+    : categoriesWithProducts;
+  const hasMoreLatestBooks = isLatestBooks
+    ? categoriesWithProducts.some(
+        (group) => group.products.length > latestPage * 3,
+      )
+    : false;
+
   return (
     <>
       <Header />
@@ -70,7 +107,11 @@ export default async function HomePage({
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-6 h-6 text-primary fill-primary/15" />
                   <h1 className="text-xl md:text-2xl font-black text-heading">
-                    {currentCategory
+                    {isLatestBooks
+                      ? "أحدث الكتب"
+                      : isAllBooks
+                      ? "جميع الكتب"
+                      : currentCategory
                       ? `قسم: ${getCategoryLabel(currentCategory)}`
                       : "إصدارات ومؤلفات مكتبة الإيمان"}
                   </h1>
@@ -80,7 +121,7 @@ export default async function HomePage({
                 </span>
               </div>
 
-              {currentCategory && (
+              {currentCategory && currentCategory !== ALL_CATEGORY && currentCategory !== LATEST_CATEGORY && (
                 <Link
                   href="/"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-primary bg-primary-light hover:bg-primary-subtle border border-primary/25 rounded-full transition-all duration-150 active:scale-95 shadow-xs"
@@ -99,9 +140,9 @@ export default async function HomePage({
               </div>
             ) : (
               <div className="flex flex-col gap-10">
-                {categoriesWithProducts.map((group) => (
+                {latestProductsByCategory.map((group) => (
                   <section key={group.slug}>
-                    {categoriesWithProducts.length > 1 && (
+                    {categoriesWithProducts.length > 1 && !isLatestBooks && (
                       <h2 className="mb-4 border-r-4 border-primary pr-3 text-lg font-black text-heading">
                         {group.name} ({group.products.length})
                       </h2>
@@ -112,12 +153,27 @@ export default async function HomePage({
                           key={product.id}
                           className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.85rem)] flex flex-col"
                         >
-                          <ProductCard product={product} />
+                          <ProductCard
+                            product={product}
+                            showStockBadge={isLatestBooks}
+                          />
                         </div>
                       ))}
                     </div>
                   </section>
                 ))}
+              </div>
+            )}
+
+            {hasMoreLatestBooks && (
+              <div className="mt-8 flex justify-center">
+                <Link
+                  href={`/?category=latest&page=${latestPage + 1}`}
+                  scroll={false}
+                  className="rounded-2xl bg-primary px-6 py-3 text-sm font-extrabold text-white shadow-xs transition hover:bg-primary-hover active:scale-95"
+                >
+                  اكتشف المزيد
+                </Link>
               </div>
             )}
           </div>

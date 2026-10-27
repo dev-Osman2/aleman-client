@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { getAdminToken } from "@/src/lib/cookies";
+import { adminFetch } from "@/src/lib/adminFetch";
 import { Order } from "@/src/types";
 
 export default function CashierOrderWatcher() {
@@ -11,18 +11,10 @@ export default function CashierOrderWatcher() {
   const initialized = useRef(false);
   const router = useRouter();
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
-
   useEffect(() => {
     const checkNewCustomerOrders = async () => {
       try {
-        const token = getAdminToken();
-        if (!token) return;
-
-        const res = await fetch(`${apiUrl}/admin/orders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
+        const res = await adminFetch("/admin/orders");
         if (!res.ok) return;
         const json = await res.json();
         const orders: Order[] = Array.isArray(json)
@@ -66,7 +58,7 @@ export default function CashierOrderWatcher() {
     checkNewCustomerOrders();
     const interval = setInterval(checkNewCustomerOrders, 12000);
     return () => clearInterval(interval);
-  }, [apiUrl, router]);
+  }, [router]);
 
   return null;
 }

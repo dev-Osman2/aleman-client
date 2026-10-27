@@ -81,7 +81,9 @@ export default function AdminLayout({
     );
   }
 
-  if (pathname === "/lib") {
+  const isLoginPage = pathname === "/lib" || pathname === "/lib/";
+
+  if (isLoginPage) {
     return <>{children}</>;
   }
 

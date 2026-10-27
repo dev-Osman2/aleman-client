@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { getAdminToken } from "@/src/lib/cookies";
+import { adminFetch } from "@/src/lib/adminFetch";
 import { Order } from "@/src/types";
 import { toast } from "sonner";
 
@@ -33,19 +33,9 @@ export function useOrdersSummary() {
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
-      const token = getAdminToken();
-
-      const statsPromise = fetch(`${apiUrl}/admin/stats`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const ordersPromise = fetch(`${apiUrl}/admin/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
       const [statsRes, ordersRes] = await Promise.all([
-        statsPromise,
-        ordersPromise,
+        adminFetch("/admin/stats"),
+        adminFetch("/admin/orders"),
       ]);
 
       if (statsRes.ok) {
@@ -68,7 +58,7 @@ export function useOrdersSummary() {
     } finally {
       setLoading(false);
     }
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     fetchDashboardData();

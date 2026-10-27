@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { toast } from "sonner";
-import { getAdminToken } from "@/src/lib/cookies";
+import { adminFetch } from "@/src/lib/adminFetch";
 
 export interface AdminUserRecord {
   id: string;
@@ -27,12 +27,7 @@ export function useAdminUsers() {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const token = getAdminToken();
-      const res = await fetch(`${apiUrl}/admin/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await adminFetch("/admin/users");
 
       if (!res.ok) {
         throw new Error("تعذر جلب سجل العملاء من الخادم");
@@ -55,7 +50,7 @@ export function useAdminUsers() {
     } finally {
       setLoading(false);
     }
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();

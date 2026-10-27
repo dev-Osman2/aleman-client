@@ -5,7 +5,6 @@ import {
   getAdminToken,
   removeAdminToken,
   setAdminUser,
-  getAdminUser,
 } from "@/src/lib/cookies";
 import { User } from "@/src/types";
 
@@ -19,16 +18,20 @@ export function useAdminAuthSession() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
   const verifyAdminSession = useCallback(
-    async (token: string) => {
+    async (token: string): Promise<boolean> => {
       try {
-        const res = await fetch(`${apiUrl}/auth/me`, {
+        const res = await fetch(`${apiUrl}/admin/verify`, {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-cache",
           },
+          cache: "no-store",
         });
 
         if (!res.ok) {
-          throw new Error("Session invalid");
+          removeAdminToken();
+          return false;
         }
 
         const json = await res.json();
@@ -37,20 +40,16 @@ export function useAdminAuthSession() {
         if (!user || user.role !== "ADMIN") {
           removeAdminToken();
           toast.error("عذراً، هذا الحساب لا يملك صلاحيات وصول لوحة الإدارة");
-          router.replace("/");
+          router.replace("/lib");
           return false;
         }
 
         setAdminUser(user);
         setCurrentUser(user);
         return true;
-      } catch {
-        const cachedUser = getAdminUser();
-        if (cachedUser && cachedUser.role === "ADMIN") {
-          setCurrentUser(cachedUser);
-          return true;
-        }
-
+      } catch (err) {
+        console.error("Admin verification error:", err);
+        // STRICT SECURITY: Never grant access if server check fails
         removeAdminToken();
         return false;
       }
@@ -62,13 +61,15 @@ export function useAdminAuthSession() {
     let isMounted = true;
 
     const checkAuth = async () => {
+      const isLoginRoute = pathname === "/lib" || pathname === "/lib/";
       const token = getAdminToken();
 
-      if (pathname === "/lib") {
+      // Case 1: On the Admin Login page (/lib)
+      if (isLoginRoute) {
         if (token) {
           const isValidAdmin = await verifyAdminSession(token);
           if (isValidAdmin && isMounted) {
-            router.replace("/lib/products");
+            router.replace("/lib/orders");
             return;
           }
         }
@@ -80,6 +81,7 @@ export function useAdminAuthSession() {
         return;
       }
 
+      // Case 2: On any protected Admin page (/lib/*)
       if (!token) {
         if (isMounted) {
           setAuthorized(false);
@@ -89,6 +91,7 @@ export function useAdminAuthSession() {
         return;
       }
 
+      // Server verification with bearer token
       const isValid = await verifyAdminSession(token);
       if (isMounted) {
         if (isValid) {
@@ -112,8 +115,8 @@ export function useAdminAuthSession() {
     removeAdminToken();
     setCurrentUser(null);
     setAuthorized(false);
-    toast.success("تم تسجيل الخروج بنجاح");
-    router.replace("/");
+    toast.success("تم تسجيل الخروج من لوحة الإدارة بنجاح");
+    router.replace("/lib");
   };
 
   return {

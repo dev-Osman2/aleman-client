@@ -1,9 +1,9 @@
 import { User } from "@/src/types";
 
-const ADMIN_COOKIE_KEY = "admin_token";
-const LEGACY_COOKIE_KEY = "adminToken";
-const TOKEN_KEY = "aleman_token";
-const USER_KEY = "aleman_user";
+export const ADMIN_COOKIE_KEY = "admin_token";
+export const LEGACY_COOKIE_KEY = "adminToken";
+export const ADMIN_TOKEN_KEY = "aleman_admin_token";
+export const ADMIN_USER_KEY = "aleman_admin_user";
 
 export const setCookie = (name: string, value: string, days = 7) => {
   if (typeof document === "undefined") return;
@@ -32,19 +32,19 @@ export const setAdminToken = (token: string, days = 7) => {
   setCookie(LEGACY_COOKIE_KEY, token, days);
   setCookie("token", token, days);
   if (typeof window !== "undefined") {
-    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(ADMIN_TOKEN_KEY, token);
   }
 };
 
 export const setAdminUser = (user: User) => {
   if (typeof window !== "undefined") {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    localStorage.setItem(ADMIN_USER_KEY, JSON.stringify(user));
   }
 };
 
 export const getAdminUser = (): User | null => {
   if (typeof window === "undefined") return null;
-  const userStr = localStorage.getItem(USER_KEY);
+  const userStr = localStorage.getItem(ADMIN_USER_KEY);
   if (!userStr) return null;
   try {
     return JSON.parse(userStr) as User;
@@ -55,7 +55,7 @@ export const getAdminUser = (): User | null => {
 
 export const getAdminToken = (): string => {
   if (typeof window !== "undefined") {
-    const ls = localStorage.getItem(TOKEN_KEY);
+    const ls = localStorage.getItem(ADMIN_TOKEN_KEY);
     if (ls) return ls;
   }
   return (
@@ -70,7 +70,7 @@ export const removeAdminToken = () => {
   deleteCookie(LEGACY_COOKIE_KEY);
   deleteCookie("token");
   if (typeof window !== "undefined") {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    localStorage.removeItem(ADMIN_USER_KEY);
   }
 };

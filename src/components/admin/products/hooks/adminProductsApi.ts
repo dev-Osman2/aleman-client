@@ -1,5 +1,5 @@
 import { Product } from "@/src/types";
-import { getAdminToken } from "@/src/lib/cookies";
+import { adminFetch } from "@/src/lib/adminFetch";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
@@ -14,15 +14,13 @@ export async function saveBookApi(
   payload: Record<string, unknown>,
   editingId?: string,
 ): Promise<Product> {
-  const token = getAdminToken();
-  const url = editingId ? `${apiUrl}/admin/books/${editingId}` : `${apiUrl}/admin/books`;
+  const path = editingId ? `/admin/books/${editingId}` : `/admin/books`;
   const method = editingId ? "PUT" : "POST";
 
-  const res = await fetch(url, {
+  const res = await adminFetch(path, {
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
   });
@@ -34,13 +32,11 @@ export async function saveBookApi(
   return data.data;
 }
 
-export async function deleteBookApi(bookId: string): Promise<{ success: boolean; message?: string }> {
-  const token = getAdminToken();
-  const res = await fetch(`${apiUrl}/admin/books/${bookId}`, {
+export async function deleteBookApi(
+  bookId: string
+): Promise<{ success: boolean; message?: string }> {
+  const res = await adminFetch(`/admin/books/${bookId}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
   return res.json();
 }

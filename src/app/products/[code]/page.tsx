@@ -82,7 +82,7 @@ async function getDiscoverMoreBooks(
         const seedB = getDailySortValue(b.id || b.code, daySeed);
         return seedA - seedB;
       })
-      .slice(0, 4);
+      .slice(0, 8);
   } catch (error) {
     console.error("Error fetching discover-more books:", error);
     return [];
@@ -146,7 +146,7 @@ export default async function ProductDetailPage({
               {categoryLabel}
             </Link>
             <ChevronLeft className="w-3.5 h-3.5 text-gray-300" />
-            <span className="text-heading truncate max-w-[200px] sm:max-w-xs">
+            <span className="text-heading truncate max-w-50 sm:max-w-xs">
               {book.title}
             </span>
           </nav>

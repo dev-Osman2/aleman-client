@@ -85,12 +85,12 @@ export default async function HomePage({
   const latestProductsByCategory = isLatestBooks
     ? categoriesWithProducts.map((group) => ({
         ...group,
-        products: group.products.slice(0, latestPage * 3),
+        products: group.products.slice(0, latestPage * 6),
       }))
     : categoriesWithProducts;
   const hasMoreLatestBooks = isLatestBooks
     ? categoriesWithProducts.some(
-        (group) => group.products.length > latestPage * 3,
+        (group) => group.products.length > latestPage * 9,
       )
     : false;
 

@@ -19,7 +19,7 @@ export function useSearchProducts(query: string) {
       try {
         const apiUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-        const res = await fetch(`${apiUrl}/products`);
+        const res = await fetch(`${apiUrl}/books`);
         if (res.ok) {
           const data = await res.json();
           const list = Array.isArray(data)

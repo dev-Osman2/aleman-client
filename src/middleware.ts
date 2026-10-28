@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getApiUrl } from "@/src/lib/apiUrl";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -15,10 +16,7 @@ export async function middleware(req: NextRequest) {
     req.cookies.get("adminToken")?.value ||
     req.cookies.get("token")?.value;
 
-  const apiUrl =
-    process.env.INTERNAL_API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "http://127.0.0.1:5000/api";
+  const apiUrl = getApiUrl();
 
   async function verifyAdminToken(token: string): Promise<boolean> {
     try {
@@ -26,7 +24,6 @@ export async function middleware(req: NextRequest) {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Cache-Control": "no-cache",
         },
         cache: "no-store",
         signal: AbortSignal.timeout(3500),

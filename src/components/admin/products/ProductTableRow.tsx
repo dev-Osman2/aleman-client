@@ -88,11 +88,11 @@ export default function ProductTableRow({
       <td className="py-4 px-4 text-center">
         <div className="flex flex-col items-center justify-center">
           <span className="text-sm sm:text-base font-black text-heading">
-            {Number(product.price)} ج.م
+            {Number(product.price)} ج
           </span>
           {product.oldPrice ? (
             <span className="text-xs text-muted-light line-through font-semibold">
-              {Number(product.oldPrice)} ج.م
+              {Number(product.oldPrice)} ج
             </span>
           ) : null}
         </div>

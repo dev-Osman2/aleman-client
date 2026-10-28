@@ -50,9 +50,9 @@ export default function CheckoutCartItems({
               {item.title}
             </p>
             <p className="text-xs text-primary font-bold mt-0.5">
-              {item.price * item.cartQuantity} ج.م
+              {item.price * item.cartQuantity} ج
               <span className="text-muted font-normal text-[11px]">
-                ({item.price} ج.م للنسخة)
+                ({item.price} ج للنسخة)
               </span>
             </p>
           </div>

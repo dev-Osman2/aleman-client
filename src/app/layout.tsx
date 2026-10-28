@@ -58,14 +58,13 @@ export const metadata: Metadata = {
     "شراء كتب أونلاين",
     "مكتبة",
     "كتب",
-    "الأقصر",
   ],
   alternates: {
     canonical: "/",
   },
-
+  
   verification: {
-    google: "",
+    google: "SG56LKgfX5LA3jQGAVaIks0hoCdhXLe4Dr0P18r6N3k",
   },
 
   openGraph: {

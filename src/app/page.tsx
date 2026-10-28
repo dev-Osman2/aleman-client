@@ -15,7 +15,7 @@ const ALL_CATEGORY = "all";
 
 async function getProducts(): Promise<Product[]> {
   try {
-    const res = await fetch(`${apiUrl}/products`, {
+    const res = await fetch(`${apiUrl}/books`, {
       cache: "no-store",
     });
 

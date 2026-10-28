@@ -81,57 +81,61 @@ export default function AddToCartSection({ book }: AddToCartProps) {
   const isOutOfStock = availableQuantity <= 0;
 
   return (
-    <div className="flex flex-row  items-center gap-3 w-full max-w-md pt-4">
+  <div className="flex flex-row items-center gap-2.5 sm:gap-3.5 w-full max-w-full sm:max-w-md lg:max-w-lg pt-4">
+    {/* زر الإضافة إلى السلة */}
+    <button
+      type="button"
+      onClick={handleAddToCart}
+      disabled={isOutOfStock || added}
+      className={`flex-1 flex items-center justify-center gap-2 h-11 sm:h-12 lg:h-13 px-3 sm:px-6 rounded-xl font-bold text-white transition-all duration-200 shadow-sm active:scale-[0.98] cursor-pointer whitespace-nowrap ${
+        isOutOfStock
+          ? "bg-muted/40 text-muted cursor-not-allowed shadow-none"
+          : added
+            ? "bg-success hover:bg-success-hover shadow-success/20 shadow-md"
+            : "bg-primary hover:bg-primary-hover shadow-primary/25 shadow-md"
+      }`}
+    >
+      {added ? (
+        <>
+          <Check className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+          <span className="text-xs sm:text-sm lg:text-base">تمت الإضافة بنجاح!</span>
+        </>
+      ) : (
+        <>
+          <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+          <span className="text-xs sm:text-sm lg:text-base">
+            {isOutOfStock ? "نفد من المخزون" : "أضف إلى السلة"}
+          </span>
+        </>
+      )}
+    </button>
+
+    {/* محدد الكمية */}
+    <div className="flex items-center justify-between border border-border bg-surface-soft rounded-xl px-1.5 sm:px-2.5 h-11 sm:h-12 lg:h-13 min-w-[105px] sm:min-w-[125px] lg:min-w-[140px] shrink-0 shadow-sm">
       <button
         type="button"
-        onClick={handleAddToCart}
-        disabled={isOutOfStock || added}
-        className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold text-white transition-all shadow-md active:scale-95 ${
-          isOutOfStock
-            ? "bg-gray-400 cursor-not-allowed"
-            : added
-              ? "bg-emerald-600"
-              : "bg-teal-600 hover:bg-teal-700"
-        }`}
+        onClick={handleIncrement}
+        disabled={isOutOfStock || quantity >= availableQuantity}
+        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-surface-hover text-heading active:scale-95 disabled:opacity-25 transition-all cursor-pointer"
+        aria-label="زيادة الكمية"
       >
-        {added ? (
-          <>
-            <Check className="w-5 h-5" />
-            <span>تمت الإضافة بنجاح!</span>
-          </>
-        ) : (
-          <>
-            <ShoppingBag className="w-5 h-5" />
-            <span  className="text-sm">
-              {isOutOfStock
-                ? "نفد من المخزون"
-                : `أضف إلى السلة)`}
-            </span>
-          </>
-        )}
+        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </button>
 
-      <div className="flex items-center justify-between border border-gray-200 bg-gray-50 rounded-xl px-2 py-1.5 min-w-[120px]">
-        <button
-          type="button"
-          onClick={handleIncrement}
-          disabled={isOutOfStock || quantity >= availableQuantity}
-          className="p-1 rounded-lg hover:bg-white text-gray-700 disabled:opacity-30 transition"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
-        <span className="font-bold text-gray-800 text-lg px-2 select-none">
-          {quantity}
-        </span>
-        <button
-          type="button"
-          onClick={handleDecrement}
-          disabled={isOutOfStock || quantity <= 1}
-          className="p-1 rounded-lg hover:bg-white text-gray-700 disabled:opacity-30 transition"
-        >
-          <Minus className="w-4 h-4" />
-        </button>
-      </div>
+      <span className="font-bold text-heading text-sm sm:text-base lg:text-lg px-1 sm:px-2 select-none tabular-nums">
+        {quantity}
+      </span>
+
+      <button
+        type="button"
+        onClick={handleDecrement}
+        disabled={isOutOfStock || quantity <= 1}
+        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-surface-hover text-heading active:scale-95 disabled:opacity-25 transition-all cursor-pointer"
+        aria-label="تقليل الكمية"
+      >
+        <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+      </button>
     </div>
-  );
+  </div>
+);
 }

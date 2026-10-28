@@ -26,6 +26,7 @@ export async function adminFetch(
     if (typeof window !== "undefined") {
       const currentPath = window.location.pathname;
       if (currentPath !== "/lib" && currentPath !== "/lib/") {
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
         window.location.href = "/lib";
       }
     }

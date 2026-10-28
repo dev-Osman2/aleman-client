@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "خير جليس في الزمان كتاب",
     start_url: "/",
     display: "standalone",
-    background_color: "#F3F4F6",
-    theme_color: "#ea580c",
+    background_color: "F3F3F3",
+    theme_color: "#0fa396",
     icons: [
       {
         src: "/logo.webp",

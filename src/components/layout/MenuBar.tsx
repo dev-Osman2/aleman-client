@@ -36,6 +36,7 @@ function MenuBarContent({ isOpen, onClose }: MenuBarProps) {
   };
 
   const handleScrollToOrderSummary = () => {
+    router.push("/");
     onClose();
     setTimeout(() => {
       const el = document.getElementById("order-summary");

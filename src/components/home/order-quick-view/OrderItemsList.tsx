@@ -49,7 +49,7 @@ export default function OrderItemsList({
                   <span className="text-xs text-gray-500">
                     الكمية:
                     <strong className="text-gray-800">{item.quantity}</strong> ×
-                    {item.priceAtBuy} ج.م
+                    {item.priceAtBuy} ج
                   </span>
                 </div>
               </div>
@@ -57,7 +57,7 @@ export default function OrderItemsList({
 
             <div className="text-left shrink-0">
               <span className="font-extrabold text-sm text-teal-700">
-                {item.quantity * item.priceAtBuy} ج.م
+                {item.quantity * item.priceAtBuy} ج
               </span>
             </div>
           </div>

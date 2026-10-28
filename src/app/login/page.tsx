@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn, Lock, UserCheck, ArrowRight } from "lucide-react";
+import { LogIn, Lock, UserCheck, ArrowRight, EyeOff, Eye } from "lucide-react";
 import Header from "@/src/components/layout/Header";
 import { useAuth } from "@/src/context/AuthContext";
 
@@ -16,6 +16,7 @@ export default function LoginPage() {
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -99,15 +100,16 @@ export default function LoginPage() {
                   <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
+                  <UserCheck className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5 " />
                   <input
                     type="text"
                     required
+                    dir="ltr"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     placeholder="010xxxxxxxx أو name@example.com"
-                    className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none bg-white"
+                    className="w-full rounded-2xl border border-gray-200 py-3 pl-10 pr-4 text-sm focus:border-primary focus:outline-none bg-white"
                   />
-                  <UserCheck className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
                 </div>
               </div>
 
@@ -116,15 +118,31 @@ export default function LoginPage() {
                   كلمة المرور <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
+                  <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
+                    dir="ltr"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-2xl border border-gray-200 py-3 pr-10 pl-4 text-sm focus:border-primary focus:outline-none bg-white"
+                    className="w-full rounded-2xl border border-gray-200 py-3 pl-10 pr-4 text-sm focus:border-primary focus:outline-none bg-white"
                   />
-                  <Lock className="w-4 h-4 text-gray-400 absolute right-3.5 top-3.5" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-light hover:text-primary transition cursor-pointer"
+                    tabIndex={-1}
+                    aria-label={
+                      showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
+                    }
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -143,7 +161,7 @@ export default function LoginPage() {
                 href="/register"
                 className="text-primary font-extrabold hover:underline"
               >
-                أنشئ حساباً جديداً الآن
+                أنشئ حساباً جديداً
               </Link>
             </div>
           </div>

@@ -130,10 +130,10 @@ export default function ProductCard({
           <span className="text-lg font-black text-primary">
             {product.price}
           </span>
-          <span className="text-xs font-bold text-muted">ج.م</span>
+          <span className="text-xs font-bold text-muted">ج</span>
           {product.oldPrice && (
             <span className="text-xs line-through text-gray-400 mr-1">
-              {product.oldPrice} ج.م
+              {product.oldPrice} ج
             </span>
           )}
         </div>

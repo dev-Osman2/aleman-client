@@ -39,7 +39,7 @@ function CashierContent() {
   useEffect(() => {
     async function fetchBooks() {
       try {
-        const res = await fetch(`${apiUrl}/products`);
+        const res = await fetch(`${apiUrl}/books`);
         if (res.ok) {
           const json = await res.json();
           const list: Product[] = Array.isArray(json)

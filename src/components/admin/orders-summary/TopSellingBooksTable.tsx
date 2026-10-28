@@ -64,7 +64,7 @@ export default function TopSellingBooksTable({
                     {item.totalQty} نسخة
                   </td>
                   <td className="py-3.5 px-6 text-left font-black text-success">
-                    {item.totalRevenue} ج.م
+                    {item.totalRevenue} ج
                   </td>
                 </tr>
               ))}

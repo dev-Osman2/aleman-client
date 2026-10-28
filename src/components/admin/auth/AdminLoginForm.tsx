@@ -38,7 +38,7 @@ export default function AdminLoginForm({
           البريد الإلكتروني أو رقم الهاتف
         </label>
         <div className="relative">
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
             <UserIcon
               className={`w-4 h-4 transition-colors ${
                 error ? "text-danger" : "text-primary"
@@ -49,13 +49,14 @@ export default function AdminLoginForm({
           <input
             type="text"
             required
+            dir="ltr"
             value={identifier}
             onChange={(e) => {
               setIdentifier(e.target.value);
               if (error) setError("");
             }}
-            placeholder="010xxxxxxx أو admin@aleman.com"
-            className={`w-full pr-10 pl-4 py-3.5 bg-surface-soft border rounded-2xl text-sm font-bold text-body focus:bg-white focus:outline-none transition-all ${
+            placeholder="010xxxxxxx or contact@aswany.me"
+            className={`w-full pl-10 pr-4 py-3.5 bg-surface-soft border rounded-2xl text-sm font-bold text-body focus:bg-white focus:outline-none transition-all ${
               error
                 ? "border-danger focus:border-danger focus:ring-2 focus:ring-danger/15"
                 : "border-border focus:border-primary focus:ring-2 focus:ring-primary/15"
@@ -69,7 +70,7 @@ export default function AdminLoginForm({
           كلمة المرور السرية
         </label>
         <div className="relative">
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
             <Lock
               className={`w-4 h-4 transition-colors ${
                 error ? "text-danger" : "text-primary"
@@ -80,13 +81,14 @@ export default function AdminLoginForm({
           <input
             type={showPassword ? "text" : "password"}
             required
+            dir="ltr"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
               if (error) setError("");
             }}
-            placeholder="أدخل كلمة المرور الخاصة بحساب الإدارة..."
-            className={`w-full pr-10 pl-11 py-3.5 bg-surface-soft border rounded-2xl text-sm font-bold text-body focus:bg-white focus:outline-none transition-all ${
+            placeholder="Enter the password for admin"
+            className={`w-full pl-10 pr-11 py-3.5 bg-surface-soft border rounded-2xl text-sm font-bold text-body focus:bg-white focus:outline-none transition-all ${
               error
                 ? "border-danger focus:border-danger focus:ring-2 focus:ring-danger/15"
                 : "border-border focus:border-primary focus:ring-2 focus:ring-primary/15"
@@ -96,7 +98,7 @@ export default function AdminLoginForm({
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-light hover:text-primary transition cursor-pointer"
+            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-light hover:text-primary transition cursor-pointer"
             tabIndex={-1}
             aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
           >

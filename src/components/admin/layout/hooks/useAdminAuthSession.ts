@@ -6,6 +6,7 @@ import {
   removeAdminToken,
   setAdminUser,
 } from "@/src/lib/cookies";
+import { getApiUrl } from "@/src/lib/apiUrl";
 import { User } from "@/src/types";
 
 export function useAdminAuthSession() {
@@ -15,7 +16,7 @@ export function useAdminAuthSession() {
   const [checking, setChecking] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
+  const apiUrl = getApiUrl();
 
   const verifyAdminSession = useCallback(
     async (token: string): Promise<boolean> => {
@@ -24,7 +25,6 @@ export function useAdminAuthSession() {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Cache-Control": "no-cache",
           },
           cache: "no-store",
         });

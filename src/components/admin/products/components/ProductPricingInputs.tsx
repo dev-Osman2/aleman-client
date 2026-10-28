@@ -39,7 +39,7 @@ export default function ProductPricingInputs({
             className="w-full pr-10 pl-10 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition"
           />
           <span className="absolute left-3 text-muted text-xs font-bold pointer-events-none">
-            ج.م
+            ج
           </span>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function ProductPricingInputs({
             className="w-full pr-10 pl-10 py-3 bg-white border border-border rounded-xl text-sm font-bold text-body focus:outline-none focus:border-primary transition"
           />
           <span className="absolute left-3 text-muted text-xs font-bold pointer-events-none">
-            ج.م
+            ج
           </span>
         </div>
       </div>

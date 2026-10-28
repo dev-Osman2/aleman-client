@@ -61,7 +61,7 @@ export default function ProfileStatsCards({
           <span className="text-xs font-bold text-muted">إجمالي المشتريات</span>
           <p className="text-xl sm:text-2xl font-black text-heading mt-0.5">
             {orderStats.totalSpent}
-            <span className="text-xs font-semibold text-muted">ج.م</span>
+            <span className="text-xs font-semibold text-muted">ج</span>
           </p>
         </div>
       </div>

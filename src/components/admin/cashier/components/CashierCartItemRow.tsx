@@ -37,7 +37,7 @@ export default function CashierCartItemRow({
           </p>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-[11px] text-primary font-bold">
-              {price} ج.م
+              {price} ج
             </span>
             {item.code && (
               <span className="text-[10px] text-muted-light font-mono">

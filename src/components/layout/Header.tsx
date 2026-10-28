@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, Menu } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
+import { useRouter, usePathname } from "next/navigation";
 import SearchBar from "./SearchBar";
 import MenuBar from "./MenuBar";
 import HeaderAuthButtons from "./HeaderAuthButtons";
-
 export default function Header() {
   const { user } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -16,6 +16,8 @@ export default function Header() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,13 +36,19 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      router.push("/");
+    }
   };
 
   return (

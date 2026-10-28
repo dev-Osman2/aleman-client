@@ -23,7 +23,7 @@ export default function CheckoutPaymentSection({
     ? INSTAPAY_LINK
     : `tel:*9*7*${VODAFONE_CASH_DISPLAY}*${totalPrice}#`;
   const subtitle = isInstapay
-    ? "اضغط هنا للتحويل مباشرة عبر تطبيق إنستاباي:"
+    ? "اضغط هنا للتحويل مباشرة عبر إنستاباي:"
     : "اضغط هنا للتحويل مباشرة عبر محفظة كاش:";
 
   return (

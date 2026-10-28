@@ -15,7 +15,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 async function getBookByCode(code: string): Promise<Product | null> {
   try {
-    const res = await fetch(`${apiUrl}/products/${code}`, {
+    const res = await fetch(`${apiUrl}/books/${code}`, {
       cache: "no-store",
     });
 
@@ -55,7 +55,7 @@ async function getDiscoverMoreBooks(
   category: string
 ): Promise<Product[]> {
   try {
-    const res = await fetch(`${apiUrl}/products`, {
+    const res = await fetch(`${apiUrl}/books`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];

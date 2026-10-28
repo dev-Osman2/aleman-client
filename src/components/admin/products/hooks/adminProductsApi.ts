@@ -4,7 +4,7 @@ import { adminFetch } from "@/src/lib/adminFetch";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
 export async function fetchBooksApi(): Promise<Product[]> {
-  const res = await fetch(`${apiUrl}/products`);
+  const res = await fetch(`${apiUrl}/books`);
   if (!res.ok) throw new Error("تعذر جلب قائمة الكتب");
   const json = await res.json();
   return Array.isArray(json) ? json : Array.isArray(json.data) ? json.data : [];

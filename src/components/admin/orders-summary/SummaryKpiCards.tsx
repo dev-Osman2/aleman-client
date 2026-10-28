@@ -27,7 +27,7 @@ export default function SummaryKpiCards({
         </div>
         <p className="text-2xl font-black text-heading">
           {totalRevenue}
-          <span className="text-xs font-bold text-muted">ج.م</span>
+          <span className="text-xs font-bold text-muted">ج</span>
         </p>
       </div>
 
@@ -39,8 +39,8 @@ export default function SummaryKpiCards({
           </div>
         </div>
         <p className="text-2xl font-black text-primary">
-          {averageOrderValue}
-          <span className="text-xs font-bold">ج.م</span>
+          {averageOrderValue.toFixed(1)}
+          <span className="text-xs font-bold">ج</span>
         </p>
       </div>
 

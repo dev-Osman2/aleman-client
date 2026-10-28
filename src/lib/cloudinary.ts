@@ -1,8 +1,4 @@
-/**
- * Cloudinary Direct Upload Service
- * يقوم برفع الصور مباشرة إلى Cloudinary باستخدام Upload Preset غير الموقع (Unsigned)
- * ويعيد رابط الصورة الآمن النهائي (secure_url).
- */
+
 
 export interface CloudinaryUploadResponse {
   asset_id: string;

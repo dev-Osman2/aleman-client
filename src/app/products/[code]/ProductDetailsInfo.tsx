@@ -26,11 +26,6 @@ export default function ProductDetailsInfo({
           <Layers className="w-3.5 h-3.5" />
           {categoryLabel}
         </span>
-
-        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
-          <Hash className="w-3.5 h-3.5" />
-          {book.code}
-        </span>
       </div>
 
       <h1 className="text-2xl sm:text-3xl font-black text-heading leading-snug">
@@ -70,11 +65,11 @@ export default function ProductDetailsInfo({
             <span className="text-3xl font-black text-primary">
               {book.price}
             </span>
-            <span className="text-sm font-extrabold text-heading">ج.م</span>
+            <span className="text-sm font-extrabold text-heading">ج</span>
 
             {book.oldPrice && (
               <span className="text-sm line-through text-gray-400 font-bold mr-2">
-                {book.oldPrice} ج.م
+                {book.oldPrice} ج
               </span>
             )}
           </div>
@@ -84,7 +79,7 @@ export default function ProductDetailsInfo({
           {isAvailable ? (
             <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs font-extrabold text-emerald-700 shadow-2xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>متوفر في المخزن ({book.quantity} نسخة)</span>
+              <span>متوفر({book.quantity} نسخة)</span>
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs font-extrabold text-red-600">

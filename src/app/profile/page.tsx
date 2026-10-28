@@ -53,7 +53,7 @@ export default function ProfilePage() {
       <>
         <Header />
         <main
-          className="flex-1 container mx-auto px-4 py-10 max-w-md min-h-[calc(100vh-180px)] flex flex-col items-center justify-center text-center"
+          className="flex-1 container  mx-auto px-4 py-10 max-w-md min-h-[calc(100vh-180px)] flex flex-col items-center justify-center text-center"
           dir="rtl"
         >
           <div className="w-16 h-16 rounded-3xl bg-primary-light text-primary flex items-center justify-center mb-4 shadow-sm">

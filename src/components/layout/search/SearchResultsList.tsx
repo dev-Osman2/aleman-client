@@ -42,7 +42,7 @@ export default function SearchResultsList({
                 </span>
               )}
               <span className="text-xs font-black text-primary block mt-0.5">
-                {product.price} ج.م
+                {product.price} ج
               </span>
             </div>
           </button>

@@ -42,7 +42,7 @@ export default function OrderCardFooter({
           </span>
           <span className="text-lg sm:text-xl font-black text-heading">
             {Number(order.total || 0)}
-            <span className="text-xs font-bold">ج.م</span>
+            <span className="text-xs font-bold">ج</span>
           </span>
         </div>
 

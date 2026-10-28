@@ -20,13 +20,9 @@ export default function AdminLoginPage() {
 
   return (
     <div
-      className="min-h-[91vh] flex items-center justify-center bg-dark relative overflow-hidden p-4 selection:bg-primary-light selection:text-primary"
+      className="flex-1 w-full flex flex-col justify-center items-center lg:items-start bg-[url('/adminPhone.webp')] lg:bg-[url('/admin.webp')] bg-cover bg-top lg:bg-center bg-no-repeat px-4 sm:px-6 lg:pr-16 xl:pr-24 pt-32 pb-12 sm:py-10"
       dir="rtl"
     >
-      <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-primary-hover/15 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-
       <div
         className={`w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-primary-subtle/50 p-7 sm:p-9 flex flex-col gap-6 relative z-10 transition-transform ${
           shake ? "animate-shake border-danger-border" : ""

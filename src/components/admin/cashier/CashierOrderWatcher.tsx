@@ -40,7 +40,7 @@ export default function CashierOrderWatcher() {
 
             if (!isCashierOrAdmin) {
               toast.info(`طلب شراء أونلاين جديد #${order.id}`, {
-                description: `العميل: ${order.user?.name || "عميل"} — إجمالي: ${order.total} ج.م`,
+                description: `العميل: ${order.user?.name || "عميل"} — إجمالي: ${order.total} ج`,
                 duration: 8000,
                 action: {
                   label: "عرض الطلبات",

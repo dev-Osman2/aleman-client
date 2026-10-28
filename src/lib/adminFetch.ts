@@ -4,10 +4,12 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
 export async function adminFetch(
   pathOrUrl: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
   const token = getAdminToken();
-  const url = pathOrUrl.startsWith("http") ? pathOrUrl : `${apiUrl}${pathOrUrl}`;
+  const url = pathOrUrl.startsWith("http")
+    ? pathOrUrl
+    : `${apiUrl}${pathOrUrl}`;
 
   const headers = new Headers(options.headers || {});
   if (token) {
@@ -19,7 +21,6 @@ export async function adminFetch(
     headers,
   });
 
-  // If unauthorized or forbidden, strictly purge admin session and redirect to /lib
   if (res.status === 401 || res.status === 403) {
     removeAdminToken();
     if (typeof window !== "undefined") {

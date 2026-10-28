@@ -49,7 +49,7 @@ export function useAdminAuthSession() {
         return true;
       } catch (err) {
         console.error("Admin verification error:", err);
-        // STRICT SECURITY: Never grant access if server check fails
+
         removeAdminToken();
         return false;
       }
@@ -64,7 +64,6 @@ export function useAdminAuthSession() {
       const isLoginRoute = pathname === "/lib" || pathname === "/lib/";
       const token = getAdminToken();
 
-      // Case 1: On the Admin Login page (/lib)
       if (isLoginRoute) {
         if (token) {
           const isValidAdmin = await verifyAdminSession(token);
@@ -81,7 +80,6 @@ export function useAdminAuthSession() {
         return;
       }
 
-      // Case 2: On any protected Admin page (/lib/*)
       if (!token) {
         if (isMounted) {
           setAuthorized(false);
@@ -91,7 +89,6 @@ export function useAdminAuthSession() {
         return;
       }
 
-      // Server verification with bearer token
       const isValid = await verifyAdminSession(token);
       if (isMounted) {
         if (isValid) {

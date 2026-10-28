@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { X, BookOpen, Receipt, User, LogIn } from "lucide-react";
@@ -12,7 +13,8 @@ interface MenuBarProps {
   onClose: () => void;
 }
 
-export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
+// 1. المكون الداخلي الذي يتعامل مع useSearchParams
+function MenuBarContent({ isOpen, onClose }: MenuBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { totalItems } = useCart();
@@ -115,5 +117,15 @@ export default function MenuBar({ isOpen, onClose }: MenuBarProps) {
         </div>
       </aside>
     </div>
+  );
+}
+
+export default function MenuBar(props: MenuBarProps) {
+  if (!props.isOpen) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <MenuBarContent {...props} />
+    </Suspense>
   );
 }

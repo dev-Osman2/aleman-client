@@ -8,29 +8,32 @@ interface HomeCategoryBarProps {
 }
 
 export default function HomeCategoryBar({ currentCategory }: HomeCategoryBarProps) {
+  const isAll = !currentCategory || currentCategory === "all";
+  const isLatest = currentCategory === "latest";
+
   return (
     <div className="mb-6 overflow-x-auto no-scrollbar py-2" dir="rtl">
       <div className="flex items-center gap-2">
         <Link
           href="/"
           className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
-            currentCategory === "latest"
-              ? "bg-primary text-white shadow-xs"
-              : "bg-white text-heading border border-border-subtle hover:bg-gray-50"
-          }`}
-        >
-          أحدث الكتب
-        </Link>
-
-        <Link
-          href="/?category=all"
-          className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
-            currentCategory === "all"
+            isAll
               ? "bg-primary text-white shadow-xs"
               : "bg-white text-heading border border-border-subtle hover:bg-gray-50"
           }`}
         >
           جميع الكتب
+        </Link>
+
+        <Link
+          href="/?category=latest"
+          className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
+            isLatest
+              ? "bg-primary text-white shadow-xs"
+              : "bg-white text-heading border border-border-subtle hover:bg-gray-50"
+          }`}
+        >
+          أحدث الكتب
         </Link>
 
         {CATEGORIES.map((cat) => {

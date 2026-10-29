@@ -16,7 +16,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 async function getBookByCode(code: string): Promise<Product | null> {
   try {
     const res = await fetch(`${apiUrl}/books/${code}`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) return null;
@@ -30,9 +30,12 @@ async function getBookByCode(code: string): Promise<Product | null> {
 
 async function getRelatedBooks(code: string): Promise<Product[]> {
   try {
-    const res = await fetch(`${apiUrl.replace(/\/api$/, "")}/api/books/${code}/related`, {
-      next: { revalidate: 3600 },
-    });
+    const res = await fetch(
+      `${apiUrl.replace(/\/api$/, "")}/api/books/${code}/related`,
+      {
+        next: { revalidate: 3600 },
+      },
+    );
     if (!res.ok) return [];
     const data: unknown = await res.json();
     return Array.isArray(data) ? (data as Product[]) : [];
@@ -52,7 +55,7 @@ function getDailySortValue(value: string, seed: string): number {
 
 async function getDiscoverMoreBooks(
   code: string,
-  category: string
+  category: string,
 ): Promise<Product[]> {
   try {
     const res = await fetch(`${apiUrl}/books`, {
@@ -75,7 +78,7 @@ async function getDiscoverMoreBooks(
         (product) =>
           product.code !== code &&
           product.quantity > 0 &&
-          product.category.trim() !== category.trim()
+          product.category.trim() !== category.trim(),
       )
       .sort((a, b) => {
         const seedA = getDailySortValue(a.id || a.code, daySeed);

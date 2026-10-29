@@ -18,7 +18,7 @@ export default function MenuBarCategories({
         type="button"
         onClick={() => onSelectCategory(null)}
         className={`w-full text-right px-4 py-3 rounded-xl font-bold text-sm transition flex items-center justify-between cursor-pointer ${
-          !currentCategory
+          !currentCategory || currentCategory === "all"
             ? "bg-primary text-white shadow-xs"
             : "bg-surface-soft hover:bg-primary-light text-sub"
         }`}

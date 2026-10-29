@@ -33,7 +33,7 @@ const tajawal = localFont({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#ea580c",
+  themeColor: "#0fa396",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

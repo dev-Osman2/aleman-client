@@ -25,7 +25,7 @@ export async function middleware(req: NextRequest) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        cache: "no-store",
+        next: { revalidate: 60 },
         signal: AbortSignal.timeout(3500),
       });
 

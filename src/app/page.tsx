@@ -3,6 +3,7 @@ import Header from "@/src/components/layout/Header";
 import CheckoutForm from "@/src/components/cart/CheckoutForm";
 import { Product } from "@/src/types";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import QuickServicesBar from "@/src/components/home/QuickServicesBar";
 import { BookOpen } from "lucide-react";
 import HomeCategoryBar from "@/src/components/home/HomeCategoryBar";
@@ -16,7 +17,7 @@ const ALL_CATEGORY = "all";
 async function getProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${apiUrl}/books`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) throw new Error("فشل في جلب قائمة الكتب");
@@ -35,14 +36,19 @@ export default async function HomePage({
   searchParams: Promise<{ category?: string; page?: string }>;
 }) {
   const params = await searchParams;
-  const allProducts = await getProducts();
+  const requestedCategory = params.category?.trim();
 
-  const requestedCategory = params.category?.trim() || LATEST_CATEGORY;
-  const currentCategory = requestedCategory;
+  // إذا تم الدخول برابط ?category=all يتم التحويل إلى / (الصفحة الرئيسية)
+  if (requestedCategory === ALL_CATEGORY) {
+    redirect("/");
+  }
+
+  const allProducts = await getProducts();
+  const currentCategory = requestedCategory || null;
   const latestPage = Math.max(1, Number.parseInt(params.page || "1", 10) || 1);
 
   const isLatestBooks = currentCategory === LATEST_CATEGORY;
-  const isAllBooks = currentCategory === "all";
+  const isAllBooks = !currentCategory;
   const displayedProducts = isLatestBooks
     ? allProducts
         .filter((product) => product.quantity > 0)
@@ -62,7 +68,7 @@ export default async function HomePage({
             a.quantity - b.quantity
           );
         })
-    : currentCategory && !isAllBooks
+    : currentCategory
       ? allProducts.filter((p) => (p.category ?? "").trim() === currentCategory)
       : allProducts;
 
@@ -121,12 +127,12 @@ export default async function HomePage({
                 </span>
               </div>
 
-              {currentCategory && currentCategory !== ALL_CATEGORY && currentCategory !== LATEST_CATEGORY && (
+              {currentCategory && currentCategory !== LATEST_CATEGORY && (
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-primary bg-primary-light hover:bg-primary-subtle border border-primary/25 rounded-full transition-all duration-150 active:scale-95 shadow-xs"
+                  className="inline-flex items-center  gap-1.5 px-3 py-1.5 text-xs font-bold text-primary bg-primary-light hover:bg-primary-subtle border border-primary/25 rounded-full transition-all duration-150 active:scale-95 shadow-xs"
                 >
-                  <span>عرض الكل</span>
+                  <span>الكل</span>
                   <span className="w-4 h-4 flex items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] leading-none">
                     ✕
                   </span>

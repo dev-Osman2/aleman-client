@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { X, BookOpen, Receipt, User, LogIn } from "lucide-react";
 import { useCart } from "@/src/context/CartContext";
@@ -16,6 +16,7 @@ interface MenuBarProps {
 // 1. المكون الداخلي الذي يتعامل مع useSearchParams
 function MenuBarContent({ isOpen, onClose }: MenuBarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { totalItems } = useCart();
   const { user } = useAuth();
@@ -35,13 +36,21 @@ function MenuBarContent({ isOpen, onClose }: MenuBarProps) {
     onClose();
   };
 
-  const handleScrollToOrderSummary = () => {
-    router.push("/");
+  
+
+const handleScrollToOrderSummary = () => {
     onClose();
-    setTimeout(() => {
-      const el = document.getElementById("order-summary");
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
+
+    // إذا كان المستخدم بالفعل في الصفحة الرئيسية
+    if (pathname === "/") {
+      setTimeout(() => {
+        const el = document.getElementById("order-summary");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    } else {
+      // إذا كان في صفحة أخرى، يتم التوجيه للصفحة الرئيسية مع الـ Hash
+      router.push("/#order-summary");
+    }
   };
 
   return (

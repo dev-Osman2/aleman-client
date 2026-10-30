@@ -5,17 +5,32 @@ import { CATEGORIES, getCategoryLabel } from "@/src/constants/categories";
 
 interface HomeCategoryBarProps {
   currentCategory: string | null;
+  onSelectCategory?: (category: string | null) => void;
 }
 
-export default function HomeCategoryBar({ currentCategory }: HomeCategoryBarProps) {
+export default function HomeCategoryBar({
+  currentCategory,
+  onSelectCategory,
+}: HomeCategoryBarProps) {
   const isAll = !currentCategory || currentCategory === "all";
   const isLatest = currentCategory === "latest";
+
+  const handleClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    cat: string | null,
+  ) => {
+    if (onSelectCategory) {
+      e.preventDefault();
+      onSelectCategory(cat);
+    }
+  };
 
   return (
     <div className="mb-6 overflow-x-auto no-scrollbar py-2" dir="rtl">
       <div className="flex items-center gap-2">
         <Link
           href="/"
+          onClick={(e) => handleClick(e, null)}
           className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
             isAll
               ? "bg-primary text-white shadow-xs"
@@ -27,6 +42,7 @@ export default function HomeCategoryBar({ currentCategory }: HomeCategoryBarProp
 
         <Link
           href="/?category=latest"
+          onClick={(e) => handleClick(e, "latest")}
           className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
             isLatest
               ? "bg-primary text-white shadow-xs"
@@ -41,7 +57,8 @@ export default function HomeCategoryBar({ currentCategory }: HomeCategoryBarProp
           return (
             <Link
               key={cat}
-              href={`/?category=${cat}`}
+              href={`/?category=${encodeURIComponent(cat)}`}
+              onClick={(e) => handleClick(e, cat)}
               className={`shrink-0 px-4 py-2 rounded-2xl text-xs md:text-sm font-extrabold transition-all duration-150 ${
                 isActive
                   ? "bg-primary text-white shadow-xs"

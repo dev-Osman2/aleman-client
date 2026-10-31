@@ -23,7 +23,7 @@ export default function MenuBarCategories({
             : "bg-surface-soft hover:bg-primary-light text-sub"
         }`}
       >
-        <span>جميع الكتب (المكتبة الكاملة)</span>
+        <span>جميع الكتب</span>
         <Layers className="w-4 h-4 shrink-0" />
       </button>
 

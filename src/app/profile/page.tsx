@@ -24,6 +24,8 @@ export default function ProfilePage() {
     setEditName,
     editPhone,
     setEditPhone,
+    editImage,
+    setEditImage,
     savingProfile,
     handleUpdateProfile,
     showDeleteModal,
@@ -119,6 +121,8 @@ export default function ProfilePage() {
             setEditName={setEditName}
             editPhone={editPhone}
             setEditPhone={setEditPhone}
+            editImage={editImage}
+            setEditImage={setEditImage}
             userEmail={user.email}
             savingProfile={savingProfile}
             onUpdateProfile={handleUpdateProfile}

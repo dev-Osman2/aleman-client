@@ -69,11 +69,13 @@ export const registerSchema = z.object({
   phone: egyptianPhoneSchema,
   email: z.string().trim().email("يرجى إدخال بريد إلكتروني صحيح"),
   password: z.string().min(6, "كلمة المرور يجب ألا تقل عن 6 أحرف"),
+  image: z.string().optional(),
 });
 
 export const profileUpdateSchema = z.object({
   name: z.string().trim().min(2, "يرجى إدخال الاسم الكامل"),
   phone: egyptianPhoneSchema,
+  image: z.string().nullable().optional(),
 });
 
 export const feedbackSchema = z.object({
@@ -81,4 +83,3 @@ export const feedbackSchema = z.object({
   phone: optionalEgyptianPhoneSchema,
   message: z.string().trim().min(3, "يرجى كتابة رسالتك أو مقترحك (3 أحرف على الأقل)"),
 });
-

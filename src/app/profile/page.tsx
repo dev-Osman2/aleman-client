@@ -27,6 +27,8 @@ export default function ProfilePage() {
     editImage,
     setEditImage,
     savingProfile,
+    savingAvatar,
+    handleAvatarChange,
     handleUpdateProfile,
     showDeleteModal,
     setShowDeleteModal,
@@ -97,7 +99,11 @@ export default function ProfilePage() {
         className="container mx-auto px-4 py-8 flex flex-col gap-8 max-w-5xl"
         dir="rtl"
       >
-        <ProfileHeaderCard user={user} onLogout={handleLogout} />
+        <ProfileHeaderCard
+          user={user}
+          image={editImage}
+          onLogout={handleLogout}
+        />
 
         <ProfileStatsCards orderStats={orderStats} />
 
@@ -125,6 +131,8 @@ export default function ProfilePage() {
             setEditImage={setEditImage}
             userEmail={user.email}
             savingProfile={savingProfile}
+            savingAvatar={savingAvatar}
+            onAvatarChange={handleAvatarChange}
             onUpdateProfile={handleUpdateProfile}
             onOpenDeleteModal={() => setShowDeleteModal(true)}
           />

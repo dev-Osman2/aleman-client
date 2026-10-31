@@ -10,6 +10,8 @@ interface ProfileSettingsTabProps {
   setEditImage: (image: string | null) => void;
   userEmail?: string;
   savingProfile: boolean;
+  savingAvatar?: boolean;
+  onAvatarChange?: (image: string | null) => void;
   onUpdateProfile: (e: React.FormEvent) => void;
   onOpenDeleteModal: () => void;
 }
@@ -23,6 +25,8 @@ export default function ProfileSettingsTab({
   setEditImage,
   userEmail,
   savingProfile,
+  savingAvatar = false,
+  onAvatarChange,
   onUpdateProfile,
   onOpenDeleteModal,
 }: ProfileSettingsTabProps) {
@@ -40,8 +44,8 @@ export default function ProfileSettingsTab({
           {/* تعديل الصورة الشخصية */}
           <UserAvatarUpload
             currentImage={editImage}
-            onImageUploaded={setEditImage}
-            disabled={savingProfile}
+            onImageUploaded={onAvatarChange || setEditImage}
+            disabled={savingProfile || savingAvatar}
             label="تعديل الصورة الشخصية"
             subLabel="اختر صورة جديدة لملفك الشخصي أو قم بإزالتها"
           />

@@ -86,13 +86,21 @@ function MenuBarContent({ isOpen, onClose }: MenuBarProps) {
             onClick={onClose}
             className="w-full px-4 py-3 rounded-xl bg-surface-soft hover:bg-primary-light border border-border text-heading hover:text-primary font-extrabold text-xs sm:text-sm flex items-center justify-between transition cursor-pointer shadow-2xs"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               {user ? (
-                <User className="w-4 h-4 text-primary shrink-0" />
+                user.image ? (
+                  <img
+                    src={user.image}
+                    alt={user.name}
+                    className="w-5 h-5 rounded-full object-cover shrink-0 border border-primary/20"
+                  />
+                ) : (
+                  <User className="w-4 h-4 text-primary shrink-0" />
+                )
               ) : (
                 <LogIn className="w-4 h-4 text-primary shrink-0" />
               )}
-              <span>
+              <span className="truncate">
                 {user ? `حسابي (${user.name})` : "تسجيل الدخول / حسابي"}
               </span>
             </div>

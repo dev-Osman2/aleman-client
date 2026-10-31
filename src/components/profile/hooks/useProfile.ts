@@ -17,6 +17,7 @@ export function useProfile() {
   const [editPhone, setEditPhone] = useState("");
   const [editImage, setEditImage] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingAvatar, setSavingAvatar] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
@@ -30,6 +31,50 @@ export function useProfile() {
       setEditImage(user.image || null);
     }
   }, [user]);
+
+  // تحديث الصورة الشخصية فورياً في قاعدة البيانات عند رفع صورة جديدة أو حذفها
+  const handleAvatarChange = async (newImageUrl: string | null) => {
+    setEditImage(newImageUrl);
+    if (!token) return;
+
+    setSavingAvatar(true);
+    try {
+      const res = await fetch(`${apiUrl}/auth/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          image: newImageUrl,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        const savedUrl =
+          data.data?.image !== undefined ? data.data.image : newImageUrl;
+        setEditImage(savedUrl);
+        updateUser({
+          image: savedUrl,
+        });
+
+        if (savedUrl) {
+          toast.success("تم تحديث وحفظ صورتك الشخصية بنجاح");
+        } else {
+          toast.success("تم حذف صورتك الشخصية بنجاح");
+        }
+      } else {
+        toast.error(data.message || "تعذر حفظ الصورة");
+      }
+    } catch (err) {
+      console.error("Failed to update avatar:", err);
+      toast.error("حدث خطأ أثناء حفظ الصورة في الخادم");
+    } finally {
+      setSavingAvatar(false);
+    }
+  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +117,7 @@ export function useProfile() {
           phone: editPhone.trim(),
           image: data.data?.image !== undefined ? data.data.image : editImage,
         });
-        toast.success("تم تحديث بيانات ملفك الشخصي والصورة بنجاح");
+        toast.success("تم تحديث بيانات ملفك الشخصي بنجاح");
       } else {
         toast.error(data.message || "تعذر حفظ التعديلات");
       }
@@ -136,6 +181,8 @@ export function useProfile() {
     editImage,
     setEditImage,
     savingProfile,
+    savingAvatar,
+    handleAvatarChange,
     handleUpdateProfile,
     showDeleteModal,
     setShowDeleteModal,

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { User, Phone, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import UserAvatarUpload from "@/src/components/ui/UserAvatarUpload";
 
 interface RegisterFormProps {
   name: string;
@@ -10,6 +11,8 @@ interface RegisterFormProps {
   setEmail: (v: string) => void;
   password: string;
   setPassword: (v: string) => void;
+  image?: string;
+  setImage?: (v: string | null) => void;
   loading: boolean;
   onSubmit: (e: React.FormEvent) => void;
 }
@@ -23,6 +26,8 @@ export default function RegisterForm({
   setEmail,
   password,
   setPassword,
+  image,
+  setImage,
   loading,
   onSubmit,
 }: RegisterFormProps) {
@@ -30,6 +35,18 @@ export default function RegisterForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
+      {/* حقل رفع الصورة الشخصية (اختياري) */}
+      {setImage && (
+        <UserAvatarUpload
+          currentImage={image}
+          onImageUploaded={(url) => setImage(url || "")}
+          disabled={loading}
+          label="الصورة الشخصية"
+          subLabel="ارفع صورة لملفك الشخصي (اختياري)"
+          isOptional={true}
+        />
+      )}
+
       <div>
         <label className="block text-xs font-extrabold text-heading mb-1.5">
           الاسم بالكامل <span className="text-red-500">*</span>

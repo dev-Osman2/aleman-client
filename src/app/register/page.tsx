@@ -19,6 +19,7 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [image, setImage] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,6 +33,7 @@ export default function RegisterPage() {
       phone,
       email,
       password,
+      image: image || undefined,
     });
 
     if (!validationResult.success) {
@@ -51,6 +53,7 @@ export default function RegisterPage() {
           phone: phone.trim(),
           email: email.trim(),
           password,
+          image: image ? image.trim() : undefined,
         }),
       });
 
@@ -123,12 +126,14 @@ export default function RegisterPage() {
               setEmail={setEmail}
               password={password}
               setPassword={setPassword}
+              image={image || undefined}
+              setImage={setImage}
               loading={loading}
               onSubmit={handleRegister}
             />
 
             <div className="mt-6 pt-5 border-t border-gray-100 text-center text-xs font-bold text-muted">
-              لديك حساب بالفعل؟
+              لديك حساب بالفعل؟{" "}
               <Link
                 href="/login"
                 className="text-primary font-extrabold hover:underline"

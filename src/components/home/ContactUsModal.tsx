@@ -52,7 +52,7 @@ export default function ContactUsModal({
 
         <div className="border-b border-border-subtle pb-4 mb-5">
           <h2 className="text-xl md:text-2xl font-black text-primary mb-1.5 flex items-center gap-2">
-            <span>📞</span> تواصل مع مكتبة الإيمان
+            <span>📞</span> تواصل مع دار الإيمان
           </h2>
           <p className="text-xs md:text-sm text-sub">
             يسعدنا دائماً تواصلكم معنا للاستفسار عن الكتب والطبعات أو متابعة

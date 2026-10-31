@@ -16,7 +16,7 @@ export default function CashierTopBar({
   onSearchChange,
 }: CashierTopBarProps) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="sticky top-[72px] z-10 my-3 bg-white/95 backdrop-blur-md border border-border/60 rounded-2xl p-2.5 sm:p-3 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
       <div className="flex-1 min-w-0">
         <CashierCategoryBar
           currentCategory={currentCategory}
@@ -33,7 +33,7 @@ export default function CashierTopBar({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="بحث سريع بالعنوان أو الكود..."
-          className="w-full bg-white border border-border/90 rounded-2xl py-2.5 pr-10 pl-4 text-xs sm:text-sm text-body focus:outline-none focus:border-primary transition"
+          className="w-full bg-white border border-border/90 rounded-xl py-2 pr-10 pl-4 text-xs sm:text-sm text-body focus:outline-none focus:border-primary transition"
         />
       </div>
     </div>

@@ -37,12 +37,14 @@ export default function ProductFormModal({
             </div>
             <div className="text-right">
               <h2 className="text-xl sm:text-2xl font-black text-heading">
-                {editingProduct ? "تعديل بيانات الكتاب" : "إضافة كتاب جديد للمكتبة"}
+                {editingProduct
+                  ? "تعديل بيانات الكتاب"
+                  : "إضافة كتاب جديد للمكتبة"}
               </h2>
               <p className="text-xs sm:text-sm text-muted font-medium mt-0.5">
                 {editingProduct
                   ? `تعديل أسعار وبيانات: ${editingProduct.title}`
-                  : "إدراج كتاب جديد في كتالوج مكتبة الإيمان وتحديد كمية المخزون"}
+                  : "إدراج كتاب جديد في كتالوج دار الإيمان وتحديد كمية المخزون"}
               </p>
             </div>
           </div>

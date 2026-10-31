@@ -103,7 +103,7 @@ export default function RegisterPage() {
                   إنشاء حساب جديد
                 </h1>
                 <p className="text-xs text-muted mt-0.5">
-                  سجل حسابك في مكتبة الإيمان لإتمام طلبات الكتب بسهولة
+                  سجل حسابك في دار الإيمان لإتمام طلبات الكتب بسهولة
                 </p>
               </div>
             </div>

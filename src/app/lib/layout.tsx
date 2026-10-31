@@ -74,7 +74,7 @@ export default function AdminLayout({
             <span>جاري التحقق من الصلاحيات الأمنية...</span>
           </div>
           <p className="text-xs text-muted-light">
-            مكتبة الإيمان - بوابة الإدارة المركزية
+            دار الإيمان - بوابة الإدارة المركزية
           </p>
         </div>
       </div>

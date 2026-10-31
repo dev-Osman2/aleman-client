@@ -27,7 +27,7 @@ export default function AboutUsModal({ isOpen, onClose }: AboutUsModalProps) {
 
         <div className="border-b border-border-subtle pb-4 mb-5">
           <h2 className="text-xl md:text-2xl font-black text-primary mb-2 flex items-center gap-2">
-            <span>📚</span> عن مكتبة الإيمان
+            <span>📚</span> عن دار الإيمان
           </h2>
           <p className="text-sm text-sub leading-relaxed">
             وجهتكم المعرفية الأولى لاقتناء أمهات الكتب الإسلامية، العلمية،
@@ -43,8 +43,8 @@ export default function AboutUsModal({ isOpen, onClose }: AboutUsModalProps) {
               <span>✨</span> رؤيتنا ورسالتنا
             </h3>
             <p className="text-sub leading-relaxed">
-              نشر العلم الشرعي والمعرفة الأصيلة وتيسير وصول الكتاب لكل قارئ وباحث
-              بأسعار تنافسية وخدمة شحن موثوقة وسريعة لجميع المحافظات.
+              نشر العلم الشرعي والمعرفة الأصيلة وتيسير وصول الكتاب لكل قارئ
+              وباحث بأسعار تنافسية وخدمة شحن موثوقة وسريعة لجميع المحافظات.
             </p>
           </div>
 
@@ -74,8 +74,8 @@ export default function AboutUsModal({ isOpen, onClose }: AboutUsModalProps) {
             </h3>
             <ol className="flex flex-col gap-2 text-xs md:text-sm text-body list-decimal list-inside">
               <li>
-                <strong>اختر كتبك:</strong> تصفح الأقسام أو ابحث بعنوان الكتاب أو
-                كوده، وحدد الكمية المطلوبة وأضفها للسلة.
+                <strong>اختر كتبك:</strong> تصفح الأقسام أو ابحث بعنوان الكتاب
+                أو كوده، وحدد الكمية المطلوبة وأضفها للسلة.
               </li>
               <li>
                 <strong>أكّد الدفع والشحن:</strong> سجّل دخولك، أدخل عنوان
@@ -96,8 +96,8 @@ export default function AboutUsModal({ isOpen, onClose }: AboutUsModalProps) {
             <ol className="flex flex-col gap-2 text-xs md:text-sm text-body list-decimal list-inside">
               <li>الضغط على الثلاث نقاط في أعلى المتصفح.</li>
               <li>
-                الضغط على <strong>«التثبيت وإنشاء اختصار»</strong> (أو «إضافة إلى
-                الشاشة الرئيسية»).
+                الضغط على <strong>«التثبيت وإنشاء اختصار»</strong> (أو «إضافة
+                إلى الشاشة الرئيسية»).
               </li>
               <li>
                 الضغط على <strong>«تثبيت»</strong> للوصول السريع للمكتبة.

@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
 
           <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-black text-heading tracking-tight">
-              مكتبة الإيمان
+              دار الإيمان
             </h1>
             <p className="text-xs sm:text-sm text-muted font-medium">
               لوحة تحكم المشرف ونظام إدارة الكتب والمبيعات

@@ -8,7 +8,9 @@ import ConfirmModal from "@/src/components/ui/ConfirmModal";
 import ProductsStatCards from "@/src/components/admin/products/ProductsStatCards";
 import ProductsStockFilterBar from "@/src/components/admin/products/ProductsStockFilterBar";
 import ProductsFilterTabs from "@/src/components/admin/products/ProductsFilterTabs";
+import ExcelImportModal from "@/src/components/admin/products/ExcelImportModal";
 import { useAdminProducts } from "@/src/components/admin/products/hooks/useAdminProducts";
+import { useExcelBooks } from "@/src/components/admin/products/hooks/useExcelBooks";
 
 export default function AdminProductsPage() {
   const {
@@ -35,6 +37,19 @@ export default function AdminProductsPage() {
     stats,
   } = useAdminProducts();
 
+  const {
+    isExporting,
+    isImportModalOpen,
+    selectedFile,
+    previewLoading,
+    isImporting,
+    previewData,
+    handleExportExcel,
+    handleSelectFile,
+    handleConfirmImport,
+    handleCloseModal,
+  } = useExcelBooks();
+
   return (
     <div className="flex flex-col gap-6" dir="rtl">
       <ProductsHeader
@@ -42,6 +57,9 @@ export default function AdminProductsPage() {
           setEditingProduct(null);
           setModalOpen(true);
         }}
+        onExportClick={handleExportExcel}
+        onFileSelect={handleSelectFile}
+        isExporting={isExporting}
       />
 
       <ProductsStatCards
@@ -101,10 +119,20 @@ export default function AdminProductsPage() {
         onSubmit={handleSaveProduct}
       />
 
+      <ExcelImportModal
+        isOpen={isImportModalOpen}
+        onClose={handleCloseModal}
+        selectedFile={selectedFile}
+        loading={previewLoading}
+        isImporting={isImporting}
+        previewData={previewData}
+        onConfirm={() => handleConfirmImport(fetchProducts)}
+      />
+
       <ConfirmModal
         isOpen={Boolean(deletingProductId)}
         title="حذف كتاب من المتجر"
-        message="هل أنت متأكد من حذف هذا الكتاب نهائياً من قاعدة بيانات مكتبة الإيمان؟ لا يمكن التراجع عن هذا الإجراء."
+        message="هل أنت متأكد من حذف هذا الكتاب نهائياً من قاعدة بيانات دار الإيمان؟ لا يمكن التراجع عن هذا الإجراء."
         confirmText="احذف الكتاب"
         cancelText="إلغاء وتراجع"
         variant="danger"

@@ -62,13 +62,14 @@ export default function Header() {
           onClick={handleLogoClick}
           className="flex items-center gap-2 sm:gap-3 min-w-0"
         >
-          <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
+          <div className="relative h-10 w-10 sm:h-12 sm:w-12 shrink-0">
             <Image
               src="/logo.webp"
               alt="دار الإيمان"
-              width={36}
-              height={36}
+              fill
+              sizes="(max-width: 640px) 40px, 48px"
               className="object-contain"
+              priority
             />
           </div>
           <div className="min-w-0">

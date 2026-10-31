@@ -1,20 +1,25 @@
-import { User, ShieldCheck, Phone, Mail, Calendar, LogOut } from "lucide-react";
+import { ShieldCheck, Phone, Mail, Calendar, LogOut } from "lucide-react";
 
 interface ProfileHeaderCardProps {
   user: {
     name?: string;
     phone?: string;
     email?: string;
+    image?: string | null;
     role?: string;
     createdAt?: string;
   };
+  image?: string | null;
   onLogout: () => void;
 }
 
 export default function ProfileHeaderCard({
   user,
+  image,
   onLogout,
 }: ProfileHeaderCardProps) {
+  const userImage = image || user.image;
+
   const joinDate = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString("ar-EG", {
         year: "numeric",
@@ -26,8 +31,18 @@ export default function ProfileHeaderCard({
   return (
     <div className="bg-white rounded-3xl border border-border/80 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-primary text-white font-black text-2xl sm:text-3xl flex items-center justify-center shrink-0 shadow-md shadow-primary/20">
-          {user.name ? user.name.trim().charAt(0) : "ع"}
+        <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-primary text-white font-black text-2xl sm:text-3xl flex items-center justify-center shrink-0 shadow-md shadow-primary/20 overflow-hidden">
+          {userImage ? (
+            <img
+              src={userImage}
+              alt={user.name || "صورة المستخدم"}
+              className="w-full h-full object-cover"
+            />
+          ) : user.name ? (
+            user.name.trim().charAt(0)
+          ) : (
+            "ع"
+          )}
         </div>
 
         <div className="flex flex-col gap-1 min-w-0">

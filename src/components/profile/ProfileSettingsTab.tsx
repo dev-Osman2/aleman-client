@@ -123,7 +123,7 @@ export default function ProfileSettingsTab({
 
         <p className="text-xs sm:text-sm text-muted font-medium leading-relaxed">
           عند حذف حسابك، سيتم مسح كافة بياناتك وسجل طلباتك وجلسات تسجيل الدخول
-          بالكامل من قاعدة بيانات مكتبة الإيمان. هذا الإجراء نهائي ولا يمكن
+          بالكامل من قاعدة بيانات دار الإيمان. هذا الإجراء نهائي ولا يمكن
           استرجاع الحساب بعد تأكيده.
         </p>
 

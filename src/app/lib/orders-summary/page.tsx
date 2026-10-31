@@ -31,7 +31,7 @@ export default function AdminOrdersSummaryPage() {
             التقارير والإحصائيات المالية
           </h1>
           <p className="text-xs sm:text-sm text-muted font-medium mt-1">
-            ملخص مبيعات مكتبة الإيمان، الإيرادات المؤكدة، ومؤشرات الأداء اللحظية
+            ملخص مبيعات دار الإيمان، الإيرادات المؤكدة، ومؤشرات الأداء اللحظية
           </p>
         </div>
 

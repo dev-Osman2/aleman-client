@@ -15,6 +15,7 @@ export function useProfile() {
 
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
+  const [editImage, setEditImage] = useState<string | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -26,6 +27,7 @@ export function useProfile() {
     if (user) {
       setEditName(user.name || "");
       setEditPhone(user.phone || "");
+      setEditImage(user.image || null);
     }
   }, [user]);
 
@@ -36,12 +38,13 @@ export function useProfile() {
     const validationResult = profileUpdateSchema.safeParse({
       name: editName,
       phone: editPhone,
+      image: editImage,
     });
 
     if (!validationResult.success) {
       const firstIssue = validationResult.error.issues?.[0];
       toast.error(
-        firstIssue?.message || "يرجى التحقق من صحة الاسم ورقم الهاتف",
+        firstIssue?.message || "يرجى التحقق من صحة البيانات المدخلة",
       );
       return;
     }
@@ -57,6 +60,7 @@ export function useProfile() {
         body: JSON.stringify({
           name: editName.trim(),
           phone: editPhone.trim(),
+          image: editImage,
         }),
       });
 
@@ -66,8 +70,9 @@ export function useProfile() {
         updateUser({
           name: editName.trim(),
           phone: editPhone.trim(),
+          image: data.data?.image !== undefined ? data.data.image : editImage,
         });
-        toast.success("تم تحديث بيانات ملفك الشخصي بنجاح");
+        toast.success("تم تحديث بيانات ملفك الشخصي والصورة بنجاح");
       } else {
         toast.error(data.message || "تعذر حفظ التعديلات");
       }
@@ -128,6 +133,8 @@ export function useProfile() {
     setEditName,
     editPhone,
     setEditPhone,
+    editImage,
+    setEditImage,
     savingProfile,
     handleUpdateProfile,
     showDeleteModal,

@@ -19,7 +19,8 @@ export default function OrderStatsHeader(_props: OrderStatsHeaderProps) {
           سجل وإدارة طلبات الكتب والشحن
         </h1>
         <p className="text-xs sm:text-sm text-muted font-medium mt-0.5">
-          متابعة الطلبات اللحظية، فحص أرقام التحويل، وتأكيد شحن طلبات مكتبة الإيمان
+          متابعة الطلبات اللحظية، فحص أرقام التحويل، وتأكيد شحن طلبات دار
+          الإيمان
         </p>
       </div>
     </div>

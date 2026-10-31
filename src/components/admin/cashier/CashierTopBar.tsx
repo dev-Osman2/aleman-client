@@ -16,7 +16,7 @@ export default function CashierTopBar({
   onSearchChange,
 }: CashierTopBarProps) {
   return (
-    <div className="sticky top-[72px] z-10 my-3 bg-white/95 backdrop-blur-md border border-border/60 rounded-2xl p-2.5 sm:p-3 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
+    <div className="sticky top-18 z-10 my-3 bg-white/95 backdrop-blur-md border border-border/60 rounded-2xl p-2.5 sm:p-3 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
       <div className="flex-1 min-w-0">
         <CashierCategoryBar
           currentCategory={currentCategory}

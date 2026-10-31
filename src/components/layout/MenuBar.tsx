@@ -36,9 +36,7 @@ function MenuBarContent({ isOpen, onClose }: MenuBarProps) {
     onClose();
   };
 
-  
-
-const handleScrollToOrderSummary = () => {
+  const handleScrollToOrderSummary = () => {
     onClose();
 
     // إذا كان المستخدم بالفعل في الصفحة الرئيسية
@@ -123,7 +121,7 @@ const handleScrollToOrderSummary = () => {
         />
 
         <div className="border-t border-border-subtle pt-3 mt-3 text-center text-xs text-muted-light font-medium shrink-0">
-          مكتبة الإيمان — خير جليس في الزمان كتاب
+          دار الإيمان — خير جليس في الزمان كتاب
         </div>
       </aside>
     </div>

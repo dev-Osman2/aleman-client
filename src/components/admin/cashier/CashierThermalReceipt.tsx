@@ -48,9 +48,7 @@ export default function CashierThermalReceipt({
       >
         <div className="flex items-start justify-between border-b border-dashed border-black pb-2 mb-2">
           <div className="text-right">
-            <h2 className="text-base font-black leading-tight">
-              مكتبة الإيمان
-            </h2>
+            <h2 className="text-base font-black leading-tight">دار الإيمان</h2>
             <p className="text-[11px] font-medium text-gray-700">
               للكتب والمطبوعات الإسلامية
             </p>
@@ -107,7 +105,7 @@ export default function CashierThermalReceipt({
         </div>
 
         <div className="text-center pt-2 text-[10px] text-gray-600 font-medium">
-          <p>شكراً لزيارتكم مكتبة الإيمان</p>
+          <p>شكراً لزيارتكم دار الإيمان</p>
           <p>نسعد بخدمتكم دائماً</p>
         </div>
       </div>

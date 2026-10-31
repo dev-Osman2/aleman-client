@@ -1,10 +1,13 @@
 import { User, Phone, Mail, Settings, Trash2, Loader2 } from "lucide-react";
+import UserAvatarUpload from "@/src/components/ui/UserAvatarUpload";
 
 interface ProfileSettingsTabProps {
   editName: string;
   setEditName: (name: string) => void;
   editPhone: string;
   setEditPhone: (phone: string) => void;
+  editImage: string | null;
+  setEditImage: (image: string | null) => void;
   userEmail?: string;
   savingProfile: boolean;
   onUpdateProfile: (e: React.FormEvent) => void;
@@ -16,6 +19,8 @@ export default function ProfileSettingsTab({
   setEditName,
   editPhone,
   setEditPhone,
+  editImage,
+  setEditImage,
   userEmail,
   savingProfile,
   onUpdateProfile,
@@ -31,7 +36,16 @@ export default function ProfileSettingsTab({
           </h2>
         </div>
 
-        <form onSubmit={onUpdateProfile} className="flex flex-col gap-4">
+        <form onSubmit={onUpdateProfile} className="flex flex-col gap-5">
+          {/* تعديل الصورة الشخصية */}
+          <UserAvatarUpload
+            currentImage={editImage}
+            onImageUploaded={setEditImage}
+            disabled={savingProfile}
+            label="تعديل الصورة الشخصية"
+            subLabel="اختر صورة جديدة لملفك الشخصي أو قم بإزالتها"
+          />
+
           <div className="flex flex-wrap gap-4">
             <div className="w-full sm:w-[calc(50%-0.5rem)]">
               <label className="block text-xs font-extrabold text-heading mb-1.5">

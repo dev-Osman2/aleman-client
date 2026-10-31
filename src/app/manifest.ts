@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "مكتبة الإيمان",
-    short_name: "مكتبة الإيمان",
+    name: "دار الإيمان",
+    short_name: "دار الإيمان",
     description: "خير جليس في الزمان كتاب",
     start_url: "/",
     display: "standalone",

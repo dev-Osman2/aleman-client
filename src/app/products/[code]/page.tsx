@@ -100,10 +100,10 @@ export async function generateMetadata({
   const { code } = await params;
   const book = await getBookByCode(code);
 
-  if (!book) return { title: "الكتاب غير موجود | مكتبة الإيمان" };
+  if (!book) return { title: "الكتاب غير موجود | دار الإيمان" };
 
   return {
-    title: `${book.title} | مكتبة الإيمان`,
+    title: `${book.title} | دار الإيمان`,
     description: book.description,
   };
 }

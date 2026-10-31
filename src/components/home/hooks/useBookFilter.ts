@@ -143,7 +143,7 @@ export function useBookFilter({
     if (isLatestBooks) return "أحدث الكتب";
     if (isAllBooks) return "جميع الكتب";
     if (currentCategory) return `قسم: ${getCategoryLabel(currentCategory)}`;
-    return "إصدارات ومؤلفات مكتبة الإيمان";
+    return "إصدارات ومؤلفات دار الإيمان";
   }, [isLatestBooks, isAllBooks, currentCategory]);
 
   const canResetFilter = Boolean(currentCategory && currentCategory !== LATEST_CATEGORY);

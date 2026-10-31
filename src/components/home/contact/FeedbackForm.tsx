@@ -51,7 +51,7 @@ export default function FeedbackForm({
         <div className="bg-success-light border border-success-border text-success rounded-xl p-4 text-center flex flex-col gap-1.5 animate-in fade-in duration-200">
           <CheckCircle2 className="w-8 h-8 text-success mx-auto" />
           <p className="font-extrabold text-sm">
-            شكراً لك! وصلت رسالتك الآن إلى إدارة مكتبة الإيمان.
+            شكراً لك! وصلت رسالتك الآن إلى إدارة دار الإيمان.
           </p>
           <p className="text-xs text-success">
             نسعد دائماً بخدمتكم وتوفير الكتب التي تبحثون عنها.

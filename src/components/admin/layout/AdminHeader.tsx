@@ -58,7 +58,7 @@ export default function AdminHeader({ onOpenMenu }: AdminHeaderProps) {
               <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
                 <Image
                   src="/logo.webp"
-                  alt="مكتبة الإيمان"
+                  alt="دار الإيمان"
                   width={36}
                   height={36}
                   className="object-contain"
@@ -68,7 +68,7 @@ export default function AdminHeader({ onOpenMenu }: AdminHeaderProps) {
             <div className="leading-tight text-right">
               <div className="flex items-center gap-1.5">
                 <h1 className="font-black text-base sm:text-lg tracking-tight">
-                  مكتبة الإيمان
+                  دار الإيمان
                 </h1>
                 <span className="bg-white/20 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full hidden sm:inline-flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />

@@ -65,15 +65,15 @@ export default function Header() {
           <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white p-1.5 shadow-xs flex items-center justify-center overflow-hidden shrink-0">
             <Image
               src="/logo.webp"
-              alt="مكتبة الإيمان"
+              alt="دار الإيمان"
               width={36}
               height={36}
               className="object-contain"
             />
           </div>
           <div className="min-w-0">
-            <h1 className="text-base sm:text-lg md:text-xl font-black tracking-tight leading-none truncate">
-              مكتبة الإيمان
+            <h1 className="text-base sm:text-lg md:text-xl font-black tracking-tight leading-none truncate pb-1">
+              دار الإيمان
             </h1>
             <p className="hidden sm:block text-[11px] md:text-xs text-white/85 font-medium mt-1 truncate">
               خير جليس في الزمان كتاب

@@ -40,3 +40,61 @@ export async function deleteBookApi(
   });
   return res.json();
 }
+
+/**
+ * تصدير جميع الكتب بصيغة ملف Excel (.xlsx)
+ */
+export async function exportBooksExcelApi(): Promise<Blob> {
+  const res = await adminFetch("/admin/books/export");
+  if (!res.ok) {
+    let errorMsg = "تعذر تصدير ملف الكتب من السيرفر";
+    try {
+      const errJson = await res.json();
+      if (errJson.message) errorMsg = errJson.message;
+    } catch {
+      // ليس json
+    }
+    throw new Error(errorMsg);
+  }
+  return res.blob();
+}
+
+/**
+ * فحص ومعاينة ملف Excel وحساب الإحصائيات قبل الاستيراد
+ */
+export async function previewBooksImportApi(file: File): Promise<any> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await adminFetch("/admin/books/import-preview", {
+    method: "POST",
+    body: formData,
+  });
+
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "فشل فحص ملف Excel");
+  }
+
+  return json.data;
+}
+
+/**
+ * تنفيذ استيراد الكتب من ملف Excel وحفظها في قاعدة البيانات
+ */
+export async function importBooksExcelApi(file: File): Promise<any> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await adminFetch("/admin/books/import", {
+    method: "POST",
+    body: formData,
+  });
+
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "فشل استيراد الكتب من الملف");
+  }
+
+  return json.data;
+}

@@ -23,7 +23,7 @@ export default function QuickServiceButtons({
         <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
           <Info className="w-4 h-4" />
         </div>
-        <span>عن مكتبة الإيمان</span>
+        <span>عن دار الإيمان</span>
       </button>
 
       <button

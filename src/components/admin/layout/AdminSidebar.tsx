@@ -20,7 +20,11 @@ export const ADMIN_NAV_LINKS = [
   { href: "/lib/orders", label: "متابعة وسجل الطلبات", icon: ClipboardList },
   { href: "/lib/cashier", label: "نقطة بيع الكاشير (POS)", icon: Calculator },
   { href: "/lib/users", label: "سجل العملاء والمستخدمين", icon: Users },
-  { href: "/lib/orders-summary", label: "التقارير وملخص المبيعات", icon: BarChart3 },
+  {
+    href: "/lib/orders-summary",
+    label: "التقارير وملخص المبيعات",
+    icon: BarChart3,
+  },
 ];
 
 interface AdminSidebarProps {
@@ -61,7 +65,7 @@ export default function AdminSidebar({
                 <BookOpen className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-black text-heading text-sm">مكتبة الإيمان</h2>
+                <h2 className="font-black text-heading text-sm">دار الإيمان</h2>
                 <p className="text-[11px] text-muted-light font-medium">
                   لوحة الإدارة والتحكم
                 </p>
